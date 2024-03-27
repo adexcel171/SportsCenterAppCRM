@@ -13,6 +13,7 @@ import "./Navigation.css";
 import { useSelector, useDispatch } from "react-redux";
 import { useLogoutMutation } from "../../redux/api/usersApiSlice";
 import { logout } from "../../redux/features/auth/authSlice";
+import moneyman from '../moneyman.png'
 
 const Navigation = () => {
   const { userInfo } = useSelector((state) => state.auth);
