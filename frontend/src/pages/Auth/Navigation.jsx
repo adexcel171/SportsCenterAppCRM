@@ -46,8 +46,8 @@ const Navigation = () => {
     style={{ zIndex: 9999 }}
     className={`${
       showSidebar ? "hidden" : "flex"
-    } xl:flex lg:flex md:hidden sm:hidden flex-row justify-between p-4 text-white bg-gradient-to-r from-black to-gray-800
-    w-full h-[50px] mt-10 fixed top-0`}
+    } xl:flex lg:flex md:hidden sm:hidden flex-row justify-between p-4 text-white bg-transparent
+    w-full h-[50px]  fixed top-0`}
     >
        {/* <div className='rounder-full'>
         <img src={moneyman} alt="logo" width='70px' height='50px' />
