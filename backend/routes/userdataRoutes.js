@@ -17,14 +17,14 @@ import { authenticate,  authorizeAdmin } from "../middlewares/authMiddleware.js"
 router
   .route("/")
   .get(fetchUserData, authorizeAdmin)
-  .post(authenticate, formidable(), addUserData);
+  .post(formidable(), addUserData);
 
 router.route("/alluserdata").get(fetchAllUserData);
 
 router
   .route("/:id")
   .get(fetchUserDataById)
-  .put(authenticate, authorizeAdmin, formidable(), updateUserDataDetails)
-  .delete(authenticate, authorizeAdmin, removeUserData);
+  .put(formidable(), updateUserDataDetails)
+  .delete(authorizeAdmin, removeUserData);
 
 export default router;

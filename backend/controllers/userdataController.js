@@ -79,7 +79,7 @@ const removeUserData = asyncHandler(async (req, res) => {
 
 const fetchUserData = asyncHandler(async (req, res) => {
   try {
-    const pageSize = 6;
+    const pageSize = 10;
 
     const keyword = req.query.keyword
       ? {
@@ -95,7 +95,7 @@ const fetchUserData = asyncHandler(async (req, res) => {
 
     res.json({
       userDataList,
-      page: 1,
+      page: 2,
       pages: Math.ceil(count / pageSize),
       hasMore: false,
     });
