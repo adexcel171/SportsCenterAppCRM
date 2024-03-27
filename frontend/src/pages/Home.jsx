@@ -22,7 +22,7 @@ const Home = () => {
   return (
     <div className="container mx-auto p-4 sm:p-8">
      
-      <h1 className="text-2xl sm:text-4xl mb-4 sm:mb-8 text-center">UserData Dashboard</h1>
+      <h1 className="text-2xl mt-10 sm:text-4xl mb-4 sm:mb-8 text-center">UserData Dashboard</h1>
 
       <div className="bg-white p-4 sm:p-6 rounded-md shadow-md overflow-x-auto">
         <table className="w-full border-collapse">
