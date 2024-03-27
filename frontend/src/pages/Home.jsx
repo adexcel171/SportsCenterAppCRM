@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 import moneyman from './moneyman.jpg';
+import Loader from '../components/Loader';
 import {
   useAllUserdataQuery,
 } from "../redux/api/userdataApiSlice";
@@ -9,7 +10,9 @@ const Home = () => {
   const { data: allUserdata, error, isLoading } = useAllUserdataQuery();
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return  <Loader/>
+   
+    
   }
 
   if (error) {
@@ -18,9 +21,7 @@ const Home = () => {
 
   return (
     <div className="container mx-auto p-4 sm:p-8">
-      <div className='rounder-full'>
-        <img src={moneyman} alt="logo" width='70px' height='50px' />
-      </div>
+     
       <h1 className="text-2xl sm:text-4xl mb-4 sm:mb-8 text-center">UserData Dashboard</h1>
 
       <div className="bg-white p-4 sm:p-6 rounded-md shadow-md overflow-x-auto">
