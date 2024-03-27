@@ -13,7 +13,7 @@ import "./Navigation.css";
 import { useSelector, useDispatch } from "react-redux";
 import { useLogoutMutation } from "../../redux/api/usersApiSlice";
 import { logout } from "../../redux/features/auth/authSlice";
-import moneyman from '../moneyman.png'
+// import moneyman from '../moneyman.png'
 
 const Navigation = () => {
   const { userInfo } = useSelector((state) => state.auth);
@@ -49,9 +49,9 @@ const Navigation = () => {
     } xl:flex lg:flex md:hidden sm:hidden flex-row justify-between p-4 text-white bg-gradient-to-r from-black to-gray-800
     w-full h-[50px] mt-10 fixed top-0`}
     >
-       <div className='rounder-full'>
+       {/* <div className='rounder-full'>
         <img src={moneyman} alt="logo" width='70px' height='50px' />
-      </div>
+      </div> */}
       <div className="flex flex-row justify-center space-x-4 mb-[20px]">
         <Link
           to="/"
