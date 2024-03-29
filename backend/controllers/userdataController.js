@@ -37,21 +37,26 @@ const updateUserDataDetails = asyncHandler(async (req, res) => {
     const { day, date, name, number, email, amount, currency } = req.fields;
 
     // Validation
-    switch (true) {
-      case !day:
-        return res.json({ error: "Day is required" });
-      case !date:
-        return res.json({ error: "Date is required" });
-      case !name:
-        return res.json({ error: "Name is required" });
-      case !number:
-        return res.json({ error: "Number is required" });
-      case !email:
-        return res.json({ error: "Email is required" });
-      case !amount:
-        return res.json({ error: "Amount is required" });
-      case !currency:
-        return res.json({ error: "Currency is required" });
+    if (!day || day.trim() === "") {
+      return res.json({ error: "Day is required" });
+    }
+    if (!date || date.trim() === "") {
+      return res.json({ error: "Date is required" });
+    }
+    if (!name || name.trim() === "") {
+      return res.json({ error: "Name is required" });
+    }
+    if (!number || number.trim() === "") {
+      return res.json({ error: "Number is required" });
+    }
+    if (!email || email.trim() === "") {
+      return res.json({ error: "Email is required" });
+    }
+    if (!amount || amount.trim() === "") {
+      return res.json({ error: "Amount is required" });
+    }
+    if (!currency || currency.trim() === "") {
+      return res.json({ error: "Currency is required" });
     }
 
     const updatedUserData = await UserData.findByIdAndUpdate(
