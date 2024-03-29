@@ -47,27 +47,28 @@ const Userdetails = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        const userData = new FormData();
-        userData.append("day", day);
-        userData.append("date", date);
-        userData.append("name", name);
-        userData.append("number", number);
-        userData.append("email", email);
-        userData.append("amount", amount);
-        userData.append("currency", currency);  // Use currency instead of setCurrency
+        const userData = {
+          day: day,
+          date: date,
+          name: name,
+          number: number,
+          email: email,
+          amount: amount,
+          currency: currency
+        };
   
       // Update user data using the RTK Query mutation
-      const data = await updateUserdata({ userdataId: params.id, userData});
+      const { data } = await updateUserdata({ userdataId: params.id, data: userData });
 
       if (data?.error) {
         toast.error(data.error, {
           position: toast.POSITION.TOP_RIGHT,
-          autoClose: 2000,
+          autoClose: 1000,
         });
       } else {
         toast.success("User data successfully updated", {
           position: toast.POSITION.TOP_RIGHT,
-          autoClose: 2000,
+          autoClose: 1000,
         });
         navigate("/");
       }
@@ -75,10 +76,11 @@ const Userdetails = () => {
       console.log(err);
       toast.error("User data update failed. Try again.", {
         position: toast.POSITION.TOP_RIGHT,
-        autoClose: 2000,
+        autoClose: 1000,
       });
     }
   };
+
   const handleDelete = async () => {
     try {
       let answer = window.confirm("Are you sure you want to delete this product?");
@@ -87,14 +89,14 @@ const Userdetails = () => {
       const { data } = await deleteUserdata(params.id );
       toast.success(`"${data.name}" is deleted`, {
         position: toast.POSITION.TOP_RIGHT,
-        autoClose: 2000,
+        autoClose: 1000,
       });
       navigate("/");
     } catch (err) {
       console.log(err);
       toast.error("Delete failed. Try again.", {
         position: toast.POSITION.TOP_RIGHT,
-        autoClose: 2000,
+        autoClose: 1000,
       });
     }
   };

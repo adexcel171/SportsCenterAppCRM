@@ -106,7 +106,7 @@ const Navigation = () => {
 
         {dropdownOpen && userInfo && (
           <ul
-          className={`absolute right-0 top-8 mt-4 space-y-2 bg-white text-gray-600 ${
+          className={`absolute right-0 top-8 mt-3 space-y-2 bg-white text-gray-600 ${
             dropdownOpen ? "" : "hidden"
           } transition-all duration-300`}
           >
