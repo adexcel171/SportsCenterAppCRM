@@ -47,39 +47,41 @@ const Userdetails = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        const userData = {
-          day: day,
-          date: date,
-          name: name,
-          number: number,
-          email: email,
-          amount: amount,
-          currency: currency
-        };
-  
-      // Update user data using the RTK Query mutation
-      const { data } = await updateUserdata({ userdataId: params.id, data: userData });
+        const userData = {};
 
-      if (data?.error) {
-        toast.error(data.error, {
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 1000,
-        });
-      } else {
-        toast.success("User data successfully updated", {
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 1000,
-        });
-        navigate("/");
-      }
+        // Add fields to userData object if they are not empty
+        if (day !== "") userData.day = day;
+        if (date !== "") userData.date = date;
+        if (name !== "") userData.name = name;
+        if (number !== "") userData.number = number;
+        if (email !== "") userData.email = email;
+        if (amount !== "") userData.amount = amount;
+        if (currency !== "") userData.currency = currency;
+
+        // Update user data using the RTK Query mutation
+        const { data } = await updateUserdata({ userdataId: params.id, data: userData });
+
+        if (data?.error) {
+          toast.error(data.error, {
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 1000,
+          });
+        } else {
+          toast.success("User data successfully updated", {
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 1000,
+          });
+          navigate("/");
+        }
     } catch (err) {
-      console.log(err);
-      toast.error("User data update failed. Try again.", {
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 1000,
-      });
+        console.error("Error submitting user data:", err);
+        toast.error("User data update failed. Try again.", {
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 1000,
+        });
     }
-  };
+};
+
 
   const handleDelete = async () => {
     try {
