@@ -53,7 +53,7 @@ const Form = () => {
   
 
   return (
-    <div className="container mx-auto p-8">
+    <div className="container mx-auto p-8 mt-8">
       <h1 className="text-4xl text-center mb-8">Customer Details Form</h1>
    
     
@@ -147,7 +147,7 @@ const Form = () => {
 
         <div className="mb-4">
           <label htmlFor="currency" className="block text-sm font-medium text-gray-600">
-            Currency
+            Subscription
           </label>
           <select
   className="mt-1 p-2 text-black w-full border rounded-md"
@@ -155,26 +155,12 @@ const Form = () => {
   value={currency}
 >
   <option className="text-black" value="" >
-    Choose Currency
+    Choose Subscription
   </option >
-  <option value="usd">&#36; - US Dollar</option>
-    <option value="eur">&#128; - Euro</option>
-    <option value="gbp">&#163; - British Pound</option>
-    <option value="jpy">&#165; - Japanese Yen</option>
-    <option value="cny">&#165; - Chinese Yuan</option>
-    <option value="inr">&#8377; - Indian Rupee</option>
-    <option value="ghs">&#8373; - Ghanaian Cedi</option>
-    <option value="ngn">&#8358; - Nigerian Naira</option>
-    <option value="aud">&#36; - Australian Dollar</option>
-    <option value="cad">&#36; - Canadian Dollar</option>
-    <option value="chf">&#67; - Swiss Franc</option>
-    <option value="sek">&#107; - Swedish Krona</option>
-    <option value="nok">&#107; - Norwegian Krone</option>
-    <option value="nzd">&#36; - New Zealand Dollar</option>
-    <option value="mxn">&#36; - Mexican Peso</option>
-    <option value="sgd">&#36; - Singapore Dollar</option>
-    <option value="hkd">&#36; - Hong Kong Dollar</option>
-    <option value="krw">&#8361; - South Korean Won</option>
+ 
+    <option value="basic">Basic</option>
+  <option value="standard">Standard</option>
+  <option value="premium">Premium</option>
 </select>
         </div>
 

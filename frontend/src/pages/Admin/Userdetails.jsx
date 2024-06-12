@@ -102,11 +102,11 @@ const Userdetails = () => {
 
   return (
     <>
-      <div className="container  xl:mx-[9rem] sm:mx-[0]">
+      <div className="container xl:mx-[9rem] sm:mx-[2px] mt-10">
         <div className="flex flex-col md:flex-row">
           <AdminMenu />
           <div className="md:w-3/4 p-3">
-            <div className="h-12">Update / Delete Product</div>
+            <div className="h-12 mt-6 text-center font-bold text-2xl">Update / Delete Product</div>
 
             
             <div className="max-w-md mx-auto" onSubmit={handleSubmit}>
@@ -204,24 +204,9 @@ const Userdetails = () => {
   <option className="text-black" value="" >
     Choose Currency
   </option >
-  <option value="usd">&#36; - US Dollar</option>
-    <option value="eur">&#128; - Euro</option>
-    <option value="gbp">&#163; - British Pound</option>
-    <option value="jpy">&#165; - Japanese Yen</option>
-    <option value="cny">&#165; - Chinese Yuan</option>
-    <option value="inr">&#8377; - Indian Rupee</option>
-    <option value="ghs">&#8373; - Ghanaian Cedi</option>
-    <option value="ngn">&#8358; - Nigerian Naira</option>
-    <option value="aud">&#36; - Australian Dollar</option>
-    <option value="cad">&#36; - Canadian Dollar</option>
-    <option value="chf">&#67; - Swiss Franc</option>
-    <option value="sek">&#107; - Swedish Krona</option>
-    <option value="nok">&#107; - Norwegian Krone</option>
-    <option value="nzd">&#36; - New Zealand Dollar</option>
-    <option value="mxn">&#36; - Mexican Peso</option>
-    <option value="sgd">&#36; - Singapore Dollar</option>
-    <option value="hkd">&#36; - Hong Kong Dollar</option>
-    <option value="krw">&#8361; - South Korean Won</option>
+  <option value="basic">Basic</option>
+  <option value="standard">Standard</option>
+  <option value="premium">Premium</option>
 </select>
         </div>
 
