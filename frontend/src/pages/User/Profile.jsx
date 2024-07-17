@@ -52,7 +52,7 @@ const Profile = () => {
           <h2 className="text-2xl font-semibold mb-4">Update Profile</h2>
           <form onSubmit={submitHandler}>
             <div className="mb-4">
-              <label className="block text-white mb-2">Name</label>
+              <label className="block text-black mb-2">Name</label>
               <input
                 type="text"
                 placeholder="Enter name"
@@ -63,7 +63,7 @@ const Profile = () => {
             </div>
 
             <div className="mb-4">
-              <label className="block text-white mb-2">Email Address</label>
+              <label className="block text-black mb-2">Email Address</label>
               <input
                 type="email"
                 placeholder="Enter email"
@@ -74,7 +74,7 @@ const Profile = () => {
             </div>
 
             <div className="mb-4">
-              <label className="block text-white mb-2">Password</label>
+              <label className="block text-black mb-2">Password</label>
               <input
                 type="password"
                 placeholder="Enter password"
@@ -85,7 +85,7 @@ const Profile = () => {
             </div>
 
             <div className="mb-4">
-              <label className="block text-white mb-2">Confirm Password</label>
+              <label className="block text-black mb-2">Confirm Password</label>
               <input
                 type="password"
                 placeholder="Confirm password"
@@ -95,20 +95,14 @@ const Profile = () => {
               />
             </div>
 
-            <div className="flex justify-between">
+            <div className="flex justify-center">
               <button
                 type="submit"
-                className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                className="bg-blue-500 text-center text-black py-2 px-4 rounded hover:bg-blue-600"
               >
                 Update
               </button>
 
-              <Link
-                to="/user-orders"
-                className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
-              >
-                My Orders
-              </Link>
             </div>
             {loadingUpdateProfile && <Loader />}
           </form>
