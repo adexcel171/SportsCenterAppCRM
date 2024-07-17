@@ -30,7 +30,7 @@ const addUserData = asyncHandler(async (req, res) => {
     console.error(error);
     res.status(400).json(error.message);
   }
-});
+}); 
 
 const updateUserDataDetails = asyncHandler(async (req, res) => {
   try {
