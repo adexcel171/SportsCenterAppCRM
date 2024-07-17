@@ -138,20 +138,20 @@ const Navigation = () => {
           </ul>
         )}
         {!userInfo && (
-          <ul>
+          <ul className="flex items-center justify-center">
             <li>
               <Link
                 to="/login"
-                className="flex items-center transition-transform transform hover:translate-x-2"
+                className="flex items-center justify-center mr-4 transition-transform transform hover:translate-x-2"
               >
-                <AiOutlineLogin className="mr-2 mt-[4px] mb-5"  size={26} />
+                <AiOutlineLogin  size={26} />
                 <span className="hidden nav-item-name">LOGIN</span>
               </Link>
             </li>
             <li>
               <Link
                 to="/register"
-                className="flex items-center mt-5 transition-transform transform hover:translate-x-2"
+                className="flex items-center  transition-transform transform hover:translate-x-2"
               >
                 <AiOutlineUserAdd size={26} />
                 <span className="hidden nav-item-name">REGISTER</span>
