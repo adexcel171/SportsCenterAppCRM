@@ -6,14 +6,12 @@ import {
   AiOutlineUserAdd,
   
 } from "react-icons/ai";
-import { FaHeart } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import "./Navigation.css";
 import { useSelector, useDispatch } from "react-redux";
 import { useLogoutMutation } from "../../redux/api/usersApiSlice";
 import { logout } from "../../redux/features/auth/authSlice";
-// import moneyman from '../moneyman.png'
 
 const Navigation = () => {
   const { userInfo } = useSelector((state) => state.auth);
@@ -36,8 +34,9 @@ const Navigation = () => {
       await logoutApiCall().unwrap();
       dispatch(logout());
       navigate("/login");
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error('Logout error:', err);
+      alert('Logout failed. Please check your internet connection and try again.');
     }
   };
 
@@ -46,12 +45,9 @@ const Navigation = () => {
     style={{ zIndex: 9999 }}
     className={`${
       showSidebar ? "hidden" : "flex"
-    } xl:flex lg:flex md:hidden sm:hidden flex-row justify-between p-4 text-white bg-black
+    } xl:flex lg:flex md:hidden sm:hidden flex-row justify-between p-4 text-white bg-blue-400
     w-full h-[50px] mb-10 fixed top-0`}
     >
-       {/* <div className='rounder-full'>
-        <img src={moneyman} alt="logo" width='70px' height='50px' />
-      </div> */}
       <div className="flex flex-row justify-center space-x-4 mb-[20px]">
         <Link
           to="/"
@@ -142,20 +138,20 @@ const Navigation = () => {
           </ul>
         )}
         {!userInfo && (
-          <ul>
+          <ul className="flex items-center justify-center">
             <li>
               <Link
                 to="/login"
-                className="flex items-center transition-transform transform hover:translate-x-2"
+                className="flex items-center justify-center mr-4 transition-transform transform hover:translate-x-2"
               >
-                <AiOutlineLogin className="mr-2 mt-[4px] mb-5"  size={26} />
+                <AiOutlineLogin  size={26} />
                 <span className="hidden nav-item-name">LOGIN</span>
               </Link>
             </li>
             <li>
               <Link
                 to="/register"
-                className="flex items-center mt-5 transition-transform transform hover:translate-x-2"
+                className="flex items-center  transition-transform transform hover:translate-x-2"
               >
                 <AiOutlineUserAdd size={26} />
                 <span className="hidden nav-item-name">REGISTER</span>

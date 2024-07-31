@@ -41,11 +41,12 @@ export const userdataApiSlice = apiSlice.injectEndpoints({
 
     updateUserdata: builder.mutation({
       query: ({ userdataId, formData }) => ({
-        url: `${USERDATA_URL}/${userdataId}`,
-        method: "PUT",
-        body: formData,
+          url: `${USERDATA_URL}/${userdataId}`,
+          method: "PUT",
+          body: formData,
       }),
-    }),
+  }),
+  
 
 
     deleteUserdata: builder.mutation({

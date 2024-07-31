@@ -25,6 +25,7 @@ router
   .route("/:id")
   .get(fetchUserDataById)
   .put(formidable(), updateUserDataDetails)
+  
   .delete(removeUserData);
 
 export default router;
