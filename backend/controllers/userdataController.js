@@ -3,23 +3,23 @@ import UserData from "../models/userdataModel.js"; // Capitalized model name for
 
 const addUserData = asyncHandler(async (req, res) => {
   try {
-    const { day, date, name, number, email, amount, currency } = req.fields;
+    const { name, number, email, amount, note, date, currency } = req.fields;
 
     // Validation
     switch (true) {
-      case !day:
-        return res.json({ error: "Day is required" });
-      case !date:
-        return res.json({ error: "Date is required" });
-      case !name:
+      case !name || name.trim() === "":
         return res.json({ error: "Name is required" });
-      case !number:
+      case !number || number.trim() === "":
         return res.json({ error: "Number is required" });
-      case !email:
+      case !email || email.trim() === "":
         return res.json({ error: "Email is required" });
-      case !amount:
-        return res.json({ error: "Amount is required" });
-      case !currency:
+      case !amount || amount <= 0:
+        return res.json({ error: "Amount is required and must be positive" });
+      case !note || note.trim() === "":
+        return res.json({ error: "Notes are required" });
+      case !date || date.trim() === "":
+        return res.json({ error: "Date is required" });
+      case !currency || currency.trim() === "":
         return res.json({ error: "Currency is required" });
     }
 
@@ -30,47 +30,44 @@ const addUserData = asyncHandler(async (req, res) => {
     console.error(error);
     res.status(400).json(error.message);
   }
-}); 
-
+});
 const updateUserDataDetails = asyncHandler(async (req, res) => {
   try {
-    const { day, date, name, number, email, amount, currency } = req.fields;
+    console.log("Request body:", req.body); // Log request body
+    const { name, number, email, amount, note, date, currency } = req.body;
 
-    // Validation
-    if (!day || day.trim() === "") {
-      return res.json({ error: "Day is required" });
-    }
-    if (!date || date.trim() === "") {
-      return res.json({ error: "Date is required" });
-    }
-    if (!name || name.trim() === "") {
-      return res.json({ error: "Name is required" });
-    }
-    if (!number || number.trim() === "") {
-      return res.json({ error: "Number is required" });
-    }
-    if (!email || email.trim() === "") {
-      return res.json({ error: "Email is required" });
-    }
-    if (!amount || amount.trim() === "") {
-      return res.json({ error: "Amount is required" });
-    }
-    if (!currency || currency.trim() === "") {
-      return res.json({ error: "Currency is required" });
+    const errors = [];
+    if (!date || date.trim() === "") errors.push("Date is required");
+    if (!name || name.trim() === "") errors.push("Name is required");
+    if (!number || number.trim() === "") errors.push("Number is required");
+    if (!email || email.trim() === "") errors.push("Email is required");
+    if (!amount || amount.trim() === "") errors.push("Amount is required");
+    if (!currency || currency.trim() === "") errors.push("Currency is required");
+    if (!note || note.trim() === "") errors.push("Note is required");
+
+    if (errors.length > 0) {
+      return res.status(400).json({ errors });
     }
 
     const updatedUserData = await UserData.findByIdAndUpdate(
       req.params.id,
-      { ...req.fields },
+      { name, number, email, amount, note, date, currency },
       { new: true }
     );
 
+    console.log("Updated user data:", updatedUserData); // Log updated data
+
+    if (!updatedUserData) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
     res.json(updatedUserData);
   } catch (error) {
-    console.error(error);
-    res.status(400).json(error.message);
+    console.error("Update error:", error);
+    res.status(400).json({ error: error.message });
   }
 });
+
 
 const removeUserData = asyncHandler(async (req, res) => {
   try {

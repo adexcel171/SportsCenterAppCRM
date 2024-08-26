@@ -4,9 +4,7 @@ import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 // Import SkeletonLoader component
 import SkeletonLoader from '../components/SkeletonLoader'; // You need to create this component
 
-import {
-  useAllUserdataQuery,
-} from "../redux/api/userdataApiSlice";
+import { useAllUserdataQuery } from "../redux/api/userdataApiSlice";
 
 const Home = () => {
   const { data: allUserdata, error, isLoading } = useAllUserdataQuery();
@@ -27,22 +25,21 @@ const Home = () => {
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-blue-500 text-white">
-              <th className="py-2 px-2 sm:px-4 border">No</th>
+              <th className="py-2 px-2 w-[10px] sm:px-4 border">No</th>
               <th className="py-2 px-2 sm:px-4 border">Created At</th>
-              <th className="py-2 px-2 sm:px-4 border">Day</th>
-              <th className="py-2 px-2 sm:px-4 border">Name</th>
+              <th className="py-2 px-2 sm:px-4 md:w[30px] border">Name</th>
               <th className="py-2 px-2 sm:px-4 border">Number</th>
               <th className="py-2 px-2 sm:px-4 border">Email</th>
               <th className="py-2 px-2 sm:px-4 border">Amount</th>
-              <th className="py-2 px-2 sm:px-4 border">Subscription</th>
+              <th className="py-2 px-2 sm:px-4 border">Notes</th>
+              {/* <th className="py-2 px-2 sm:px-4 border">Date</th> */}
+              <th className="py-2 px-2 sm:px-4 border">Currency</th>
               <th className="py-2 px-2 sm:px-4 border">Actions</th>
             </tr>
           </thead>
           <tbody>
             {allUserdata.map((userdata, index) => {
               const createdAtDate = new Date(userdata.createdAt);
-              const optionsDay = { weekday: 'long' };
-              const formattedDay = createdAtDate.toLocaleDateString('en-US', optionsDay);
               const optionsDateTime = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
               const formattedDateTime = createdAtDate.toLocaleDateString('en-US', optionsDateTime);
 
@@ -50,11 +47,12 @@ const Home = () => {
                 <tr className='text-black' key={userdata._id}>
                   <td className="py-2 px-2 sm:px-4 border">{index + 1}</td>
                   <td className="py-2 px-2 sm:px-4 border">{formattedDateTime}</td>
-                  <td className="py-2 px-2 sm:px-4 border">{formattedDay}</td>
                   <td className="py-2 px-2 sm:px-4 border">{userdata.name}</td>
                   <td className="py-2 px-2 sm:px-4 border">{userdata.number}</td>
                   <td className="py-2 px-2 sm:px-4 border">{userdata.email}</td>
                   <td className="py-2 px-2 sm:px-4 border">{userdata.amount}</td>
+                  <td className="py-2 px-2 sm:px-4 border">{userdata.note}</td>
+                  {/* <td className="py-2 px-2 sm:px-4 border">{userdata.date}</td> */}
                   <td className="py-2 px-2 sm:px-4 border">{userdata.currency}</td>
                   <td className="py-2 px-2 sm:px-4 border bg-black text-white hover:bg-gray-800 transition">
                     <Link to={`/Userdetails/${userdata._id}`}>Details</Link>

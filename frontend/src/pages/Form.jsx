@@ -1,50 +1,51 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-// import { useFetchCategoriesQuery } from "../redux/api/categoryApiSlice";
+
 import { useCreateUserdataMutation } from "../redux/api/userdataApiSlice";
 
 const Form = () => {
-  const [day, setDay] = useState("");
-  const [date, setDate] = useState("");
+  
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
   const [email, setEmail] = useState("");
   const [amount, setAmout] = useState("");
+  const [note, setNote] = useState("");
+  const [date, setDate] = useState("");
   const [currency, setCurrency] = useState("");
  
   const navigate = useNavigate();
 
    
   const [createuserdata] = useCreateUserdataMutation();
-  // const { data: categories } = useFetchCategoriesQuery();
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const userData = new FormData();
-      userData.append("day", day);
-      userData.append("date", date);
       userData.append("name", name);
       userData.append("number", number);
       userData.append("email", email);
       userData.append("amount", amount);
+      userData.append("note", note);
+      userData.append("date", date);
       userData.append("currency", currency);  // Use currency instead of setCurrency
 
 
 
       const { data } = await createuserdata(userData);
-      console.log(data)
+      
 
       if (data.error) {
-        toast.error("data creatation failed. Try Again.");
+        toast.error("data creatation failed. Try Again."); 
       } else {
         toast.success(`${data.name} is created`);
         navigate("/");
       }
     } catch (error) {
-      console.error(error);
+      console.log(error);
       toast.error("data creation failed. Try Again.");
     }
   };
@@ -57,33 +58,8 @@ const Form = () => {
       <h1 className="text-4xl text-center mb-8">Customer Details Form</h1>
    
     
-      <form className="max-w-md mx-auto" onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label htmlFor="day" className="block text-sm font-medium text-gray-600">
-            Day
-          </label>
-          <input
-            type="text"
-            placeholder="day of the week"
-            className="mt-1 p-2 w-full border rounded-md"
-            value={day}
-            onChange={(e) => setDay(e.target.value)}
-          />
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="date" className="block text-sm font-medium text-gray-600">
-            Date
-          </label>
-          <input
-            
-        type="date"
-            name="date"
-            className="mt-1 p-2 w-full border rounded-md"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-          />
-        </div>
+      <form className="max-w-md mx-auto" >
+       
 
         <div className="mb-4">
           <label htmlFor="name" className="block text-sm font-medium text-gray-600">
@@ -142,6 +118,32 @@ const Form = () => {
             className="mt-1 p-2 w-full border rounded-md"
             value={amount}
             onChange={(e) => setAmout(e.target.value)}
+          />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="day" className="block text-sm font-medium text-gray-600">
+            Note
+          </label>
+          <input
+            type="text"
+            placeholder="enter note"
+            className="mt-1 p-2 w-full border rounded-md"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+          />
+        </div>
+
+        <div className="mb-4">
+          <label htmlFor="date" className="block text-sm font-medium text-gray-600">
+            Date
+          </label>
+          <input
+            
+        type="date"
+            name="date"
+            className="mt-1 p-2 w-full border rounded-md"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
           />
         </div>
 
