@@ -3,7 +3,7 @@ import UserData from "../models/userdataModel.js"; // Capitalized model name for
 
 const addUserData = asyncHandler(async (req, res) => {
   try {
-    const { name, number, credit, debit, note, date, currency } = req.fields;
+    const { name, number, email, amount, note, date, currency } = req.fields;
 
     // Validation
     switch (true) {
@@ -11,9 +11,9 @@ const addUserData = asyncHandler(async (req, res) => {
         return res.json({ error: "Name is required" });
       case !number || number.trim() === "":
         return res.json({ error: "Number is required" });
-      case !credit || credit.trim() === "":
-        return res.json({ error: "credit is required" });
-      case !debit || debit < 0:
+      case !email || email.trim() === "":
+        return res.json({ error: "Email is required" });
+      case !amount || amount <= 0:
         return res.json({ error: "Amount is required and must be positive" });
       case !note || note.trim() === "":
         return res.json({ error: "Notes are required" });
@@ -33,48 +33,41 @@ const addUserData = asyncHandler(async (req, res) => {
 });
 const updateUserDataDetails = asyncHandler(async (req, res) => {
   try {
-    // Log the request body for debugging
-    console.log("Request received:", req.body);
+    console.log("Request body:", req.body); // Log request body
+    const { name, number, email, amount, note, date, currency } = req.body;
 
-    // Extract the fields from the request body
-    const { name, number, credit, debit, note, date, currency } = req.body;
+    const errors = [];
+    if (!date || date.trim() === "") errors.push("Date is required");
+    if (!name || name.trim() === "") errors.push("Name is required");
+    if (!number || number.trim() === "") errors.push("Number is required");
+    if (!email || email.trim() === "") errors.push("Email is required");
+    if (!amount || amount.trim() === "") errors.push("Amount is required");
+    if (!currency || currency.trim() === "") errors.push("Currency is required");
+    if (!note || note.trim() === "") errors.push("Note is required");
 
-    // Create an update object based on the fields that are present
-    const updateFields = {};
-    if (name) updateFields.name = name;
-    if (number) updateFields.number = number;
-    if (credit) updateFields.credit = credit;
-    if (debit) updateFields.debit = debit;
-    if (note) updateFields.note = note;
-    if (date) updateFields.date = date;
-    if (currency) updateFields.currency = currency;
-
-    // If no fields are provided, respond with an error
-    if (Object.keys(updateFields).length === 0) {
-      return res.status(400).json({ error: "No fields provided for update" });
+    if (errors.length > 0) {
+      return res.status(400).json({ errors });
     }
 
-    // Update the user data based on the fields present
     const updatedUserData = await UserData.findByIdAndUpdate(
       req.params.id,
-      updateFields,
+      { name, number, email, amount, note, date, currency },
       { new: true }
     );
 
-    // Log the updated user data for debugging
-    console.log("Updated user data:", updatedUserData);
+    console.log("Updated user data:", updatedUserData); // Log updated data
 
     if (!updatedUserData) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Respond with the updated user data
     res.json(updatedUserData);
   } catch (error) {
     console.error("Update error:", error);
     res.status(400).json({ error: error.message });
   }
 });
+
 
 const removeUserData = asyncHandler(async (req, res) => {
   try {
