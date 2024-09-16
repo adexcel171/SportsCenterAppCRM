@@ -1,5 +1,5 @@
 // SkeletonLoader.js
-import React from 'react';
+import React from "react";
 
 const SkeletonLoader = () => {
   return (
@@ -12,8 +12,8 @@ const SkeletonLoader = () => {
               <th className="py-2 px-2 sm:px-4 border">Created At</th>
               <th className="py-2 px-2 sm:px-4 border">Name</th>
               <th className="py-2 px-2 sm:px-4 border">Number</th>
-              <th className="py-2 px-2 sm:px-4 border">Email</th>
-              <th className="py-2 px-2 sm:px-4 border">Amount</th>
+              <th className="py-2 px-2 sm:px-4 border">Credit</th>
+              <th className="py-2 px-2 sm:px-4 border">Debit</th>
               <th className="py-2 px-2 sm:px-4 border">Notes</th>
               <th className="py-2 px-2 sm:px-4 border">Date</th>
               <th className="py-2 px-2 sm:px-4 border">Currency</th>
@@ -22,7 +22,7 @@ const SkeletonLoader = () => {
           </thead>
           <tbody>
             {Array.from({ length: 5 }).map((_, index) => (
-              <tr className='text-black' key={index}>
+              <tr className="text-black" key={index}>
                 <td className="py-2 px-2 sm:px-4 border">
                   <div className="animate-pulse bg-gray-200 h-4 w-full rounded"></div>
                 </td>
