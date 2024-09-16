@@ -22,8 +22,8 @@ const Userdetails = () => {
 
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
-  const [email, setEmail] = useState("");
-  const [amount, setAmount] = useState("");
+  const [credit, setCredit] = useState("");
+  const [debit, setDebit] = useState("");
   const [note, setNote] = useState("");
   const [date, setDate] = useState("");
   const [currency, setCurrency] = useState("");
@@ -33,8 +33,8 @@ const Userdetails = () => {
     if (userdata && userdata._id) {
       setName(userdata.name);
       setNumber(userdata.number);
-      setEmail(userdata.email);
-      setAmount(userdata.amount);
+      setCredit(userdata.credit);
+      setDebit(userdata.debit);
       setNote(userdata.note);
       setDate(userdata.date);
       setCurrency(userdata.currency);
@@ -50,24 +50,25 @@ const Userdetails = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const formattedDate = date.split("T")[0]; // Format date to "yyyy-MM-dd"
-  
       const userData = {
         name,
         number,
-        email,
-        amount,
+        credit,
+        debit,
         note,
-        date: formattedDate,
+        date,
         currency,
       };
-  
+
       console.log("Updating user data:", userData); // Log the data being sent
-  
-      const { data } = await updateUserdata({ userdataId: params.id, ...userData });
-  
+
+      const { data } = await updateUserdata({
+        userdataId: params.id,
+        ...userData,
+      });
+
       console.log("Response data:", data); // Log the response data
-  
+
       if (data?.error) {
         toast.error(data.error, {
           position: toast.POSITION.TOP_RIGHT,
@@ -88,10 +89,12 @@ const Userdetails = () => {
       });
     }
   };
-  
+
   const handleDelete = async () => {
     try {
-      let answer = window.confirm("Are you sure you want to delete this product?");
+      let answer = window.confirm(
+        "Are you sure you want to delete this product?"
+      );
       if (!answer) return;
 
       const result = await deleteUserdata(params.id);
@@ -124,10 +127,15 @@ const Userdetails = () => {
     <div className="container xl:mx-[] sm:mx-[2px] mt-10">
       <div className="flex flex-col md:flex-row justify-center items-center">
         <div className="md:w-3/4 p-3">
-          <div className="h-12 mt-6 text-center font-bold text-2xl">Update and Delete Product</div>
+          <div className="h-12 mt-6 text-center font-bold text-2xl">
+            Update and Delete Product
+          </div>
           <form className="max-w-md mx-auto" onSubmit={handleSubmit}>
             <div className="mb-4">
-              <label htmlFor="name" className="block text-sm font-medium text-gray-600">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-600"
+              >
                 Name
               </label>
               <input
@@ -140,7 +148,10 @@ const Userdetails = () => {
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="number" className="block text-sm font-medium text-gray-600">
+              <label
+                htmlFor="number"
+                className="block text-sm font-medium text-gray-600"
+              >
                 Number
               </label>
               <input
@@ -153,32 +164,41 @@ const Userdetails = () => {
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="email" className="block text-sm font-medium text-gray-600">
-                Email
+              <label
+                htmlFor="credit"
+                className="block text-sm font-medium text-gray-600"
+              >
+                Credit
               </label>
               <input
-                type="email"
-                name="email"
+                type="credit"
+                name="credit"
                 className="mt-1 p-2 w-full border rounded-md"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={credit}
+                onChange={(e) => setCredit(e.target.value)}
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="amount" className="block text-sm font-medium text-gray-600">
-                Amount
+              <label
+                htmlFor="debit"
+                className="block text-sm font-medium text-gray-600"
+              >
+                Debit
               </label>
               <input
                 type="text"
-                id="amount"
-                name="amount"
+                id="debit"
+                name="debit"
                 className="mt-1 p-2 w-full border rounded-md"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                value={debit}
+                onChange={(e) => setDebit(e.target.value)}
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="note" className="block text-sm font-medium text-gray-600">
+              <label
+                htmlFor="note"
+                className="block text-sm font-medium text-gray-600"
+              >
                 Note
               </label>
               <input
@@ -190,7 +210,10 @@ const Userdetails = () => {
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="date" className="block text-sm font-medium text-gray-600">
+              <label
+                htmlFor="date"
+                className="block text-sm font-medium text-gray-600"
+              >
                 Date
               </label>
               <input
@@ -202,7 +225,10 @@ const Userdetails = () => {
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="currency" className="block text-sm font-medium text-gray-600">
+              <label
+                htmlFor="currency"
+                className="block text-sm font-medium text-gray-600"
+              >
                 Currency
               </label>
               <select
@@ -213,9 +239,9 @@ const Userdetails = () => {
                 <option className="text-black" value="">
                   Choose Currency
                 </option>
-                <option value="basic">Basic</option>
-                <option value="standard">Standard</option>
-                <option value="premium">Premium</option>
+                <option value="&#36;">&#36;Dollar</option>
+                <option value="&#8358;">&#8358; Naira</option>
+                <option value="&#8373;">&#8373; Cedi</option>
               </select>
             </div>
             <div className="mb-10">
