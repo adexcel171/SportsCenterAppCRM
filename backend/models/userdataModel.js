@@ -10,12 +10,11 @@ const userdataSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    credit: {
-      type: Number,
+    email: {
+      type: String,
       required: true,
-      min: 0,
     },
-    debit: {
+    amount: {
       type: Number,
       required: true,
       min: 0,

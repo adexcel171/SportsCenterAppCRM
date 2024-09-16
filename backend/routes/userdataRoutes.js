@@ -11,21 +11,21 @@ import {
   fetchUserDataById,
   fetchAllUserData,
 } from "../controllers/userdataController.js";
-import { authenticate, authorizeAdmin } from "../middlewares/authMiddleware.js";
+import {  authorizeAdmin } from "../middlewares/authMiddleware.js";
+
 
 router
-  .route("/", authenticate)
-  .get(fetchUserData, authenticate)
-  .post(formidable(), addUserData, authenticate);
+  .route("/")
+  .get(fetchUserData, authorizeAdmin)
+  .post(formidable(), addUserData);
 
-router.route("/alluserdata").get(fetchAllUserData, authenticate);
+router.route("/alluserdata").get(fetchAllUserData);
 
 router
   .route("/:id")
   .get(fetchUserDataById)
-  .put(updateUserDataDetails, authenticate)
-
-  .delete(removeUserData, authorizeAdmin),
-  authorizeAdmin;
+  .put(formidable(), updateUserDataDetails)
+  
+  .delete(removeUserData);
 
 export default router;

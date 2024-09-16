@@ -1,23 +1,24 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useSelector } from "react-redux";
+
 import { useCreateUserdataMutation } from "../redux/api/userdataApiSlice";
 
 const Form = () => {
+  
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
-  const [credit, setCredit] = useState("");
-  const [debit, setDebit] = useState("");
+  const [email, setEmail] = useState("");
+  const [amount, setAmout] = useState("");
   const [note, setNote] = useState("");
   const [date, setDate] = useState("");
   const [currency, setCurrency] = useState("");
-
+ 
   const navigate = useNavigate();
 
+   
   const [createuserdata] = useCreateUserdataMutation();
-
-  const { userInfo } = useSelector((state) => state.auth);
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,40 +27,42 @@ const Form = () => {
       const userData = new FormData();
       userData.append("name", name);
       userData.append("number", number);
-      userData.append("credit", credit);
-      userData.append("debit", debit);
+      userData.append("email", email);
+      userData.append("amount", amount);
       userData.append("note", note);
       userData.append("date", date);
-      userData.append("currency", currency); // Use currency instead of setCurrency
+      userData.append("currency", currency);  // Use currency instead of setCurrency
+
+
 
       const { data } = await createuserdata(userData);
+      
 
       if (data.error) {
-        toast.error("data entry failed. Try Again.");
+        toast.error("data creatation failed. Try Again."); 
       } else {
         toast.success(`${data.name} is created`);
-        toast.success(`successfully updated`, {
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 2000,
-        });
         navigate("/");
       }
     } catch (error) {
       console.log(error);
-      toast.error("data entry failed. Try Again.");
+      toast.error("data creation failed. Try Again.");
     }
   };
+
+  
+  
 
   return (
     <div className="container mx-auto p-8 mt-8">
       <h1 className="text-4xl text-center mb-8">Customer Details Form</h1>
+   
+    
+      <form className="max-w-md mx-auto" >
+       
 
-      <form className="max-w-md mx-auto">
         <div className="mb-4">
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-600"
-          >
+          <label htmlFor="name" className="block text-sm font-medium text-gray-600">
             Name
           </label>
           <input
@@ -74,10 +77,7 @@ const Form = () => {
         </div>
 
         <div className="mb-4">
-          <label
-            htmlFor="number"
-            className="block text-sm font-medium text-gray-600"
-          >
+          <label htmlFor="number" className="block text-sm font-medium text-gray-600">
             Number
           </label>
           <input
@@ -92,28 +92,23 @@ const Form = () => {
         </div>
 
         <div className="mb-4">
-          <label
-            htmlFor="credit"
-            className="block text-sm font-medium text-gray-600"
-          >
-            Credit
+          <label htmlFor="email" className="block text-sm font-medium text-gray-600">
+            Email
           </label>
           <input
-            type="number"
-            name="credit"
-            placeholder="enter number."
+            type="email"
+            // id="email"
+            name="email"
+            placeholder="enter email address..."
             className="mt-1 p-2 w-full border rounded-md"
-            value={credit}
-            onChange={(e) => setCredit(e.target.value)}
+            value={email}
+             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
 
         <div className="mb-4">
-          <label
-            htmlFor="amount"
-            className="block text-sm font-medium text-gray-600"
-          >
-            Debit
+          <label htmlFor="amount" className="block text-sm font-medium text-gray-600">
+            Amount
           </label>
           <input
             type="text"
@@ -121,19 +116,16 @@ const Form = () => {
             id="amount"
             name="amount"
             className="mt-1 p-2 w-full border rounded-md"
-            value={debit}
-            onChange={(e) => setDebit(e.target.value)}
+            value={amount}
+            onChange={(e) => setAmout(e.target.value)}
           />
         </div>
         <div className="mb-4">
-          <label
-            htmlFor="day"
-            className="block text-sm font-medium text-gray-600"
-          >
+          <label htmlFor="day" className="block text-sm font-medium text-gray-600">
             Note
           </label>
           <input
-            type="textarea"
+            type="text"
             placeholder="enter note"
             className="mt-1 p-2 w-full border rounded-md"
             value={note}
@@ -142,14 +134,12 @@ const Form = () => {
         </div>
 
         <div className="mb-4">
-          <label
-            htmlFor="date"
-            className="block text-sm font-medium text-gray-600"
-          >
+          <label htmlFor="date" className="block text-sm font-medium text-gray-600">
             Date
           </label>
           <input
-            type="date"
+            
+        type="date"
             name="date"
             className="mt-1 p-2 w-full border rounded-md"
             value={date}
@@ -158,25 +148,22 @@ const Form = () => {
         </div>
 
         <div className="mb-4">
-          <label
-            htmlFor="currency"
-            className="block text-sm font-medium text-gray-600"
-          >
+          <label htmlFor="currency" className="block text-sm font-medium text-gray-600">
             Subscription
           </label>
           <select
-            className="mt-1 p-2 text-black w-full border rounded-md"
-            onChange={(e) => setCurrency(e.target.value)}
-            value={currency}
-          >
-            <option className="text-black" value="">
-              Choose Currency
-            </option>
-
-            <option value="&#36;">&#36;Dollar</option>
-            <option value="&#8358;">&#8358; Naira</option>
-            <option value="&#8373;">&#8373; Cedi</option>
-          </select>
+  className="mt-1 p-2 text-black w-full border rounded-md"
+  onChange={(e) => setCurrency(e.target.value)}
+  value={currency}
+>
+  <option className="text-black" value="" >
+    Choose Subscription
+  </option >
+ 
+    <option value="basic">Basic</option>
+  <option value="standard">Standard</option>
+  <option value="premium">Premium</option>
+</select>
         </div>
 
         <button
@@ -187,6 +174,9 @@ const Form = () => {
           Submit
         </button>
       </form>
+
+    
+      
     </div>
   );
 };
