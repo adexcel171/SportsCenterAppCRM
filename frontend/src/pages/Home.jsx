@@ -6,10 +6,14 @@ import { useAllUserdataQuery } from "../redux/api/userdataApiSlice";
 const Home = () => {
   const { data: allUserdata, error, isLoading } = useAllUserdataQuery();
 
-  // State for total debit, credit, and balance
+  // State for total debit, credit, and balance (today's calculations)
   const [totalDebit, setTotalDebit] = useState(0);
   const [totalCredit, setTotalCredit] = useState(0);
   const [balance, setBalance] = useState(0);
+
+  // State for all-time totals
+  const [allTimeTotalDebit, setAllTimeTotalDebit] = useState(0);
+  const [allTimeTotalCredit, setAllTimeTotalCredit] = useState(0);
 
   useEffect(() => {
     if (allUserdata) {
@@ -39,6 +43,19 @@ const Home = () => {
       // Calculate balance
       const calculatedBalance = totalCreditCalc - totalDebitCalc;
       setBalance(calculatedBalance);
+
+      // Calculate all-time total debit and credit
+      const allTimeDebit = allUserdata.reduce(
+        (acc, user) => acc + (user.debit || 0),
+        0
+      );
+      const allTimeCredit = allUserdata.reduce(
+        (acc, user) => acc + (user.credit || 0),
+        0
+      );
+
+      setAllTimeTotalDebit(allTimeDebit);
+      setAllTimeTotalCredit(allTimeCredit);
     }
   }, [allUserdata]);
 
@@ -55,16 +72,26 @@ const Home = () => {
       <h1 className="text-3xl mt-10 sm:text-4xl mb-4 sm:mb-8 text-center">
         Money Man Dashboard
       </h1>
-      <div className=" flex justify-center items-center">
-        <div className="mt-2 flex justify-center items-center gap-6 text-center w-[600px] rounded-md  bg-blue-950 p-5">
+      <div className="flex justify-center items-center">
+        <div className="mt-2 flex justify-center items-center gap-6 text-center w-[600px] rounded-md bg-blue-950 p-5">
           <h1 className="text-lg font-bold text-white">
-            Total Credit: {totalCredit.toFixed(2)}
+            Credit (Today): {totalCredit.toFixed(2)}
           </h1>
           <p className="text-lg font-bold text-white">
-            Total Debit: {totalDebit.toFixed(2)}
+            Debit (Today): {totalDebit.toFixed(2)}
           </p>
-          <p className="text-lg font-bold  text-white">
+          <p className="text-lg font-bold text-white">
             Current Balance: {balance.toFixed(2)}
+          </p>
+        </div>
+      </div>
+      <div className="flex justify-center items-center">
+        <div className="mt-2 flex justify-center items-center gap-6 text-center w-[600px] rounded-md bg-green-700 p-5">
+          <h1 className="text-lg font-bold text-white">
+            Total Credit: {allTimeTotalCredit.toFixed(2)}
+          </h1>
+          <p className="text-lg font-bold text-white">
+            Total Debit: {allTimeTotalDebit.toFixed(2)}
           </p>
         </div>
       </div>
@@ -109,10 +136,10 @@ const Home = () => {
                   <td className="py-2 px-2 sm:px-4 border">
                     {userdata.number}
                   </td>
-                  <td className="py-2 px-2 sm:px-4 border font-bold text-green-800  ">
+                  <td className="py-2 px-2 sm:px-4 border font-bold text-green-600 hover:text-white hover:bg-slate-900 ">
                     {userdata.credit}
                   </td>
-                  <td className="py-2 px-2 sm:px-4 border font-bold text-red-600">
+                  <td className="py-2 px-2 sm:px-4 border font-bold text-red-600  hover:text-white hover:bg-slate-900">
                     {userdata.debit}
                   </td>
                   <td className="py-2 px-2 sm:px-4 border">{userdata.note}</td>
@@ -127,17 +154,6 @@ const Home = () => {
             })}
           </tbody>
         </table>
-        {/* <div className="mt-4 text-right">
-          <p className="text-lg font-bold">
-            Total Credit: {totalCredit.toFixed(2)}
-          </p>
-          <p className="text-lg font-bold">
-            Total Debit: {totalDebit.toFixed(2)}
-          </p>
-          <p className="text-lg font-bold">
-            Current Balance: {balance.toFixed(2)}
-          </p>
-        </div> */}
       </div>
     </div>
   );

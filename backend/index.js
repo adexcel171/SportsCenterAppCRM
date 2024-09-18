@@ -19,7 +19,7 @@ connectDB();
 const app = express();
 app.use(
   cors({
-    origin: "https://excel-crm.onrender.com",
+    origin: "http://localhost:5173",
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true, // enable cookies
     optionsSuccessStatus: 204,
