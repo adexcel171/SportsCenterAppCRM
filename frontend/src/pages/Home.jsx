@@ -60,7 +60,7 @@ const Home = () => {
           <h1 className="text-lg font-bold text-white">
             Total Credit: {totalCredit.toFixed(2)}
           </h1>
-          <p className="text-lg font-bold  text-white">
+          <p className="text-lg font-bold text-white">
             Total Debit: {totalDebit.toFixed(2)}
           </p>
           <p className="text-lg font-bold  text-white">
@@ -109,10 +109,12 @@ const Home = () => {
                   <td className="py-2 px-2 sm:px-4 border">
                     {userdata.number}
                   </td>
-                  <td className="py-2 px-2 sm:px-4 border">
+                  <td className="py-2 px-2 sm:px-4 border font-bold text-green-800  ">
                     {userdata.credit}
                   </td>
-                  <td className="py-2 px-2 sm:px-4 border">{userdata.debit}</td>
+                  <td className="py-2 px-2 sm:px-4 border font-bold text-red-600">
+                    {userdata.debit}
+                  </td>
                   <td className="py-2 px-2 sm:px-4 border">{userdata.note}</td>
                   <td className="py-2 px-2 sm:px-4 border">
                     {userdata.currency}
