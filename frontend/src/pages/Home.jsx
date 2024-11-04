@@ -26,9 +26,11 @@ const Home = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   // Filtered user data based on search query
-  const filteredUserdata = allUserdata.filter((userdata) =>
-    userdata.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredUserdata = allUserdata
+    ? allUserdata.filter((userdata) =>
+        userdata.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : [];
 
   useEffect(() => {
     if (allUserdata) {
