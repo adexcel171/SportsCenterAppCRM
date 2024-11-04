@@ -17,7 +17,6 @@ import Profile from "./pages/User/Profile";
 import UserList from "./pages/Admin/UserList";
 import Userdetails from "./pages/Admin/Userdetails.jsx";
 
-
 import Home from "./pages/Home.jsx";
 import Form from "./pages/Form.jsx";
 
@@ -29,13 +28,12 @@ const router = createBrowserRouter(
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route index={true} path="/" element={<Home />} />
-      <Route  path="/form" element={<Form />} />
+      <Route path="/form" element={<Form />} />
 
       {/* Registered users */}
       <Route path="" element={<PrivateRoute />}>
         <Route path="/profile" element={<Profile />} />
-        <Route path="/userdetails/:id" element={<Userdetails/>} />
-
+        <Route path="/userdetails/:id" element={<Userdetails />} />
       </Route>
 
       <Route path="/admin" element={<AdminRoute />}>
@@ -48,6 +46,6 @@ const router = createBrowserRouter(
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
-      <RouterProvider router={router} />
+    <RouterProvider router={router} />
   </Provider>
 );

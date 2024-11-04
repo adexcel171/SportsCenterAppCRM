@@ -30,15 +30,15 @@ const Form = () => {
       userData.append("debit", debit);
       userData.append("note", note);
       userData.append("date", date);
-      userData.append("currency", currency); // Use currency instead of setCurrency
+      userData.append("currency", currency);
 
       const { data } = await createuserdata(userData);
 
       if (data.error) {
-        toast.error("data entry failed. Try Again.");
+        toast.error("Data entry failed. Try Again.");
       } else {
         toast.success(`${data.name} is created`);
-        toast.success(`successfully updated`, {
+        toast.success(`Successfully updated`, {
           position: toast.POSITION.TOP_RIGHT,
           autoClose: 2000,
         });
@@ -46,19 +46,21 @@ const Form = () => {
       }
     } catch (error) {
       console.log(error);
-      toast.error("data entry failed. Try Again.");
+      toast.error("Data entry failed. Try Again.");
     }
   };
 
   return (
-    <div className="container mx-auto p-8 mt-8">
-      <h1 className="text-4xl text-center mb-8">Customer Details Form</h1>
+    <div className="container mx-auto p-8 mt-8 bg-gray-50 rounded-lg shadow-md">
+      <h1 className="text-4xl text-center mb-8 text-gray-800">
+        Customer Details Form
+      </h1>
 
-      <form className="max-w-md mx-auto">
+      <form className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg">
         <div className="mb-4">
           <label
             htmlFor="name"
-            className="block text-sm font-medium text-gray-600"
+            className="block text-sm font-medium text-gray-700"
           >
             Name
           </label>
@@ -66,8 +68,8 @@ const Form = () => {
             type="text"
             id="name"
             name="name"
-            placeholder="enter name"
-            className="mt-1 p-2 w-full border rounded-md"
+            placeholder="Enter name"
+            className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
@@ -76,7 +78,7 @@ const Form = () => {
         <div className="mb-4">
           <label
             htmlFor="number"
-            className="block text-sm font-medium text-gray-600"
+            className="block text-sm font-medium text-gray-700"
           >
             Number
           </label>
@@ -84,8 +86,8 @@ const Form = () => {
             type="text"
             id="number"
             name="number"
-            placeholder="enter number..."
-            className="mt-1 p-2 w-full border rounded-md"
+            placeholder="Enter number..."
+            className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
             value={number}
             onChange={(e) => setNumber(e.target.value)}
           />
@@ -94,15 +96,15 @@ const Form = () => {
         <div className="mb-4">
           <label
             htmlFor="credit"
-            className="block text-sm font-medium text-gray-600"
+            className="block text-sm font-medium text-gray-700"
           >
             Credit
           </label>
           <input
             type="number"
             name="credit"
-            placeholder="enter number."
-            className="mt-1 p-2 w-full border rounded-md"
+            placeholder="Enter credit amount"
+            className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
             value={credit}
             onChange={(e) => setCredit(e.target.value)}
           />
@@ -111,31 +113,31 @@ const Form = () => {
         <div className="mb-4">
           <label
             htmlFor="amount"
-            className="block text-sm font-medium text-gray-600"
+            className="block text-sm font-medium text-gray-700"
           >
             Debit
           </label>
           <input
             type="text"
-            placeholder="enter amount"
+            placeholder="Enter debit amount"
             id="amount"
             name="amount"
-            className="mt-1 p-2 w-full border rounded-md"
+            className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
             value={debit}
             onChange={(e) => setDebit(e.target.value)}
           />
         </div>
+
         <div className="mb-4">
           <label
-            htmlFor="day"
-            className="block text-sm font-medium text-gray-600"
+            htmlFor="note"
+            className="block text-sm font-medium text-gray-700"
           >
             Note
           </label>
-          <input
-            type="textarea"
-            placeholder="enter note"
-            className="mt-1 p-2 w-full border rounded-md"
+          <textarea
+            placeholder="Enter note"
+            className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
             value={note}
             onChange={(e) => setNote(e.target.value)}
           />
@@ -144,14 +146,14 @@ const Form = () => {
         <div className="mb-4">
           <label
             htmlFor="date"
-            className="block text-sm font-medium text-gray-600"
+            className="block text-sm font-medium text-gray-700"
           >
             Date
           </label>
           <input
             type="date"
             name="date"
-            className="mt-1 p-2 w-full border rounded-md"
+            className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
             value={date}
             onChange={(e) => setDate(e.target.value)}
           />
@@ -160,20 +162,19 @@ const Form = () => {
         <div className="mb-4">
           <label
             htmlFor="currency"
-            className="block text-sm font-medium text-gray-600"
+            className="block text-sm font-medium text-gray-700"
           >
             Subscription
           </label>
           <select
-            className="mt-1 p-2 text-black w-full border rounded-md"
+            className="mt-1 p-2 text-black w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
             onChange={(e) => setCurrency(e.target.value)}
             value={currency}
           >
             <option className="text-black" value="">
               Choose Currency
             </option>
-
-            <option value="&#36;">&#36;Dollar</option>
+            <option value="&#36;">&#36; Dollar</option>
             <option value="&#8358;">&#8358; Naira</option>
             <option value="&#8373;">&#8373; Cedi</option>
           </select>
