@@ -8,7 +8,7 @@ const Home = () => {
   const { userInfo } = useSelector((state) => state.auth);
 
   if (!userInfo?.isAdmin) {
-    return <Navigate to="/" />;
+    return <p>You do not have permission to view this page.</p>;
   }
 
   const { data: allUserdata, error, isLoading } = useAllUserdataQuery();
@@ -31,6 +31,18 @@ const Home = () => {
         userdata.name.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : [];
+
+  // State for pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10; // Number of items to display per page
+
+  // Calculate the index of the last item on the current page
+  const indexOfLastUser = currentPage * itemsPerPage;
+  const indexOfFirstUser = indexOfLastUser - itemsPerPage;
+  const currentUsers = filteredUserdata.slice(
+    indexOfFirstUser,
+    indexOfLastUser
+  );
 
   useEffect(() => {
     if (allUserdata) {
@@ -85,30 +97,50 @@ const Home = () => {
   }
 
   return (
-    <div className="container mx-auto p-4 sm:p-8 mt-5 bg-gray-50 rounded-lg shadow-md">
+    <div className="container mx-auto p-4 sm:p-8 mt-6  bg-gray-50 rounded-lg shadow-md">
       <h1 className="text-3xl mt-10 sm:text-4xl mb-4 sm:mb-8 text-center text-gray-800">
         Money Man Dashboard
       </h1>
       <div className="flex justify-center items-center">
         <div className="mt-2 flex justify-center items-center gap-6 text-center w-full max-w-[600px] rounded-md bg-blue-950 p-5">
           <h1 className="text-lg font-bold text-white">
-            Credit (Today): {totalCredit.toFixed(2)}
+            Credit (Today):{" "}
+            {totalCredit.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
           </h1>
           <p className="text-lg font-bold text-white">
-            Debit (Today): {totalDebit.toFixed(2)}
+            Debit (Today):{" "}
+            {totalDebit.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
           </p>
           <p className="text-lg font-bold text-white">
-            Current Balance: {balance.toFixed(2)}
+            Current Balance:{" "}
+            {balance.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
           </p>
         </div>
       </div>
       <div className="flex justify-center items-center">
         <div className="mt-2 flex justify-center items-center gap-6 text-center w-full max-w-[600px] rounded-md bg-green-700 p-5">
           <h1 className="text-lg font-bold text-white">
-            Total Credit: {allTimeTotalCredit.toFixed(2)}
+            Total Credit:{" "}
+            {allTimeTotalCredit.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
           </h1>
           <p className="text-lg font-bold text-white">
-            Total Debit: {allTimeTotalDebit.toFixed(2)}
+            Total Debit:{" "}
+            {allTimeTotalDebit.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
           </p>
         </div>
       </div>
@@ -122,7 +154,7 @@ const Home = () => {
           className="border rounded p-2 w-full max-w-[600px] focus:outline-none focus:ring focus:ring-blue-300"
         />
       </div>
-      <div className="bg-white p-4 sm:p-6 rounded-md shadow-md overflow-x-auto">
+      <div className="bg-white p-4 sm:p-6 mt-5 shadow-md rounded-lg overflow-x-auto">
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-blue-500 hover:bg-gray-800 transition text-white">
@@ -138,7 +170,7 @@ const Home = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredUserdata.map((userdata, index) => {
+            {currentUsers.map((userdata, index) => {
               const createdAtDate = new Date(userdata.createdAt);
               const optionsDateTime = {
                 year: "numeric",
@@ -153,9 +185,12 @@ const Home = () => {
                 optionsDateTime
               );
 
+              // Calculate the display index based on the current page
+              const displayIndex = indexOfFirstUser + index + 1; // Adjusted index for display
+
               return (
                 <tr className="text-black" key={userdata._id}>
-                  <td className="py-2 px-2 sm:px-4 border">{index + 1}</td>
+                  <td className="py-2 px-2 sm:px-4 border">{displayIndex}</td>
                   <td className="py-2 px-2 sm:px-4 border">
                     {formattedDateTime}
                   </td>
@@ -164,10 +199,16 @@ const Home = () => {
                     {userdata.number}
                   </td>
                   <td className="py-2 px-2 sm:px-4 border font-bold text-green-600 hover:text-white hover:bg-slate-900">
-                    {userdata.credit}
+                    {userdata.credit.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
                   </td>
                   <td className="py-2 px-2 sm:px-4 border font-bold text-red-600 hover:text-white hover:bg-slate-900">
-                    {userdata.debit}
+                    {userdata.debit.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
                   </td>
                   <td className="py-2 px-2 sm:px-4 border">{userdata.note}</td>
                   <td className="py-2 px-2 sm:px-4 border">
@@ -181,6 +222,23 @@ const Home = () => {
             })}
           </tbody>
         </table>
+      </div>
+      {/* Pagination Controls */}
+      <div className="flex justify-between items-center mt-4">
+        <button
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+          className="bg-blue-500 text-white px-4 py-2 rounded disabled:opacity-50"
+        >
+          Previous
+        </button>
+        <button
+          onClick={() => setCurrentPage((prev) => prev + 1)}
+          disabled={indexOfLastUser >= filteredUserdata.length}
+          className="bg-blue-500 text-white px-4 py-2 rounded disabled:opacity-50"
+        >
+          Next
+        </button>
       </div>
     </div>
   );

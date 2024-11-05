@@ -10,7 +10,7 @@ const SkeletonLoader = () => {
       <div className="bg-white p-4 sm:p-6 rounded-md shadow-md overflow-x-auto">
         <table className="w-full border-collapse">
           <thead>
-            <tr className="bg-blue-500 hover:bg-gray-800 transition text-white">
+            <tr className="bg-gray-500 hover:bg-gray-800 transition text-white">
               <th className="py-2 px-2 w-[10px] sm:px-4 border">No</th>
               <th className="py-2 px-2 sm:px-4 border">Created At</th>
               <th className="py-2 px-2 sm:px-4 md:w[30px] border">Name</th>
