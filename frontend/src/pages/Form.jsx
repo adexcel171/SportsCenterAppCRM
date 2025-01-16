@@ -51,12 +51,12 @@ const Form = () => {
   };
 
   return (
-    <div className="container mx-auto p-8 mt-8 bg-gray-50 rounded-lg shadow-md">
+    <div className=" mx-auto h-full p-8 mt-8 bg-gray-50 rounded-lg shadow-md">
       <h1 className="text-4xl text-center mb-8 text-gray-800">
         Customer Details Form
       </h1>
 
-      <form className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg">
+      <form className="max-w-md h-auto mx-auto bg-white p-6 rounded-lg shadow-lg">
         <div className="mb-4">
           <label
             htmlFor="name"

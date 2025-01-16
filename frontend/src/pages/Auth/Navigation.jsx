@@ -46,23 +46,21 @@ const Navigation = () => {
       style={{ zIndex: 9999 }}
       className={`${
         showSidebar ? "hidden" : "flex"
-      } xl:flex lg:flex md:hidden sm:hidden flex-row justify-between p-4 text-white bg-blue-300
-    w-full h-[50px] mb-10 fixed top-0`}
+      } xl:flex lg:flex flex-row justify-between p-4 text-black bg-gray-200 shadow-2xl
+    w-full h-[60px] mb-10 fixed top-0`}
     >
-      <div className="flex flex-row justify-center space-x-4 mb-[20px]">
+      <div className="flex items-center justify-center space-x-6">
         <Link to="/" className="flex items-center ">
-          <img
-            src={logo}
-            alt="Logo"
-            className="w-[60px] h-[60px] rounded-full mb-[3px] mr-10 mt-[22px]"
-          />
+          <h1 className="font-bold text-center text-blue-800 text-2xl">
+            Excellent
+          </h1>
         </Link>
 
         <Link
           to="/Form"
           className="flex  items-center transition-transform transform hover:translate-x-2"
         >
-          <AiOutlineForm className="mr-2  mb-[10px] mt-[2rem]" size={24} />
+          <AiOutlineForm className="mr-2  " size={24} />
         </Link>
       </div>
 
@@ -72,25 +70,23 @@ const Navigation = () => {
           className="flex items-center text-gray-800 focus:outline-none"
         >
           {userInfo ? (
-            <span className="text-white">{userInfo.username}</span>
+            <span className="text-black">{userInfo.username}</span>
           ) : (
             <></>
           )}
           {userInfo && (
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className={`h-4 w-4 ml-1 ${
-                dropdownOpen ? "transform rotate-180" : ""
-              }`}
+              className="h-4 w-5 ml-2s"
               fill="none"
               viewBox="0 0 24 24"
-              stroke="white"
+              stroke="black"
             >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth="2"
-                d={dropdownOpen ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"}
+                strokeWidth="3"
+                d="M4 6h16M4 12h16M4 18h16"
               />
             </svg>
           )}

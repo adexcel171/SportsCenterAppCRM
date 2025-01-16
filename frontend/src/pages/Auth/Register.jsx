@@ -63,7 +63,7 @@ const Register = () => {
             <input
               type="text"
               id="name"
-              className="mt-1 p-2 border rounded w-[350px] md:w-[500px] lg:w-[700px]"
+              className="mt-1 p-2 border rounded w-full md:w-[500px] lg:w-[700px]"
               placeholder="Enter name"
               value={username}
               onChange={(e) => setName(e.target.value)}
@@ -80,7 +80,7 @@ const Register = () => {
             <input
               type="email"
               id="email"
-              className="mt-1 p-2 border rounded w-[350px] md:w-[500px] lg:w-[700px]"
+              className="mt-1 p-2 border rounded w-full md:w-[500px] lg:w-[700px]"
               placeholder="Enter email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -97,7 +97,7 @@ const Register = () => {
             <input
               type="password"
               id="password"
-              className="mt-1 p-2 border rounded w-[350px] md:w-[500px] lg:w-[700px]"
+              className="mt-1 p-2 border rounded w-full md:w-[500px] lg:w-[700px]"
               placeholder="Enter password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -114,7 +114,7 @@ const Register = () => {
             <input
               type="password"
               id="confirmPassword"
-              className="mt-1 p-2 border rounded w-[350px] md:w-[500px] lg:w-[700px]"
+              className="mt-1 p-2 border rounded w-full md:w-[500px] lg:w-[700px]"
               placeholder="Confirm password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
@@ -124,7 +124,7 @@ const Register = () => {
           <button
             disabled={isLoading}
             type="submit"
-            className="bg-blue-500 text-black px-4 py-2 rounded cursor-pointer my-1"
+            className="bg-blue-500 text-black px-4 py-2 rounded cursor-pointer my-1 w-full"
           >
             {isLoading ? "Registering..." : "Register"}
           </button>

@@ -145,7 +145,7 @@ const Home = () => {
         </div>
       </div>
       {/* Search Input */}
-      <div className="mb-4 flex justify-center">
+      <div className="mb-4 mt-8 flex justify-center">
         <input
           type="text"
           placeholder="Search by name..."
