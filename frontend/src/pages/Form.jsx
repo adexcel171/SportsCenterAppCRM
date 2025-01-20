@@ -35,9 +35,8 @@ const Form = () => {
       const { data } = await createuserdata(userData);
 
       if (data.error) {
-        toast.error("Data entry failed. Try Again.");
-      } else {
         toast.success(`${data.name} is created`);
+      } else {
         toast.success(`Successfully updated`, {
           position: toast.POSITION.TOP_RIGHT,
           autoClose: 500,

@@ -99,7 +99,7 @@ const Home = () => {
   return (
     <div className="container mx-auto p-4 sm:p-8 mt-6  bg-gray-50 rounded-lg shadow-md">
       <h1 className="text-3xl mt-10 sm:text-4xl mb-4 sm:mb-8 text-center text-gray-800">
-        Money Man Dashboard
+        D'playce Dashboard
       </h1>
       <div className="flex justify-center items-center">
         <div className="mt-2 flex justify-center items-center gap-6 text-center w-full max-w-[600px] rounded-md bg-blue-950 p-5">

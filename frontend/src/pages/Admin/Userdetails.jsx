@@ -72,7 +72,7 @@ const Userdetails = () => {
       if (data?.error) {
         toast.error(data.error, {
           position: toast.POSITION.TOP_RIGHT,
-          autoClose: 200,
+          autoClose: 2000,
         });
       } else {
         toast.success("User data successfully updated", {
@@ -85,7 +85,7 @@ const Userdetails = () => {
       console.log("Error:", err);
       toast.error(err.message || "User data update failed. Try again.", {
         position: toast.POSITION.TOP_RIGHT,
-        autoClose: 200,
+        autoClose: 2000,
       });
     }
   };
