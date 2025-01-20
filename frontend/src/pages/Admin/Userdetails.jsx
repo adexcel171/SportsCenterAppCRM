@@ -229,11 +229,11 @@ const Userdetails = () => {
                 value={currency}
               >
                 <option className="text-black" value="">
-                  Choose Currency
+                  Choose Sub
                 </option>
-                <option value="&#36;">&#36;Dollar</option>
-                <option value="&#8358;">&#8358; Naira</option>
-                <option value="&#8373;">&#8373; Cedi</option>
+                <option value="&#36;">Weekly</option>
+                <option value="&#8358;"> Monthly</option>
+                <option value="&#8373;">Yearly</option>
               </select>
             </div>
             <div className="mb-10">

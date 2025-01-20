@@ -170,7 +170,7 @@ const Form = () => {
             value={currency}
           >
             <option className="text-black" value="">
-              Choose <Subscription></Subscription>
+              Choose Subscription
             </option>
             <option value="&#36;">&#36; weekly</option>
             <option value="&#8358;">&#8358; Monthly</option>
