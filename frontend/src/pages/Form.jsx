@@ -8,7 +8,7 @@ const Form = () => {
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
   const [credit, setCredit] = useState("");
-  const [debit, setDebit] = useState("");
+  const [debit, setDebit] = useState("0");
   const [note, setNote] = useState("");
   const [date, setDate] = useState("");
   const [currency, setCurrency] = useState("");
@@ -172,9 +172,9 @@ const Form = () => {
             <option className="text-black" value="">
               Choose Subscription
             </option>
-            <option value="&#36;">&#36; weekly</option>
-            <option value="&#8358;">&#8358; Monthly</option>
-            <option value="&#8373;">&#8373; Yearly</option>
+            <option value="&#36;"> Weekly</option>
+            <option value="&#8358;"> Monthly</option>
+            <option value="&#8373;">Yearly</option>
           </select>
         </div>
 
