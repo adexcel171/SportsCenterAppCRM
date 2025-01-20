@@ -40,7 +40,7 @@ const Form = () => {
         toast.success(`${data.name} is created`);
         toast.success(`Successfully updated`, {
           position: toast.POSITION.TOP_RIGHT,
-          autoClose: 2000,
+          autoClose: 500,
         });
         navigate("/");
       }
