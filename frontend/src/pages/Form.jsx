@@ -39,13 +39,12 @@ const Form = () => {
       } else {
         toast.success(`Successfully updated`, {
           position: toast.POSITION.TOP_RIGHT,
-          autoClose: 500,
+          autoClose: 2000,
         });
         navigate("/");
       }
     } catch (error) {
       console.log(error);
-      toast.error("Data entry failed. Try Again.");
     }
   };
 
@@ -171,11 +170,11 @@ const Form = () => {
             value={currency}
           >
             <option className="text-black" value="">
-              Choose Currency
+              Choose <Subscription></Subscription>
             </option>
-            <option value="&#36;">&#36; Dollar</option>
-            <option value="&#8358;">&#8358; Naira</option>
-            <option value="&#8373;">&#8373; Cedi</option>
+            <option value="&#36;">&#36; weekly</option>
+            <option value="&#8358;">&#8358; Monthly</option>
+            <option value="&#8373;">&#8373; Yearly</option>
           </select>
         </div>
 

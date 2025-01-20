@@ -83,10 +83,6 @@ const Userdetails = () => {
       }
     } catch (err) {
       console.log("Error:", err);
-      toast.error(err.message || "User data update failed. Try again.", {
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 2000,
-      });
     }
   };
 
@@ -101,7 +97,7 @@ const Userdetails = () => {
       console.log(result);
 
       if (result.error) {
-        throw new Error(result.error.message || "Delete operation failed");
+        throw new Error(result.error.message);
       }
 
       const { data } = result;
@@ -116,10 +112,6 @@ const Userdetails = () => {
       }
     } catch (err) {
       console.error(err);
-      toast.error(err.message || "Delete failed. Try again.", {
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 2000,
-      });
     }
   };
 

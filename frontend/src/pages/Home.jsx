@@ -165,7 +165,7 @@ const Home = () => {
               <th className="py-2 px-2 sm:px-4 border">Credit</th>
               <th className="py-2 px-2 sm:px-4 border">Debit</th>
               <th className="py-2 px-2 sm:px-4 border">Notes</th>
-              <th className="py-2 px-2 sm:px-4 border">Currency</th>
+              <th className="py-2 px-2 sm:px-4 border">Subscription</th>
               <th className="py-2 px-2 sm:px-4 border">Actions</th>
             </tr>
           </thead>
