@@ -172,9 +172,9 @@ const Form = () => {
             <option className="text-black" value="">
               Choose Subscription
             </option>
-            <option value="&#36;"> Weekly</option>
-            <option value="&#8358;"> Monthly</option>
-            <option value="&#8373;">Yearly</option>
+            <option> Weekly</option>
+            <option> Monthly</option>
+            <option>Yearly</option>
           </select>
         </div>
 
