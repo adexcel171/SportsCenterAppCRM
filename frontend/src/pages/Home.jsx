@@ -4,6 +4,7 @@ import SkeletonLoader from "../components/SkeletonLoader";
 import { useAllUserdataQuery } from "../redux/api/userdataApiSlice";
 import { useSelector } from "react-redux";
 
+import { AiOutlineForm } from "react-icons/ai";
 const Home = () => {
   const { userInfo } = useSelector((state) => state.auth);
 
@@ -99,8 +100,9 @@ const Home = () => {
   return (
     <div className="container mx-auto p-4 sm:p-8 mt-6  bg-gray-50 rounded-lg shadow-md">
       <h1 className="text-3xl mt-10 sm:text-4xl mb-4 sm:mb-8 text-center text-gray-800">
-        D'playce Dashboard
+        Customer Relationship Management Dashboard
       </h1>
+
       <div className="flex justify-center items-center">
         <div className="mt-2 flex justify-center items-center gap-6 text-center w-full max-w-[600px] rounded-md bg-blue-950 p-5">
           <h1 className="text-lg font-bold text-white">
@@ -154,74 +156,93 @@ const Home = () => {
           className="border rounded p-2 w-full max-w-[600px] focus:outline-none focus:ring focus:ring-blue-300"
         />
       </div>
+      <Link to="/Form" className="flex  justify-center  items-center ">
+        <span>click to fill Customer details</span>
+        <AiOutlineForm className="mr-2  " size={24} />
+      </Link>
       <div className="bg-white p-4 sm:p-6 mt-5 shadow-md rounded-lg overflow-x-auto">
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="bg-blue-500 hover:bg-gray-800 transition text-white">
-              <th className="py-2 px-2 w-[10px] sm:px-4 border">No</th>
-              <th className="py-2 px-2 sm:px-4 border">Created At</th>
-              <th className="py-2 px-2 sm:px-4 border">Name</th>
-              <th className="py-2 px-2 sm:px-4 border">Number</th>
-              <th className="py-2 px-2 sm:px-4 border">Credit</th>
-              <th className="py-2 px-2 sm:px-4 border">Debit</th>
-              <th className="py-2 px-2 sm:px-4 border">Notes</th>
-              <th className="py-2 px-2 sm:px-4 border">Subscription</th>
-              <th className="py-2 px-2 sm:px-4 border">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentUsers.map((userdata, index) => {
-              const createdAtDate = new Date(userdata.createdAt);
-              const optionsDateTime = {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour: "numeric",
-                minute: "numeric",
-                hour12: true,
-              };
-              const formattedDateTime = createdAtDate.toLocaleDateString(
-                "en-US",
-                optionsDateTime
-              );
+        <div className="w-full overflow-x-auto">
+          <table className="w-full border-collapse min-w-[800px]">
+            <thead>
+              <tr className="bg-blue-800 hover:bg-gray-800 transition text-white">
+                <th className="py-2 px-2 w-[5%] border">#</th>
+                <th className="py-2 px-2 w-[12%] border">Date</th>
+                <th className="py-2 px-2 w-[10%] border">Name</th>
+                <th className="py-2 px-2 w-[8%] border">Number</th>
+                <th className="py-2 px-2 w-[10%] border">Credit</th>
+                <th className="py-2 px-2 w-[10%] border">Debit</th>
+                <th className="py-2 px-2 w-[25%] border">Notes</th>
+                <th className="py-2 px-2 w-[10%] border">Sub</th>
+                <th className="py-2 px-2 w-[10%] border">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentUsers.map((userdata, index) => {
+                const createdAtDate = new Date(userdata.createdAt);
+                const optionsDateTime = {
+                  year: "numeric",
+                  month: "short", // Changed to short month for better space usage
+                  day: "numeric",
+                  hour: "numeric",
+                  minute: "numeric",
+                  hour12: true,
+                };
+                const formattedDateTime = createdAtDate.toLocaleDateString(
+                  "en-US",
+                  optionsDateTime
+                );
 
-              // Calculate the display index based on the current page
-              const displayIndex = indexOfFirstUser + index + 1; // Adjusted index for display
+                const displayIndex = indexOfFirstUser + index + 1;
 
-              return (
-                <tr className="text-black" key={userdata._id}>
-                  <td className="py-2 px-2 sm:px-4 border">{displayIndex}</td>
-                  <td className="py-2 px-2 sm:px-4 border">
-                    {formattedDateTime}
-                  </td>
-                  <td className="py-2 px-2 sm:px-4 border">{userdata.name}</td>
-                  <td className="py-2 px-2 sm:px-4 border">
-                    {userdata.number}
-                  </td>
-                  <td className="py-2 px-2 sm:px-4 border font-bold text-green-600 hover:text-white hover:bg-slate-900">
-                    {userdata.credit.toLocaleString(undefined, {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}
-                  </td>
-                  <td className="py-2 px-2 sm:px-4 border font-bold text-red-600 hover:text-white hover:bg-slate-900">
-                    {userdata.debit.toLocaleString(undefined, {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}
-                  </td>
-                  <td className="py-2 px-2 sm:px-4 border">{userdata.note}</td>
-                  <td className="py-2 px-2 sm:px-4 border">
-                    {userdata.currency}
-                  </td>
-                  <td className="py-2 px-2 sm:px-4 border flex justify-center items-center mt-2 bg-blue-400 text-white hover:bg-gray-800 transition">
-                    <Link to={`/Userdetails/${userdata._id}`}>Edit</Link>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                return (
+                  <tr
+                    className="text-black hover:bg-gray-50 transition-colors"
+                    key={userdata._id}
+                  >
+                    <td className="py-2 px-2 border text-center">
+                      {displayIndex}
+                    </td>
+                    <td className="py-2 px-2 border text-sm">
+                      {formattedDateTime}
+                    </td>
+                    <td className="py-2 px-2 border font-medium">
+                      {userdata.name}
+                    </td>
+                    <td className="py-2 px-2 border">{userdata.number}</td>
+                    <td className="py-2 px-2 border font-medium text-green-600 hover:text-white hover:bg-slate-900 transition-colors">
+                      {userdata.credit.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </td>
+                    <td className="py-2 px-2 border font-medium text-red-600 hover:text-white hover:bg-slate-900 transition-colors">
+                      {userdata.debit.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </td>
+                    <td className="py-2 px-2 border">
+                      <div className="max-h-[80px] overflow-y-auto text-sm">
+                        {userdata.note}
+                      </div>
+                    </td>
+                    <td className="py-2 px-2 border text-sm">
+                      {userdata.currency}
+                    </td>
+                    <td className="py-2 px-2 border">
+                      <Link
+                        to={`/Userdetails/${userdata._id}`}
+                        className="block w-full text-center py-1 px-2 bg-blue-400 text-white hover:bg-gray-800 transition-colors rounded"
+                      >
+                        Edit
+                      </Link>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
       {/* Pagination Controls */}
       <div className="flex justify-between items-center mt-4">

@@ -14,8 +14,8 @@ import {
 import { authenticate, authorizeAdmin } from "../middlewares/authMiddleware.js";
 
 router
-  .route("/", authenticate)
-  .get(fetchUserData, authenticate)
+  .route("/")
+  .get(fetchUserData)
   .post(formidable(), addUserData, authenticate);
 
 router.route("/alluserdata").get(fetchAllUserData, authenticate);

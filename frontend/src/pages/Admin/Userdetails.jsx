@@ -229,7 +229,7 @@ const Userdetails = () => {
                 value={currency}
               >
                 <option className="text-black" value="">
-                  Choose Sub
+                  Choose Subscription
                 </option>
                 <option>Weekly</option>
                 <option> Monthly</option>
