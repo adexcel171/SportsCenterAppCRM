@@ -23,6 +23,7 @@ const Form = () => {
     e.preventDefault();
 
     try {
+      // Create FormData object and append form values
       const userData = new FormData();
       userData.append("name", name);
       userData.append("number", number);
@@ -32,19 +33,36 @@ const Form = () => {
       userData.append("date", date);
       userData.append("currency", currency);
 
+      // Call API to create or update user data
       const { data } = await createuserdata(userData);
 
-      if (data.error) {
-        toast.success(`${data.name} is created`);
-      } else {
-        toast.success(`Successfully updated`, {
+      // Handle the response
+      if (data?.name) {
+        toast.success(`${data.name} has been successfully created!`);
+        navigate("/"); // Redirect to the homepage
+      } else if (data) {
+        toast.info("User data has been successfully updated.", {
           position: toast.POSITION.TOP_RIGHT,
           autoClose: 2000,
         });
-        navigate("/");
+      } else {
+        toast.warning(
+          "No data returned. Please check your input or try again.",
+          {
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 3000,
+          }
+        );
       }
     } catch (error) {
-      console.log(error);
+      // Log the error for debugging
+      console.error("Error occurred while processing user data:", error);
+
+      // Provide user-friendly feedback for errors
+      toast.error("An error occurred. Please try again later.", {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: 3000,
+      });
     }
   };
 
