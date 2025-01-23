@@ -146,7 +146,7 @@ const Home = () => {
   return (
     <div className="container mx-auto p-4 sm:p-8 mt-6  bg-gray-50 rounded-lg shadow-md">
       <h1 className="text-3xl mt-10 sm:text-4xl mb-4 sm:mb-8 text-center text-gray-800">
-        Customer Relationship Management Dashboard
+        Customer Management Dashboard
       </h1>
 
       <div className="flex justify-center items-center">
@@ -208,18 +208,20 @@ const Home = () => {
         <AiOutlineForm className="mr-2  " size={24} />
       </Link>
       <div className="bg-white p-4 sm:p-6 mt-5 shadow-md rounded-lg overflow-x-auto">
-        <div className="w-full overflow-x-auto">
-          <table className="w-full border-collapse min-w-[800px]">
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-center min-w-[800px]">
             <thead>
               <tr className="bg-blue-800 hover:bg-gray-800 transition text-white">
                 <th className="py-2 px-2 w-[5%] border">#</th>
                 <th className="py-2 px-2 w-[12%] border">Date</th>
-                <th className="py-2 px-2 w-[10%] border">Name</th>
+                <th className="py-2 px-2 w-[10%] border sticky left-0 bg-blue-800">
+                  Name
+                </th>
                 <th className="py-2 px-2 w-[8%] border">Number</th>
                 <th className="py-2 px-2 w-[10%] border">Email</th>
                 <th className="py-2 px-2 w-[10%] border">Credit</th>
                 <th className="py-2 px-2 w-[10%] border">Debit</th>
-                <th className="py-2 px-2 w-[20%] border">Notes</th>
+                <th className="py-2 px-2 w-[25%] hidden  border">Notes</th>
                 <th className="py-2 px-2 w-[15%] border">Subscription</th>
                 <th className="py-2 px-2 w-[15%] border">Sub End Date</th>
                 <th className="py-2 px-2 w-[10%] border">Actions</th>
@@ -230,7 +232,7 @@ const Home = () => {
                 const createdAtDate = new Date(userdata.createdAt);
                 const optionsDateTime = {
                   year: "numeric",
-                  month: "short", // Changed to short month for better space usage
+                  month: "short",
                   day: "numeric",
                   hour: "numeric",
                   minute: "numeric",
@@ -278,8 +280,7 @@ const Home = () => {
                         day: "2-digit",
                       })}
                     </td>
-
-                    <td className="py-2 px-2 border font-medium">
+                    <td className="py-2 px-2 border font-medium sticky left-0 bg-white">
                       {userdata.name}
                     </td>
                     <td className="py-2 px-2 border">{userdata.number}</td>
@@ -296,8 +297,8 @@ const Home = () => {
                         maximumFractionDigits: 2,
                       })}
                     </td>
-                    <td className="py-2 px-2 border">
-                      <div className="max-h-[80px] overflow-y-auto text-sm">
+                    <td className="py-2 px-2 hidden border">
+                      <div className="max-h-[80px]  overflow-y-auto text-sm">
                         {userdata.note}
                       </div>
                     </td>

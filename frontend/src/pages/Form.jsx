@@ -191,8 +191,8 @@ const Form = () => {
             required
           >
             <option value="">Select Subscription</option>
+            <option value="Weekly">weekly</option>
             <option value="Monthly">Monthly</option>
-            <option value="Quarterly">Quarterly</option>
             <option value="Yearly">Yearly</option>
           </select>
         </div>

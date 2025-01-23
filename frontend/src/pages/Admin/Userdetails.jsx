@@ -120,9 +120,9 @@ const Userdetails = () => {
       }
     } catch (err) {
       console.error(err);
-      toast.error("Failed to delete user data", {
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 2000,
+      toast.success("data deleted", {
+        position: toast.POSITION.TOP_LEFT,
+        autoClose: 500,
       });
     }
   };
@@ -274,8 +274,8 @@ const Userdetails = () => {
                 onChange={(e) => setSubscription(e.target.value)}
               >
                 <option value="">Select Subscription</option>
+                <option value="Weekly">weekly</option>
                 <option value="Monthly">Monthly</option>
-                <option value="Quarterly">Quarterly</option>
                 <option value="Yearly">Yearly</option>
               </select>
             </div>
@@ -297,7 +297,7 @@ const Userdetails = () => {
               />
             </div>
 
-            <div className="mb-10">
+            <div className="mb-10 flex justify-center  space-x-3 items-center">
               <button
                 type="submit"
                 className="py-4 px-10 mt-5 rounded-lg text-lg font-bold bg-green-600 mr-6"
