@@ -10,22 +10,25 @@ import {
   fetchUserData,
   fetchUserDataById,
   fetchAllUserData,
+  sendSubscriptionReminderToUser,
 } from "../controllers/userdataController.js";
 import { authenticate, authorizeAdmin } from "../middlewares/authMiddleware.js";
 
-router
-  .route("/", authenticate)
-  .get(fetchUserData, authenticate)
-  .post(formidable(), addUserData, authenticate);
+// Base routes
+router.route("/").get(fetchUserData).post(formidable(), addUserData);
 
+// Get all user data
+// router.route("/all").get(authenticate, authorizeAdmin, fetchAllUserData);
 router.route("/alluserdata").get(fetchAllUserData, authenticate);
 
+// Individual user data routes
 router
   .route("/:id")
   .get(fetchUserDataById)
-  .put(updateUserDataDetails, authenticate)
+  .put(updateUserDataDetails)
+  .delete(removeUserData, authenticate, authorizeAdmin);
 
-  .delete(removeUserData, authorizeAdmin),
-  authorizeAdmin;
+// Subscription reminder route
+router.route("/:id/remind").post(authenticate, sendSubscriptionReminderToUser);
 
 export default router;

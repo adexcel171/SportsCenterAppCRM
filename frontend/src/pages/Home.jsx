@@ -89,6 +89,52 @@ const Home = () => {
     }
   }, [allUserdata]);
 
+  useEffect(() => {
+    if (allUserdata) {
+      // Get the current date at midnight (00:00:00) to filter today's transactions
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Reset time to 00:00:00 to start from midnight
+
+      // Filter transactions for today only
+      const todayTransactions = allUserdata.filter((user) => {
+        const transactionDate = new Date(user.createdAt);
+        return transactionDate >= today; // Include transactions from today
+      });
+
+      // Initialize variables to hold today's totals
+      let totalDebitCalc = 0;
+      let totalCreditCalc = 0;
+
+      // Loop through the filtered transactions to calculate the totals
+      todayTransactions.forEach((user) => {
+        totalDebitCalc += user.debit || 0;
+        totalCreditCalc += user.credit || 0;
+      });
+
+      // Set the today's debit and credit totals in state
+      setTotalDebit(totalDebitCalc);
+      setTotalCredit(totalCreditCalc);
+
+      // Calculate balance
+      const calculatedBalance = totalCreditCalc - totalDebitCalc;
+      setBalance(calculatedBalance);
+
+      // Initialize variables to hold all-time totals
+      let allTimeDebit = 0;
+      let allTimeCredit = 0;
+
+      // Loop through all user data to calculate all-time totals
+      allUserdata.forEach((user) => {
+        allTimeDebit += user.debit || 0;
+        allTimeCredit += user.credit || 0;
+      });
+
+      // Set all-time totals in state
+      setAllTimeTotalDebit(allTimeDebit);
+      setAllTimeTotalCredit(allTimeCredit);
+    }
+  }, [allUserdata]);
+
   if (isLoading) {
     return <SkeletonLoader />;
   }
@@ -146,6 +192,7 @@ const Home = () => {
           </p>
         </div>
       </div>
+
       {/* Search Input */}
       <div className="mb-4 mt-8 flex justify-center">
         <input
@@ -169,10 +216,12 @@ const Home = () => {
                 <th className="py-2 px-2 w-[12%] border">Date</th>
                 <th className="py-2 px-2 w-[10%] border">Name</th>
                 <th className="py-2 px-2 w-[8%] border">Number</th>
+                <th className="py-2 px-2 w-[10%] border">Email</th>
                 <th className="py-2 px-2 w-[10%] border">Credit</th>
                 <th className="py-2 px-2 w-[10%] border">Debit</th>
-                <th className="py-2 px-2 w-[25%] border">Notes</th>
-                <th className="py-2 px-2 w-[10%] border">Sub</th>
+                <th className="py-2 px-2 w-[20%] border">Notes</th>
+                <th className="py-2 px-2 w-[15%] border">Subscription</th>
+                <th className="py-2 px-2 w-[15%] border">Sub End Date</th>
                 <th className="py-2 px-2 w-[10%] border">Actions</th>
               </tr>
             </thead>
@@ -194,21 +243,47 @@ const Home = () => {
 
                 const displayIndex = indexOfFirstUser + index + 1;
 
+                const subEndDate = new Date(userdata.subscriptionEndDate);
+                const formattedSubEndDate = subEndDate.toLocaleDateString();
+                const isExpiringSoon =
+                  new Date() > subEndDate ||
+                  (subEndDate - new Date()) / (1000 * 60 * 60 * 24) <= 7;
+
                 return (
                   <tr
-                    className="text-black hover:bg-gray-50 transition-colors"
+                    className={`text-black hover:bg-gray-50 transition-colors ${
+                      isExpiringSoon ? "bg-red-100" : ""
+                    }`}
                     key={userdata._id}
                   >
                     <td className="py-2 px-2 border text-center">
                       {displayIndex}
                     </td>
-                    <td className="py-2 px-2 border text-sm">
-                      {formattedDateTime}
+                    <td
+                      className={`py-2 px-2 border text-sm ${
+                        new Date(userdata.date).toLocaleDateString("en-US", {
+                          month: "2-digit",
+                          day: "2-digit",
+                        }) ===
+                        new Date().toLocaleDateString("en-US", {
+                          month: "2-digit",
+                          day: "2-digit",
+                        })
+                          ? "bg-green-600 text-white"
+                          : "text-black"
+                      }`}
+                    >
+                      {new Date(userdata.date).toLocaleDateString("en-US", {
+                        month: "2-digit",
+                        day: "2-digit",
+                      })}
                     </td>
+
                     <td className="py-2 px-2 border font-medium">
                       {userdata.name}
                     </td>
                     <td className="py-2 px-2 border">{userdata.number}</td>
+                    <td className="py-2 px-2 border">{userdata.email}</td>
                     <td className="py-2 px-2 border font-medium text-green-600 hover:text-white hover:bg-slate-900 transition-colors">
                       {userdata.credit.toLocaleString(undefined, {
                         minimumFractionDigits: 2,
@@ -227,7 +302,14 @@ const Home = () => {
                       </div>
                     </td>
                     <td className="py-2 px-2 border text-sm">
-                      {userdata.currency}
+                      {userdata.subscription}
+                    </td>
+                    <td
+                      className={`py-2 px-2 border text-sm ${
+                        isExpiringSoon ? "text-red-600 font-bold" : ""
+                      }`}
+                    >
+                      {formattedSubEndDate}
                     </td>
                     <td className="py-2 px-2 border">
                       <Link

@@ -22,30 +22,32 @@ const Userdetails = () => {
 
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
+  const [email, setEmail] = useState("");
   const [credit, setCredit] = useState("");
   const [debit, setDebit] = useState("");
   const [note, setNote] = useState("");
   const [date, setDate] = useState("");
-  const [currency, setCurrency] = useState("");
-  const [formattedDate, setFormattedDate] = useState("");
+  const [subscription, setSubscription] = useState("");
+  const [subscriptionEndDate, setSubscriptionEndDate] = useState("");
 
+  // Populate fields when userdata is fetched
   useEffect(() => {
     if (userdata && userdata._id) {
-      setName(userdata.name);
-      setNumber(userdata.number);
-      setCredit(userdata.credit);
-      setDebit(userdata.debit);
-      setNote(userdata.note);
-      setDate(userdata.date);
-      setCurrency(userdata.currency);
+      setName(userdata.name || "");
+      setNumber(userdata.number || "");
+      setEmail(userdata.email || "");
+      setCredit(userdata.credit || "");
+      setDebit(userdata.debit || "");
+      setNote(userdata.note || "");
+      setDate(userdata.date ? userdata.date.split("T")[0] : "");
+      setSubscription(userdata.subscription || "");
+      setSubscriptionEndDate(
+        userdata.subscriptionEndDate
+          ? userdata.subscriptionEndDate.split("T")[0]
+          : ""
+      );
     }
   }, [userdata]);
-
-  useEffect(() => {
-    if (date) {
-      setFormattedDate(date.split("T")[0]);
-    }
-  }, [date]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -53,21 +55,23 @@ const Userdetails = () => {
       const userData = {
         name,
         number,
+        email,
         credit,
         debit,
         note,
         date,
-        currency,
+        subscription,
+        subscriptionEndDate,
       };
 
-      console.log("Updating user data:", userData); // Log the data being sent
+      console.log("Updating user data:", userData);
 
       const { data } = await updateUserdata({
         userdataId: params.id,
         ...userData,
       });
 
-      console.log("Response data:", data); // Log the response data
+      console.log("Response data:", data);
 
       if (data?.error) {
         toast.error(data.error, {
@@ -83,6 +87,10 @@ const Userdetails = () => {
       }
     } catch (err) {
       console.log("Error:", err);
+      toast.error("Failed to update user data", {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 2000,
+      });
     }
   };
 
@@ -112,6 +120,10 @@ const Userdetails = () => {
       }
     } catch (err) {
       console.error(err);
+      toast.error("Failed to delete user data", {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 2000,
+      });
     }
   };
 
@@ -126,7 +138,7 @@ const Userdetails = () => {
             <div className="mb-4">
               <label
                 htmlFor="name"
-                className="block text-sm font-medium text-gray-600"
+                className="block text-sm font-medium text-gray-700"
               >
                 Name
               </label>
@@ -134,108 +146,157 @@ const Userdetails = () => {
                 type="text"
                 id="name"
                 name="name"
-                className="mt-1 p-2 w-full border rounded-md"
+                placeholder="Enter name"
+                className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
+
             <div className="mb-4">
               <label
                 htmlFor="number"
-                className="block text-sm font-medium text-gray-600"
+                className="block text-sm font-medium text-gray-700"
               >
-                Number
+                Phone Number
               </label>
               <input
-                type="text"
+                type="tel"
                 id="number"
                 name="number"
-                className="mt-1 p-2 w-full border rounded-md"
+                placeholder="Enter phone number"
+                className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
                 value={number}
                 onChange={(e) => setNumber(e.target.value)}
               />
             </div>
+
+            <div className="mb-4">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Enter email"
+                className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+
             <div className="mb-4">
               <label
                 htmlFor="credit"
-                className="block text-sm font-medium text-gray-600"
+                className="block text-sm font-medium text-gray-700"
               >
                 Credit
               </label>
               <input
-                type="credit"
+                type="number"
+                id="credit"
                 name="credit"
-                className="mt-1 p-2 w-full border rounded-md"
+                placeholder="Enter credit amount"
+                className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
                 value={credit}
                 onChange={(e) => setCredit(e.target.value)}
               />
             </div>
+
             <div className="mb-4">
               <label
                 htmlFor="debit"
-                className="block text-sm font-medium text-gray-600"
+                className="block text-sm font-medium text-gray-700"
               >
                 Debit
               </label>
               <input
-                type="text"
+                type="number"
                 id="debit"
                 name="debit"
-                className="mt-1 p-2 w-full border rounded-md"
+                placeholder="Enter debit amount"
+                className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
                 value={debit}
                 onChange={(e) => setDebit(e.target.value)}
               />
             </div>
+
             <div className="mb-4">
               <label
                 htmlFor="note"
-                className="block text-sm font-medium text-gray-600"
+                className="block text-sm font-medium text-gray-700"
               >
-                Note
+                Notes
               </label>
-              <input
-                type="text"
-                placeholder="edit notes..."
-                className="mt-1 p-2 w-full border rounded-md"
+              <textarea
+                id="note"
+                name="note"
+                placeholder="Enter notes"
+                className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
-              />
+              ></textarea>
             </div>
+
             <div className="mb-4">
               <label
                 htmlFor="date"
-                className="block text-sm font-medium text-gray-600"
+                className="block text-sm font-medium text-gray-700"
               >
                 Date
               </label>
               <input
                 type="date"
+                id="date"
                 name="date"
-                className="mt-1 p-2 w-full border rounded-md"
-                value={formattedDate}
+                className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+                value={date}
                 onChange={(e) => setDate(e.target.value)}
               />
             </div>
+
             <div className="mb-4">
               <label
-                htmlFor="currency"
-                className="block text-sm font-medium text-gray-600"
+                htmlFor="subscription"
+                className="block text-sm font-medium text-gray-700"
               >
-                Currency
+                Subscription Type
               </label>
               <select
-                className="mt-1 p-2 text-black w-full border rounded-md"
-                onChange={(e) => setCurrency(e.target.value)}
-                value={currency}
+                id="subscription"
+                name="subscription"
+                className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+                value={subscription}
+                onChange={(e) => setSubscription(e.target.value)}
               >
-                <option className="text-black" value="">
-                  Choose Subscription
-                </option>
-                <option>Weekly</option>
-                <option> Monthly</option>
-                <option>Yearly</option>
+                <option value="">Select Subscription</option>
+                <option value="Monthly">Monthly</option>
+                <option value="Quarterly">Quarterly</option>
+                <option value="Yearly">Yearly</option>
               </select>
             </div>
+
+            <div className="mb-4">
+              <label
+                htmlFor="subscriptionEndDate"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Subscription End Date
+              </label>
+              <input
+                type="date"
+                id="subscriptionEndDate"
+                name="subscriptionEndDate"
+                className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+                value={subscriptionEndDate}
+                onChange={(e) => setSubscriptionEndDate(e.target.value)}
+              />
+            </div>
+
             <div className="mb-10">
               <button
                 type="submit"
@@ -244,6 +305,7 @@ const Userdetails = () => {
                 Update
               </button>
               <button
+                type="button"
                 onClick={handleDelete}
                 className="py-4 px-10 mt-5 rounded-lg text-lg font-bold bg-blue-600"
               >

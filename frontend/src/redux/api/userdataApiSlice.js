@@ -20,7 +20,8 @@ export const userdataApiSlice = apiSlice.injectEndpoints({
     }),
 
     allUserdata: builder.query({
-      query: () => `${USERDATA_URL}/allUserdata`,
+      query: () => `${USERDATA_URL}/alluserdata`,
+      providesTags: ["Userdata"],
     }),
 
     getUserdataDetails: builder.query({
@@ -39,16 +40,16 @@ export const userdataApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ["Userdata"],
     }),
 
-    // Your RTK query should handle JSON like this
     updateUserdata: builder.mutation({
-      query: ({ userdataId, ...formData }) => ({
+      query: ({ userdataId, ...userData }) => ({
         url: `${USERDATA_URL}/${userdataId}`,
         method: "PUT",
-        body: formData, // Ensure this is an object
+        body: userData,
         headers: {
-          "Content-Type": "application/json", // This indicates you are sending JSON
+          "Content-Type": "application/json",
         },
       }),
+      invalidatesTags: ["Userdata"],
     }),
 
     deleteUserdata: builder.mutation({
@@ -56,7 +57,7 @@ export const userdataApiSlice = apiSlice.injectEndpoints({
         url: `${USERDATA_URL}/${userdataId}`,
         method: "DELETE",
       }),
-      providesTags: ["Userdata"],
+      invalidatesTags: ["Userdata"],
     }),
 
     getFilteredUserdata: builder.query({
@@ -65,6 +66,14 @@ export const userdataApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: { checked, radio },
       }),
+    }),
+
+    sendReminder: builder.mutation({
+      query: (userdataId) => ({
+        url: `${USERDATA_URL}/${userdataId}/remind`,
+        method: "POST",
+      }),
+      invalidatesTags: ["Userdata"],
     }),
   }),
 });
@@ -78,4 +87,5 @@ export const {
   useUpdateUserdataMutation,
   useDeleteUserdataMutation,
   useGetFilteredUserdataQuery,
+  useSendReminderMutation,
 } = userdataApiSlice;
