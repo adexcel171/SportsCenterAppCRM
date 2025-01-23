@@ -213,7 +213,7 @@ const sendSubscriptionReminderToUser = asyncHandler(async (req, res) => {
 const fetchAllUserData = asyncHandler(async (req, res) => {
   try {
     const userDataList = await UserData.find({})
-      .limit(12)
+      .limit(500)
       .sort({ createdAt: -1 });
 
     res.json(userDataList);
