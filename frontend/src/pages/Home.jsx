@@ -271,7 +271,7 @@ const Home = () => {
                           month: "2-digit",
                           day: "2-digit",
                         })
-                          ? "bg-green-600 text-white"
+                          ? "bg-blue-300 text-black"
                           : "text-black"
                       }`}
                     >
