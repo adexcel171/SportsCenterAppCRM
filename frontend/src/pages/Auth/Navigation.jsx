@@ -114,7 +114,7 @@ const Navigation = () => {
               dropdownOpen ? "" : "hidden"
             } transition-all duration-300`}
           >
-            {
+            {/* {userIn (
               <>
                 <li>
                   <Link
@@ -125,7 +125,7 @@ const Navigation = () => {
                   </Link>
                 </li>
               </>
-            }
+            )} */}
 
             <li>
               <Link to="/profile" className="block px-4 py-2 hover:bg-gray-100">
