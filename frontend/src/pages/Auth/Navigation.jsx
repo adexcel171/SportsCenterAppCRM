@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   AiOutlineHome,
   AiOutlineForm,
@@ -18,6 +18,22 @@ const Navigation = () => {
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(true);
+  useEffect(() => {
+    const handleScroll = () => {
+      setDropdownOpen(false);
+    };
+
+    // Hide modal after initial page load
+
+    // Add scroll event listener
+    window.addEventListener("scroll", handleScroll);
+
+    // Cleanup listeners
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
@@ -92,9 +108,9 @@ const Navigation = () => {
           )}
         </button>
 
-        {dropdownOpen && userInfo && (
+        {dropdownOpen && isModalVisible && (
           <ul
-            className={`absolute left-0 top-6 mt-3 space-y- bg-white text-gray-600 ${
+            className={`absolute left-0 top-7 mt-4 space-y- bg-white text-gray-600 ${
               dropdownOpen ? "" : "hidden"
             } transition-all duration-300`}
           >

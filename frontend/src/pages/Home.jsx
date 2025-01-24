@@ -89,6 +89,44 @@ const Home = () => {
     }
   }, [allUserdata]);
 
+  // Add these state variables near the top of your component
+  const [totalRegisteredUsers, setTotalRegisteredUsers] = useState(0);
+  const [usersWithSubEndToday, setUsersWithSubEndToday] = useState(0);
+  const [todayDataCount, setTodayDataCount] = useState(0);
+
+  useEffect(() => {
+    if (allUserdata) {
+      // Total number of registered users
+      setTotalRegisteredUsers(allUserdata.length);
+
+      // Get current date
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      // Count users with subscription end date today
+      const subEndToday = allUserdata.filter((user) => {
+        const subEndDate = new Date(user.subscriptionEndDate);
+        return (
+          subEndDate.getFullYear() === today.getFullYear() &&
+          subEndDate.getMonth() === today.getMonth() &&
+          subEndDate.getDate() === today.getDate()
+        );
+      }).length;
+      setUsersWithSubEndToday(subEndToday);
+
+      // Count data created today
+      const todayData = allUserdata.filter((user) => {
+        const createdDate = new Date(user.createdAt);
+        return (
+          createdDate.getFullYear() === today.getFullYear() &&
+          createdDate.getMonth() === today.getMonth() &&
+          createdDate.getDate() === today.getDate()
+        );
+      }).length;
+      setTodayDataCount(todayData);
+    }
+  }, [allUserdata]);
+
   useEffect(() => {
     if (allUserdata) {
       // Get the current date at midnight (00:00:00) to filter today's transactions
@@ -174,7 +212,7 @@ const Home = () => {
           </p>
         </div>
       </div>
-      <div className="flex justify-center items-center">
+      {/* <div className="flex justify-center items-center">
         <div className="mt-2 flex justify-center items-center gap-6 text-center w-full max-w-[600px] rounded-md bg-green-700 p-5">
           <h1 className="text-lg font-bold text-white">
             Total Credit:{" "}
@@ -191,8 +229,20 @@ const Home = () => {
             })}
           </p>
         </div>
+      </div> */}
+      <div className="flex justify-center items-center">
+        <div className="mt-2 flex justify-center items-center gap-6 text-center w-full max-w-[800px] rounded-md bg-blue-800 p-5">
+          <h1 className="text-lg font-bold text-white">
+            Total Users: {totalRegisteredUsers}
+          </h1>
+          <h1 className="text-lg font-bold text-white">
+            Sub End Today: {usersWithSubEndToday}
+          </h1>
+          {/* <h1 className="text-lg font-bold text-white">
+            Today's Entries: {todayDataCount}
+          </h1> */}
+        </div>
       </div>
-
       {/* Search Input */}
       <div className="mb-4 mt-8 flex justify-center">
         <input
@@ -231,25 +281,35 @@ const Home = () => {
               {currentUsers.map((userdata, index) => {
                 const createdAtDate = new Date(userdata.createdAt);
                 const optionsDateTime = {
-                  year: "numeric",
                   month: "short",
                   day: "numeric",
+
                   hour: "numeric",
                   minute: "numeric",
                   hour12: true,
                 };
                 const formattedDateTime = createdAtDate.toLocaleDateString(
-                  "en-US",
+                  "en-GB",
                   optionsDateTime
                 );
 
                 const displayIndex = indexOfFirstUser + index + 1;
 
                 const subEndDate = new Date(userdata.subscriptionEndDate);
-                const formattedSubEndDate = subEndDate.toLocaleDateString();
+
+                const formattedSubEndDate = subEndDate.toLocaleDateString(
+                  "en-GB",
+                  {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  }
+                );
+
+                // Check if the subscription is expiring soon
                 const isExpiringSoon =
                   new Date() > subEndDate ||
-                  (subEndDate - new Date()) / (1000 * 60 * 60 * 24) <= 7;
+                  (subEndDate - new Date()) / (1000 * 60 * 60 * 24) <= 3;
 
                 return (
                   <tr
@@ -263,23 +323,24 @@ const Home = () => {
                     </td>
                     <td
                       className={`py-2 px-2 border text-sm ${
-                        new Date(userdata.date).toLocaleDateString("en-US", {
-                          month: "2-digit",
+                        new Date(userdata.date).toLocaleDateString("en-GB", {
                           day: "2-digit",
+                          month: "2-digit",
                         }) ===
-                        new Date().toLocaleDateString("en-US", {
-                          month: "2-digit",
+                        new Date().toLocaleDateString("en-GB", {
                           day: "2-digit",
+                          month: "2-digit",
                         })
                           ? "bg-blue-300 text-black"
                           : "text-black"
                       }`}
                     >
-                      {new Date(userdata.date).toLocaleDateString("en-US", {
-                        month: "2-digit",
+                      {new Date(userdata.date).toLocaleDateString("en-GB", {
                         day: "2-digit",
+                        month: "2-digit",
                       })}
                     </td>
+
                     <td className="py-2 px-2 border font-medium sticky left-0 bg-white">
                       {userdata.name}
                     </td>

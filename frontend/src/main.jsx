@@ -5,9 +5,7 @@ import { Provider } from "react-redux";
 import store from "./redux/store";
 import { Route, RouterProvider, createRoutesFromElements } from "react-router";
 import { createBrowserRouter } from "react-router-dom";
-
 import PrivateRoute from "./components/PrivateRoute";
-
 // Auth
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
@@ -21,6 +19,7 @@ import Home from "./pages/Home.jsx";
 import Form from "./pages/Form.jsx";
 
 import AdminDashboard from "./pages/Admin/AdminDashboard.jsx";
+import PageNotFound from "./components/PageNotFound.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -29,6 +28,7 @@ const router = createBrowserRouter(
       <Route path="/register" element={<Register />} />
       <Route index={true} path="/" element={<Home />} />
       <Route path="/form" element={<Form />} />
+      <Route path="*" element={<PageNotFound />} />
 
       {/* Registered users */}
       <Route path="" element={<PrivateRoute />}>
