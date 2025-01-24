@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import SkeletonLoader from "../components/SkeletonLoader";
 import { useAllUserdataQuery } from "../redux/api/userdataApiSlice";
 import { useSelector } from "react-redux";
@@ -7,9 +7,10 @@ import { useSelector } from "react-redux";
 import { AiOutlineForm } from "react-icons/ai";
 const Home = () => {
   const { userInfo } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
 
   if (!userInfo?.isAdmin) {
-    return <p>You do not have permission to view this page.</p>;
+    return navigate("/login");
   }
 
   const { data: allUserdata, error, isLoading } = useAllUserdataQuery();
