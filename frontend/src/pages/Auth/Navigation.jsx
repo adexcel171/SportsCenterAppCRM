@@ -67,8 +67,8 @@ const Navigation = () => {
     >
       <div className="flex items-center justify-center space-x-6">
         <Link to="/" className="flex items-center ">
-          <h1 className="font-bold text-center text-blue-800 text-2xl">
-            D'playce
+          <h1 className="font-extrabold text-center text-blue-800 text-2xl">
+            D playce
           </h1>
         </Link>
 

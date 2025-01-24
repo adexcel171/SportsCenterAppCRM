@@ -9,7 +9,7 @@ const PageNotFound = () => {
       </p>
       <Link
         to="/"
-        className="mt-6 px-6 py-3 bg-blue-600 text-white text-lg font-medium rounded-lg shadow-md hover:bg-blue-700 transition duration-300"
+        className="mt-6 px-6 py-3 bg-blue-800 text-white text-lg font-medium rounded-lg shadow-md hover:bg-blue-700 transition duration-300"
       >
         Go Back Home
       </Link>
