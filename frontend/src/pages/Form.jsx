@@ -165,6 +165,12 @@ const Form = () => {
           ></textarea>
         </div>
 
+        <label
+          htmlFor="subscription"
+          className="block text-sm font-medium text-gray-700"
+        >
+          D.O.B
+        </label>
         <div className="mb-4">
           <input
             type="date"

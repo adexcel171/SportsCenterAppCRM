@@ -35,6 +35,7 @@ const Home = () => {
     : [];
 
   // State for pagination
+  const [filterType, setFilterType] = useState("all"); // Ne
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10; // Number of items to display per page
 
@@ -45,7 +46,62 @@ const Home = () => {
     indexOfFirstUser,
     indexOfLastUser
   );
+  const filterUserdata = (userData) => {
+    if (!userData) return [];
 
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    let filteredData = userData.filter((user) =>
+      user.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    switch (filterType) {
+      case "expiring_soon":
+        filteredData = filteredData.filter((user) => {
+          const subEndDate = new Date(user.subscriptionEndDate);
+          return (
+            subEndDate <= new Date() ||
+            (subEndDate - new Date()) / (1000 * 60 * 60 * 24) <= 3
+          );
+        });
+        break;
+      case "today_birthdays":
+        filteredData = filteredData.filter((user) => {
+          const createdDate = new Date(user.createdAt);
+          return (
+            createdDate.getFullYear() === today.getFullYear() &&
+            createdDate.getMonth() === today.getMonth() &&
+            createdDate.getDate() === today.getDate()
+          );
+        });
+        break;
+      case "active_subscription":
+        filteredData = filteredData.filter((user) => {
+          const subEndDate = new Date(user.subscriptionEndDate);
+          return subEndDate > new Date();
+        });
+        break;
+      case "expired_subscription":
+        filteredData = filteredData.filter((user) => {
+          const subEndDate = new Date(user.subscriptionEndDate);
+          return subEndDate <= new Date();
+        });
+        break;
+      default: // "all"
+        break;
+    }
+
+    return filteredData;
+
+    const filteredUserdata = filterUserdata(allUserdata);
+    const indexOfLastUser = currentPage * itemsPerPage;
+    const indexOfFirstUser = indexOfLastUser - itemsPerPage;
+    const currentUsers = filteredUserdata.slice(
+      indexOfFirstUser,
+      indexOfLastUser
+    );
+  };
   useEffect(() => {
     if (allUserdata) {
       // Get the current date at midnight (00:00:00) to filter today's transactions
@@ -239,9 +295,9 @@ const Home = () => {
           <h1 className="text-lg font-bold text-white">
             Sub End Today: {usersWithSubEndToday}
           </h1>
-          {/* <h1 className="text-lg font-bold text-white">
-            Today's Entries: {todayDataCount}
-          </h1> */}
+          <h1 className="text-lg font-bold text-white">
+            birthays today: {todayDataCount}
+          </h1>
         </div>
       </div>
       {/* Search Input */}
