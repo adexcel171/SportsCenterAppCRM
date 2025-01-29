@@ -1,14 +1,4 @@
 import React from "react";
-import {
-  Mail,
-  Phone,
-  MapPin,
-  Clock,
-  ArrowRight,
-  Dumbbell,
-  Trophy,
-  Users,
-} from "lucide-react";
 
 const Footer = () => {
   return (
@@ -31,15 +21,12 @@ const Footer = () => {
             </div>
             <div className="grid grid-cols-3 gap-4">
               <div className="bg-blue-700 p-4 rounded-lg text-center">
-                <Dumbbell size={32} className="mx-auto mb-2" />
                 <p className="text-sm font-medium">Modern Equipment</p>
               </div>
               <div className="bg-blue-700 p-4 rounded-lg text-center">
-                <Trophy size={32} className="mx-auto mb-2" />
                 <p className="text-sm font-medium">Expert Trainers</p>
               </div>
               <div className="bg-blue-700 p-4 rounded-lg text-center">
-                <Users size={32} className="mx-auto mb-2" />
                 <p className="text-sm font-medium">Group Classes</p>
               </div>
             </div>
@@ -91,7 +78,6 @@ const Footer = () => {
                   href="#"
                   className="text-sm hover:text-white transition-colors flex items-center gap-2"
                 >
-                  <ArrowRight size={16} />
                   Group Classes
                 </a>
               </li>
@@ -100,7 +86,6 @@ const Footer = () => {
                   href="#"
                   className="text-sm hover:text-white transition-colors flex items-center gap-2"
                 >
-                  <ArrowRight size={16} />
                   Personal Training
                 </a>
               </li>
@@ -109,7 +94,6 @@ const Footer = () => {
                   href="#"
                   className="text-sm hover:text-white transition-colors flex items-center gap-2"
                 >
-                  <ArrowRight size={16} />
                   Sports Courts
                 </a>
               </li>
@@ -131,7 +115,6 @@ const Footer = () => {
             <div className="space-y-4">
               <div className="p-4 bg-gray-800 rounded-lg">
                 <div className="flex items-center gap-2 mb-2">
-                  <MapPin size={16} className="text-blue-500" />
                   <span className="text-sm font-medium text-white">
                     Main Location
                   </span>
@@ -140,15 +123,12 @@ const Footer = () => {
               </div>
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <Phone size={16} className="text-blue-500" />
                   <span className="text-sm">(555) 123-4567</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Mail size={16} className="text-blue-500" />
                   <span className="text-sm">info@dplayce.com</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Clock size={16} className="text-blue-500" />
                   <span className="text-sm">Open 24/7</span>
                 </div>
               </div>
@@ -168,27 +148,19 @@ const Footer = () => {
                 <a
                   href="#"
                   className="bg-gray-800 p-2 rounded-full hover:bg-blue-600 transition-colors"
-                >
-                  <Facebook size={20} />
-                </a>
+                ></a>
                 <a
                   href="#"
                   className="bg-gray-800 p-2 rounded-full hover:bg-blue-600 transition-colors"
-                >
-                  <Instagram size={20} />
-                </a>
+                ></a>
                 <a
                   href="#"
                   className="bg-gray-800 p-2 rounded-full hover:bg-blue-600 transition-colors"
-                >
-                  <Twitter size={20} />
-                </a>
+                ></a>
                 <a
                   href="#"
                   className="bg-gray-800 p-2 rounded-full hover:bg-blue-600 transition-colors"
-                >
-                  <Youtube size={20} />
-                </a>
+                ></a>
               </div>
             </div>
             <div>
