@@ -31,7 +31,6 @@ const Login = () => {
     e.preventDefault();
     try {
       const res = await login({ email, password }).unwrap();
-      console.log(res);
       dispatch(setCredentials({ ...res }));
       navigate(redirect);
     } catch (err) {
@@ -40,76 +39,77 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <section className="pt-10 flex flex-wrap justify-center items-center">
-        <div className="">
-          <h1 className="text-2xl pt-7 font-semibold mb-4">Sign In</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Sign in to your account
+          </h2>
+          <p className="mt-2 text-center text-sm text-gray-600">
+            Or{" "}
+            <Link
+              to={redirect ? `/register?redirect=${redirect}` : "/register"}
+              className="font-medium text-blue-600 hover:text-blue-500"
+            >
+              register for a new account
+            </Link>
+          </p>
+        </div>
 
-          <form onSubmit={submitHandler} className="container">
-            <div className="my-4">
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-black"
-              >
-                Email Address
+        <form className="mt-8 space-y-6" onSubmit={submitHandler}>
+          <div className="rounded-md shadow-sm -space-y-px">
+            <div>
+              <label htmlFor="email" className="sr-only">
+                Email address
               </label>
               <input
-                type="email"
                 id="email"
-                className="mt-1 p-2 border rounded w-[350px] md:w-[500px] lg:w-[700px] "
-                placeholder="Enter email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                placeholder="Email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-
-            <div className="mb-4">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-black"
-              >
+            <div>
+              <label htmlFor="password" className="sr-only">
                 Password
               </label>
               <input
-                type="password"
                 id="password"
-                className="mt-1 p-2 border rounded w-[350px] md:w-[500px] lg:w-[700px] "
-                placeholder="Enter password"
+                name="password"
+                type="password"
+                autoComplete="current-password"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-
-            <button
-              disabled={isLoading}
-              type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer my-4"
-            >
-              {isLoading ? "Signing In..." : "Sign In"}
-            </button>
-
-            {isLoading && <Loader />}
-          </form>
-
-          <div className="mt-4">
-            <p className="text-black">
-              New Customer?{" "}
-              <Link
-                to={redirect ? `/register?redirect=${redirect}` : "/register"}
-                className="text-blue-500 hover:underline"
-              >
-                Register
-              </Link>
-            </p>
           </div>
-        </div>
-        {/*   
-      <img
-        src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1964&q=80"
-        alt=""
-        className="h-[15rem] md:h-[40rem] w-full md:w-[50%] lg:w-[60%] xl:block md:hidden sm:hidden rounded-lg"
-      /> */}
-      </section>
+
+          <div>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              {isLoading ? (
+                <span className="flex items-center">
+                  <Loader className="h-5 w-5 mr-2" />
+                  Signing In...
+                </span>
+              ) : (
+                "Sign In"
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

@@ -4,51 +4,40 @@ import {
   AiOutlineForm,
   AiOutlineLogin,
   AiOutlineUserAdd,
+  AiOutlineMenu,
+  AiOutlineClose,
 } from "react-icons/ai";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import "./Navigation.css";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useLogoutMutation } from "../../redux/api/usersApiSlice";
 import { logout } from "../../redux/features/auth/authSlice";
-import logo from "../Auth/Excel Logo.png";
 
 const Navigation = () => {
   const { userInfo } = useSelector((state) => state.auth);
-
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [showSidebar, setShowSidebar] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(true);
-  useEffect(() => {
-    const handleScroll = () => {
-      setDropdownOpen(false);
-    };
-
-    // Hide modal after initial page load
-
-    // Add scroll event listener
-    window.addEventListener("scroll", handleScroll);
-
-    // Cleanup listeners
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [logoutApiCall] = useLogoutMutation();
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
-  const [logoutApiCall] = useLogoutMutation();
+  const closeSidebar = () => {
+    setIsSidebarOpen(false);
+  };
 
   const logoutHandler = async () => {
     try {
       await logoutApiCall().unwrap();
       dispatch(logout());
       navigate("/login");
+      closeSidebar(); // Close sidebar after logout
     } catch (err) {
       console.error("Logout error:", err);
       alert(
@@ -57,115 +46,205 @@ const Navigation = () => {
     }
   };
 
+  // Close dropdown and sidebar on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      setDropdownOpen(false);
+      setIsSidebarOpen(false);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <div
-      style={{ zIndex: 9999 }}
-      className={`${
-        showSidebar ? "hidden" : "flex"
-      } xl:flex lg:flex flex-row justify-between p-4 text-black bg-gray-200 shadow-2xl
-    w-full h-[60px] mb-10 fixed top-0`}
-    >
-      <div className="flex items-center justify-center space-x-6">
-        <Link to="/" className="flex items-center ">
-          <h1 className="font-extrabold text-center text-blue-800 text-2xl">
-            D playce
-          </h1>
-        </Link>
-
+    <nav className="fixed top-0 left-0 w-full bg-gray-200 shadow-lg z-50">
+      <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+        {/* Logo and Brand */}
         <Link
-          to="/Form"
-          className="flex  items-center transition-transform transform hover:translate-x-2"
+          to="/"
+          className="flex items-center space-x-2"
+          onClick={closeSidebar}
         >
-          <AiOutlineForm className="mr-2  " size={24} />
+          <h1 className="font-extrabold text-3xl text-blue-800">D PLAYCE</h1>
         </Link>
-      </div>
 
-      <div className="relative">
-        <button
-          onClick={toggleDropdown}
-          className="flex items-center text-gray-800 focus:outline-none"
-        >
-          {userInfo ? (
-            <span className="text-black">{userInfo.username}</span>
-          ) : (
-            <></>
-          )}
-          {userInfo && (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-5 ml-2s"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="black"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="3"
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          )}
-        </button>
-
-        {dropdownOpen && isModalVisible && (
-          <ul
-            className={`absolute left-0 top-7 mt-4 space-y- bg-white text-gray-600 ${
-              dropdownOpen ? "" : "hidden"
-            } transition-all duration-300`}
+        {/* Desktop Navigation Links */}
+        <div className="hidden md:flex items-center space-x-6">
+          <Link
+            to="/form"
+            className="flex items-center text-black hover:text-blue-600 transition-transform hover:translate-x-2"
           >
-            {/* {userIn (
-              <>
-                <li>
-                  <Link
-                    to="/admin/userlist"
-                    className="block px-4 py-2 hover:bg-gray-100"
-                  >
-                    Users
-                  </Link>
-                </li>
-              </>
-            )} */}
+            <AiOutlineForm className="mr-2" size={24} />
+            <span>Form</span>
+          </Link>
+          <Link
+            to="/about"
+            className="flex items-center text-black hover:text-blue-600 transition-transform hover:translate-x-2"
+          >
+            <span>About</span>
+          </Link>
+          <Link
+            to="/blog"
+            className="flex items-center text-black hover:text-blue-600 transition-transform hover:translate-x-2"
+          >
+            <span>Blog</span>
+          </Link>
 
-            <li>
-              <Link to="/profile" className="block px-4 py-2 hover:bg-gray-100">
-                Profile
-              </Link>
-            </li>
-            <li>
+          {/* User Dropdown */}
+          {userInfo ? (
+            <div className="relative">
               <button
-                onClick={logoutHandler}
-                className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                onClick={toggleDropdown}
+                className="flex items-center text-black focus:outline-none"
               >
-                Logout
+                <span>{userInfo.username}</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-5 ml-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={3}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
               </button>
-            </li>
-          </ul>
-        )}
-        {!userInfo && (
-          <ul className="flex items-center justify-center">
-            <li>
+
+              {dropdownOpen && (
+                <ul className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg">
+                  <li>
+                    <Link
+                      to="/profile"
+                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                      onClick={closeSidebar}
+                    >
+                      Profile
+                    </Link>
+                  </li>
+                  <li>
+                    <button
+                      onClick={logoutHandler}
+                      className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
+                    >
+                      Logout
+                    </button>
+                  </li>
+                </ul>
+              )}
+            </div>
+          ) : (
+            <div className="flex items-center space-x-4">
               <Link
                 to="/login"
-                className="flex items-center justify-center mr-4 transition-transform transform hover:translate-x-2"
+                className="flex items-center text-black hover:text-blue-600 transition-transform hover:translate-x-2"
               >
-                <AiOutlineLogin size={26} />
-                <span className="hidden nav-item-name">LOGIN</span>
+                <AiOutlineLogin size={24} />
+                <span className="ml-2">Login</span>
               </Link>
-            </li>
-            <li>
               <Link
                 to="/register"
-                className="flex items-center  transition-transform transform hover:translate-x-2"
+                className="flex items-center text-black hover:text-blue-600 transition-transform hover:translate-x-2"
               >
-                <AiOutlineUserAdd size={26} />
-                <span className="hidden nav-item-name">REGISTER</span>
+                <AiOutlineUserAdd size={24} />
+                <span className="ml-2">Register</span>
               </Link>
-            </li>
-          </ul>
-        )}
+            </div>
+          )}
+        </div>
+
+        {/* Mobile Hamburger Menu */}
+        <button
+          onClick={toggleSidebar}
+          className="md:hidden text-black focus:outline-none"
+        >
+          {isSidebarOpen ? (
+            <AiOutlineClose size={24} />
+          ) : (
+            <AiOutlineMenu size={24} />
+          )}
+        </button>
       </div>
-    </div>
+
+      {/* Mobile Sidebar */}
+      {isSidebarOpen && (
+        <div className="md:hidden fixed inset-0 bg-gray-200 z-40">
+          <div className="flex flex-col items-center space-y-6 py-8">
+            <Link
+              to="/"
+              className="flex items-center text-black hover:text-blue-600"
+              onClick={closeSidebar}
+            >
+              <AiOutlineHome className="mr-2" size={24} />
+              <span>Home</span>
+            </Link>
+            <Link
+              to="/form"
+              className="flex items-center text-black hover:text-blue-600"
+              onClick={closeSidebar}
+            >
+              <AiOutlineForm className="mr-2" size={24} />
+              <span>Form</span>
+            </Link>
+            <Link
+              to="/about"
+              className="flex items-center text-black hover:text-blue-600"
+              onClick={closeSidebar}
+            >
+              <span>About</span>
+            </Link>
+            <Link
+              to="/blog"
+              className="flex items-center text-black hover:text-blue-600"
+              onClick={closeSidebar}
+            >
+              <span>Blog</span>
+            </Link>
+
+            {userInfo ? (
+              <div className="flex flex-col items-center space-y-4">
+                <Link
+                  to="/profile"
+                  className="text-black hover:text-blue-600"
+                  onClick={closeSidebar}
+                >
+                  Profile
+                </Link>
+                <button
+                  onClick={logoutHandler}
+                  className="text-black hover:text-blue-600"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center space-y-4">
+                <Link
+                  to="/login"
+                  className="flex items-center text-black hover:text-blue-600"
+                  onClick={closeSidebar}
+                >
+                  <AiOutlineLogin size={24} />
+                  <span className="ml-2">Login</span>
+                </Link>
+                <Link
+                  to="/register"
+                  className="flex items-center text-black hover:text-blue-600"
+                  onClick={closeSidebar}
+                >
+                  <AiOutlineUserAdd size={24} />
+                  <span className="ml-2">Register</span>
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </nav>
   );
 };
 

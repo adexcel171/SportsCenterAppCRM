@@ -3,15 +3,12 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import SkeletonLoader from "../components/SkeletonLoader";
 import { useAllUserdataQuery } from "../redux/api/userdataApiSlice";
 import { useSelector } from "react-redux";
+import Landing from "./Landing";
 
 import { AiOutlineForm } from "react-icons/ai";
 const Home = () => {
   const { userInfo } = useSelector((state) => state.auth);
   const navigate = useNavigate();
-
-  if (!userInfo?.isAdmin) {
-    return navigate("/login");
-  }
 
   const { data: allUserdata, error, isLoading } = useAllUserdataQuery();
 
@@ -237,39 +234,46 @@ const Home = () => {
   if (error) {
     return <p>Error fetching user data: {error.message}</p>;
   }
+  if (!userInfo) {
+    return <Landing />;
+  }
 
   return (
-    <div className="container mx-auto p-4 sm:p-8 mt-6  bg-gray-50 rounded-lg shadow-md">
-      <h1 className="text-3xl mt-10 sm:text-4xl mb-4 sm:mb-8 text-center text-gray-800">
-        Customer Management Dashboard
-      </h1>
-
-      <div className="flex justify-center items-center">
-        <div className="mt-2 flex justify-center items-center gap-6 text-center w-full max-w-[600px] rounded-md bg-blue-950 p-5">
-          <h1 className="text-lg font-bold text-white">
-            Credit (Today):{" "}
-            {totalCredit.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
+    <>
+      {!userInfo || !userInfo.isAdmin ? (
+        <Landing />
+      ) : (
+        <div className="container mx-auto p-4 sm:p-8 mt-6  bg-gray-50 rounded-lg shadow-md">
+          <h1 className="text-3xl mt-10 sm:text-4xl mb-4 sm:mb-8 text-center text-gray-800">
+            Customer Management Dashboard
           </h1>
-          <p className="text-lg font-bold text-white">
-            Debit (Today):{" "}
-            {totalDebit.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
-          </p>
-          <p className="text-lg font-bold text-white">
-            Current Balance:{" "}
-            {balance.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
-          </p>
-        </div>
-      </div>
-      {/* <div className="flex justify-center items-center">
+
+          <div className="flex justify-center items-center">
+            <div className="mt-2 flex justify-center items-center gap-6 text-center w-full max-w-[600px] rounded-md bg-blue-950 p-5">
+              <h1 className="text-lg font-bold text-white">
+                Credit (Today):{" "}
+                {totalCredit.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </h1>
+              <p className="text-lg font-bold text-white">
+                Debit (Today):{" "}
+                {totalDebit.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </p>
+              <p className="text-lg font-bold text-white">
+                Current Balance:{" "}
+                {balance.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </p>
+            </div>
+          </div>
+          {/* <div className="flex justify-center items-center">
         <div className="mt-2 flex justify-center items-center gap-6 text-center w-full max-w-[600px] rounded-md bg-green-700 p-5">
           <h1 className="text-lg font-bold text-white">
             Total Credit:{" "}
@@ -287,182 +291,187 @@ const Home = () => {
           </p>
         </div>
       </div> */}
-      <div className="flex justify-center items-center">
-        <div className="mt-2 flex justify-center items-center gap-6 text-center w-full max-w-[800px] rounded-md bg-blue-800 p-5">
-          <h1 className="text-lg font-bold text-white">
-            Total Users: {totalRegisteredUsers}
-          </h1>
-          <h1 className="text-lg font-bold text-white">
-            Sub End Today: {usersWithSubEndToday}
-          </h1>
-          <h1 className="text-lg font-bold text-white">
-            birthays today: {todayDataCount}
-          </h1>
-        </div>
-      </div>
-      {/* Search Input */}
-      <div className="mb-4 mt-8 flex justify-center">
-        <input
-          type="text"
-          placeholder="Search by name..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="border rounded p-2 w-full max-w-[600px] focus:outline-none focus:ring focus:ring-blue-300"
-        />
-      </div>
-      <Link to="/Form" className="flex  justify-center  items-center ">
-        <span>click to fill Customer details</span>
-        <AiOutlineForm className="mr-2  " size={24} />
-      </Link>
-      <div className="bg-white p-4 sm:p-6 mt-5 shadow-md rounded-lg overflow-x-auto">
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-center min-w-[800px]">
-            <thead>
-              <tr className="bg-blue-800 hover:bg-gray-800 transition text-white">
-                <th className="py-2 px-2 w-[5%] border">#</th>
-                <th className="py-2 px-2 w-[12%] border">Date</th>
-                <th className="py-2 px-2 w-[10%] border sticky left-0 bg-blue-800">
-                  Name
-                </th>
-                <th className="py-2 px-2 w-[8%] border">Number</th>
-                <th className="py-2 px-2 w-[10%] border">Email</th>
-                <th className="py-2 px-2 w-[10%] border">Credit</th>
-                <th className="py-2 px-2 w-[10%] border">Debit</th>
-                <th className="py-2 px-2 w-[25%] hidden  border">Notes</th>
-                <th className="py-2 px-2 w-[15%] border">Subscription</th>
-                <th className="py-2 px-2 w-[15%] border">Sub End Date</th>
-                <th className="py-2 px-2 w-[10%] border">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentUsers.map((userdata, index) => {
-                const createdAtDate = new Date(userdata.createdAt);
-                const optionsDateTime = {
-                  month: "short",
-                  day: "numeric",
+          <div className="flex justify-center items-center">
+            <div className="mt-2 flex justify-center items-center gap-6 text-center w-full max-w-[800px] rounded-md bg-blue-800 p-5">
+              <h1 className="text-lg font-bold text-white">
+                Total Users: {totalRegisteredUsers}
+              </h1>
+              <h1 className="text-lg font-bold text-white">
+                Sub End Today: {usersWithSubEndToday}
+              </h1>
+              <h1 className="text-lg font-bold text-white">
+                birthays today: {todayDataCount}
+              </h1>
+            </div>
+          </div>
+          {/* Search Input */}
+          <div className="mb-4 mt-8 flex justify-center">
+            <input
+              type="text"
+              placeholder="Search by name..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="border rounded p-2 w-full max-w-[600px] focus:outline-none focus:ring focus:ring-blue-300"
+            />
+          </div>
+          <Link to="/Form" className="flex  justify-center  items-center ">
+            <span>click to fill Customer details</span>
+            <AiOutlineForm className="mr-2  " size={24} />
+          </Link>
+          <div className="bg-white p-4 sm:p-6 mt-5 shadow-md rounded-lg overflow-x-auto">
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse text-center min-w-[800px]">
+                <thead>
+                  <tr className="bg-blue-800 hover:bg-gray-800 transition text-white">
+                    <th className="py-2 px-2 w-[5%] border">#</th>
+                    <th className="py-2 px-2 w-[12%] border">Date</th>
+                    <th className="py-2 px-2 w-[10%] border sticky left-0 bg-blue-800">
+                      Name
+                    </th>
+                    <th className="py-2 px-2 w-[8%] border">Number</th>
+                    <th className="py-2 px-2 w-[10%] border">Email</th>
+                    <th className="py-2 px-2 w-[10%] border">Credit</th>
+                    <th className="py-2 px-2 w-[10%] border">Debit</th>
+                    <th className="py-2 px-2 w-[25%] hidden  border">Notes</th>
+                    <th className="py-2 px-2 w-[15%] border">Subscription</th>
+                    <th className="py-2 px-2 w-[15%] border">Sub End Date</th>
+                    <th className="py-2 px-2 w-[10%] border">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentUsers.map((userdata, index) => {
+                    const createdAtDate = new Date(userdata.createdAt);
+                    const optionsDateTime = {
+                      month: "short",
+                      day: "numeric",
 
-                  hour: "numeric",
-                  minute: "numeric",
-                  hour12: true,
-                };
-                const formattedDateTime = createdAtDate.toLocaleDateString(
-                  "en-GB",
-                  optionsDateTime
-                );
+                      hour: "numeric",
+                      minute: "numeric",
+                      hour12: true,
+                    };
+                    const formattedDateTime = createdAtDate.toLocaleDateString(
+                      "en-GB",
+                      optionsDateTime
+                    );
 
-                const displayIndex = indexOfFirstUser + index + 1;
+                    const displayIndex = indexOfFirstUser + index + 1;
 
-                const subEndDate = new Date(userdata.subscriptionEndDate);
+                    const subEndDate = new Date(userdata.subscriptionEndDate);
 
-                const formattedSubEndDate = subEndDate.toLocaleDateString(
-                  "en-GB",
-                  {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                  }
-                );
-
-                // Check if the subscription is expiring soon
-                const isExpiringSoon =
-                  new Date() > subEndDate ||
-                  (subEndDate - new Date()) / (1000 * 60 * 60 * 24) <= 3;
-
-                return (
-                  <tr
-                    className={`text-black hover:bg-gray-50 transition-colors ${
-                      isExpiringSoon ? "bg-red-100" : ""
-                    }`}
-                    key={userdata._id}
-                  >
-                    <td className="py-2 px-2 border text-center">
-                      {displayIndex}
-                    </td>
-                    <td
-                      className={`py-2 px-2 border text-sm ${
-                        new Date(userdata.date).toLocaleDateString("en-GB", {
-                          day: "2-digit",
-                          month: "2-digit",
-                        }) ===
-                        new Date().toLocaleDateString("en-GB", {
-                          day: "2-digit",
-                          month: "2-digit",
-                        })
-                          ? "bg-blue-300 text-black"
-                          : "text-black"
-                      }`}
-                    >
-                      {new Date(userdata.date).toLocaleDateString("en-GB", {
+                    const formattedSubEndDate = subEndDate.toLocaleDateString(
+                      "en-GB",
+                      {
                         day: "2-digit",
                         month: "2-digit",
-                      })}
-                    </td>
+                        year: "numeric",
+                      }
+                    );
 
-                    <td className="py-2 px-2 border font-medium sticky left-0 bg-white">
-                      {userdata.name}
-                    </td>
-                    <td className="py-2 px-2 border">{userdata.number}</td>
-                    <td className="py-2 px-2 border">{userdata.email}</td>
-                    <td className="py-2 px-2 border font-medium text-green-600 hover:text-white hover:bg-slate-900 transition-colors">
-                      {userdata.credit.toLocaleString(undefined, {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })}
-                    </td>
-                    <td className="py-2 px-2 border font-medium text-red-600 hover:text-white hover:bg-slate-900 transition-colors">
-                      {userdata.debit.toLocaleString(undefined, {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })}
-                    </td>
-                    <td className="py-2 px-2 hidden border">
-                      <div className="max-h-[80px]  overflow-y-auto text-sm">
-                        {userdata.note}
-                      </div>
-                    </td>
-                    <td className="py-2 px-2 border text-sm">
-                      {userdata.subscription}
-                    </td>
-                    <td
-                      className={`py-2 px-2 border text-sm ${
-                        isExpiringSoon ? "text-red-600 font-bold" : ""
-                      }`}
-                    >
-                      {formattedSubEndDate}
-                    </td>
-                    <td className="py-2 px-2 border">
-                      <Link
-                        to={`/Userdetails/${userdata._id}`}
-                        className="block w-full text-center py-1 px-2 bg-blue-400 text-white hover:bg-gray-800 transition-colors rounded"
+                    // Check if the subscription is expiring soon
+                    const isExpiringSoon =
+                      new Date() > subEndDate ||
+                      (subEndDate - new Date()) / (1000 * 60 * 60 * 24) <= 3;
+
+                    return (
+                      <tr
+                        className={`text-black hover:bg-gray-50 transition-colors ${
+                          isExpiringSoon ? "bg-red-100" : ""
+                        }`}
+                        key={userdata._id}
                       >
-                        Edit
-                      </Link>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                        <td className="py-2 px-2 border text-center">
+                          {displayIndex}
+                        </td>
+                        <td
+                          className={`py-2 px-2 border text-sm ${
+                            new Date(userdata.date).toLocaleDateString(
+                              "en-GB",
+                              {
+                                day: "2-digit",
+                                month: "2-digit",
+                              }
+                            ) ===
+                            new Date().toLocaleDateString("en-GB", {
+                              day: "2-digit",
+                              month: "2-digit",
+                            })
+                              ? "bg-blue-300 text-black"
+                              : "text-black"
+                          }`}
+                        >
+                          {new Date(userdata.date).toLocaleDateString("en-GB", {
+                            day: "2-digit",
+                            month: "2-digit",
+                          })}
+                        </td>
+
+                        <td className="py-2 px-2 border font-medium sticky left-0 bg-white">
+                          {userdata.name}
+                        </td>
+                        <td className="py-2 px-2 border">{userdata.number}</td>
+                        <td className="py-2 px-2 border">{userdata.email}</td>
+                        <td className="py-2 px-2 border font-medium text-green-600 hover:text-white hover:bg-slate-900 transition-colors">
+                          {userdata.credit.toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
+                        </td>
+                        <td className="py-2 px-2 border font-medium text-red-600 hover:text-white hover:bg-slate-900 transition-colors">
+                          {userdata.debit.toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
+                        </td>
+                        <td className="py-2 px-2 hidden border">
+                          <div className="max-h-[80px]  overflow-y-auto text-sm">
+                            {userdata.note}
+                          </div>
+                        </td>
+                        <td className="py-2 px-2 border text-sm">
+                          {userdata.subscription}
+                        </td>
+                        <td
+                          className={`py-2 px-2 border text-sm ${
+                            isExpiringSoon ? "text-red-600 font-bold" : ""
+                          }`}
+                        >
+                          {formattedSubEndDate}
+                        </td>
+                        <td className="py-2 px-2 border">
+                          <Link
+                            to={`/Userdetails/${userdata._id}`}
+                            className="block w-full text-center py-1 px-2 bg-blue-400 text-white hover:bg-gray-800 transition-colors rounded"
+                          >
+                            Edit
+                          </Link>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          {/* Pagination Controls */}
+          <div className="flex justify-between items-center mt-4">
+            <button
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className="bg-blue-500 text-white px-4 py-2 rounded disabled:opacity-50"
+            >
+              Previous
+            </button>
+            <button
+              onClick={() => setCurrentPage((prev) => prev + 1)}
+              disabled={indexOfLastUser >= filteredUserdata.length}
+              className="bg-blue-500 text-white px-4 py-2 rounded disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
         </div>
-      </div>
-      {/* Pagination Controls */}
-      <div className="flex justify-between items-center mt-4">
-        <button
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
-          className="bg-blue-500 text-white px-4 py-2 rounded disabled:opacity-50"
-        >
-          Previous
-        </button>
-        <button
-          onClick={() => setCurrentPage((prev) => prev + 1)}
-          disabled={indexOfLastUser >= filteredUserdata.length}
-          className="bg-blue-500 text-white px-4 py-2 rounded disabled:opacity-50"
-        >
-          Next
-        </button>
-      </div>
-    </div>
+      )}
+    </>
   );
 };
 
