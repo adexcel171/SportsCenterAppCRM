@@ -1,9 +1,5 @@
 import React from "react";
 import {
-  Facebook,
-  Instagram,
-  Twitter,
-  Youtube,
   Mail,
   Phone,
   MapPin,
