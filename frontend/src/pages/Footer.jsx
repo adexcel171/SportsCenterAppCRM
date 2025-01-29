@@ -16,7 +16,7 @@ const Footer = () => {
                 Center.
               </p>
               <button className="bg-white text-blue-600 px-6 py-3 rounded-full font-semibold flex items-center gap-2 hover:bg-gray-100 transition-colors">
-                Join Now <ArrowRight size={20} />
+                Join Now
               </button>
             </div>
             <div className="grid grid-cols-3 gap-4">
@@ -69,7 +69,6 @@ const Footer = () => {
                   href="#"
                   className="text-sm hover:text-white transition-colors flex items-center gap-2"
                 >
-                  <ArrowRight size={16} />
                   Gym & Fitness
                 </a>
               </li>
@@ -102,7 +101,6 @@ const Footer = () => {
                   href="#"
                   className="text-sm hover:text-white transition-colors flex items-center gap-2"
                 >
-                  <ArrowRight size={16} />
                   Nutrition Planning
                 </a>
               </li>
