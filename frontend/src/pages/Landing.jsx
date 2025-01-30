@@ -113,15 +113,15 @@ const Landing = () => {
               <button className="bg-white text-blue-900 text-center justify-center px-6 py-3 rounded-lg font-semibold hover:bg-blue-100 transition-colors flex items-center gap-2">
                 Book Now <BsArrowRight size={20} />
               </button>
-              <button className="border-2 border-white px-6 py-3 rounded-lg text-center font-semibold hover:bg-blue-800 transition-colors justify-center flex items-center gap-2">
+              <button className="border-2 border-white px-6 py-3 mb-4 rounded-lg text-center font-semibold hover:bg-blue-800 transition-colors justify-center flex items-center gap-2">
                 View Facilities <GiTrophyCup size={20} />
               </button>
             </div>
           </div>
         </div>
         {/* Features Section */}
-        <div className="py-16 bg-white">
-          <div className="container mx-auto px-4">
+        <div className="py-16  bg-white">
+          <div className="container mx-auto mt-3 px-4">
             <h2 className="text-3xl font-bold text-center mb-12">
               Our World-Class Facilities
             </h2>

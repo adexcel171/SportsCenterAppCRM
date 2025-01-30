@@ -6,7 +6,10 @@ import {
   AiOutlineUserAdd,
   AiOutlineMenu,
   AiOutlineClose,
+  AiOutlineInfoCircle,
+  AiOutlineBook,
 } from "react-icons/ai";
+import { FaDumbbell } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useLogoutMutation } from "../../redux/api/usersApiSlice";
@@ -66,7 +69,9 @@ const Navigation = () => {
           className="flex items-center space-x-2"
           onClick={closeSidebar}
         >
-          <h1 className="font-extrabold text-3xl text-blue-800">D PLAYCE</h1>
+          <h1 className="flex items-center font-extrabold text-2xl text-blue-900">
+            <FaDumbbell className="mr-2" /> {/* Fitness icon */}D PLAYCE
+          </h1>
         </Link>
 
         {/* Desktop Navigation Links */}
@@ -195,6 +200,8 @@ const Navigation = () => {
               className="flex items-center text-black hover:text-blue-600"
               onClick={closeSidebar}
             >
+              <AiOutlineInfoCircle className="mr-2" size={24} />{" "}
+              {/* About icon */}
               <span>About</span>
             </Link>
             <Link
@@ -202,6 +209,7 @@ const Navigation = () => {
               className="flex items-center text-black hover:text-blue-600"
               onClick={closeSidebar}
             >
+              <AiOutlineBook className="mr-2" size={24} /> {/* Blog icon */}
               <span>Blog</span>
             </Link>
 
