@@ -3,238 +3,212 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useCreateUserdataMutation } from "../redux/api/userdataApiSlice";
 
-const Form = () => {
-  const [name, setName] = useState("");
-  const [number, setNumber] = useState("");
-  const [email, setEmail] = useState("");
-  const [credit, setCredit] = useState(0);
-  const [debit, setDebit] = useState(0);
-  const [note, setNote] = useState("");
-  const [date, setDate] = useState("");
-  const [subscription, setSubscription] = useState("");
-  const [subscriptionEndDate, setSubscriptionEndDate] = useState("");
+// Color scheme constants
+const COLORS = {
+  primary: "bg-blue-800",
+  secondary: "bg-blue-600",
+  accent: "bg-blue-400",
+  text: "text-gray-800",
+  highlight: "bg-yellow-100",
+};
 
+const Form = () => {
   const navigate = useNavigate();
   const [createUserdata] = useCreateUserdataMutation();
+  const [formData, setFormData] = useState({
+    name: "",
+    number: "",
+    email: "",
+    credit: 0,
+    debit: 0,
+    note: "",
+    date: "",
+    subscription: "",
+    subscriptionEndDate: "",
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const userData = new FormData();
-      userData.append("name", name);
-      userData.append("number", number);
-      userData.append("email", email);
-      userData.append("credit", credit);
-      userData.append("debit", debit);
-      userData.append("note", note);
-      userData.append("date", date);
-
-      userData.append("subscription", subscription);
-      userData.append("subscriptionEndDate", subscriptionEndDate);
+      Object.entries(formData).forEach(([key, value]) => {
+        userData.append(key, value);
+      });
 
       const { data } = await createUserdata(userData);
 
       if (data?.name) {
-        toast.success(`${data.name} has been successfully created!`);
+        toast.success(`${data.name} created successfully!`);
         navigate("/");
       } else {
-        toast.warning(
-          "No data returned. Please check your input or try again."
-        );
+        toast.warning("Please verify your input and try again.");
       }
-    } catch (error) {}
+    } catch (error) {
+      toast.error("Submission failed. Please try again.");
+    }
+  };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
   return (
-    <div className="mx-auto h-full p-8 mt-8 bg-gray-50 rounded-lg shadow-md">
-      <h1 className="text-4xl text-center mb-8 text-gray-800">
-        Customer Details Form
-      </h1>
+    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+      <div className="max-w-2xl mx-auto">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-8 text-center">
+          Customer Registration
+        </h1>
 
-      <form
-        onSubmit={handleSubmit}
-        className="max-w-md h-auto mx-auto bg-white p-6 rounded-lg shadow-lg"
-      >
-        {/* Name Field */}
-        <div className="mb-4">
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Name
-          </label>
-          <input
-            type="text"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Enter name"
-            className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
-            required
-          />
-        </div>
-
-        {/* Phone Number Field */}
-        <div className="mb-4">
-          <label
-            htmlFor="number"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Phone Number
-          </label>
-          <input
-            type="tel"
-            id="number"
-            value={number}
-            onChange={(e) => setNumber(e.target.value)}
-            placeholder="Enter phone number"
-            className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
-            required
-          />
-        </div>
-
-        {/* Email Field */}
-        <div className="mb-4">
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter email"
-            className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
-            required
-          />
-        </div>
-
-        {/* Credit Field */}
-        <div className="mb-4">
-          <label
-            htmlFor="credit"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Credit
-          </label>
-          <input
-            type="number"
-            id="credit"
-            value={credit}
-            onChange={(e) => setCredit(e.target.value)}
-            placeholder="Enter credit amount"
-            className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
-            required
-          />
-        </div>
-
-        {/* Debit Field */}
-        <div className="mb-4">
-          <label
-            htmlFor="debit"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Debit
-          </label>
-          <input
-            type="number"
-            id="debit"
-            value={debit}
-            onChange={(e) => setDebit(e.target.value)}
-            placeholder="Enter debit amount"
-            className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label
-            htmlFor="note"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Notes
-          </label>
-          <textarea
-            id="note"
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            placeholder="Enter notes"
-            className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
-          ></textarea>
-        </div>
-
-        <label
-          htmlFor="subscription"
-          className="block text-sm font-medium text-gray-700"
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white rounded-xl shadow-lg p-6 md:p-8"
         >
-          D.O.B
-        </label>
-        <div className="mb-4">
-          <input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
-            required
-          />
-        </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormInput
+              id="name"
+              label="Full Name"
+              type="text"
+              value={formData.name}
+              onChange={handleChange}
+              required
+            />
 
-        {/* Subscription Type Field */}
-        <div className="mb-4">
-          <label
-            htmlFor="subscription"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Subscription Type
-          </label>
-          <select
-            id="subscription"
-            value={subscription}
-            onChange={(e) => setSubscription(e.target.value)}
-            className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
-            required
-          >
-            <option value="">Select Subscription</option>
-            <option value="Weekly">weekly</option>
-            <option value="Monthly">Monthly</option>
-            <option value="Yearly">Yearly</option>
-          </select>
-        </div>
+            <FormInput
+              id="number"
+              label="Phone Number"
+              type="tel"
+              value={formData.number}
+              onChange={handleChange}
+              required
+            />
 
-        {/* Subscription End Date Field */}
-        <div className="mb-4">
-          <label
-            htmlFor="subscriptionEndDate"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Subscription End Date
-          </label>
-          <input
-            type="date"
-            id="subscriptionEndDate"
-            value={subscriptionEndDate}
-            onChange={(e) => setSubscriptionEndDate(e.target.value)}
-            className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
-            required
-          />
-        </div>
+            <FormInput
+              id="email"
+              label="Email Address"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
 
-        {/* Notes Field */}
+            <FormInput
+              id="date"
+              label="Date of Birth"
+              type="date"
+              value={formData.date}
+              onChange={handleChange}
+              required
+            />
 
-        {/* Submit Button */}
-        <div className="flex justify-end">
-          <button
-            type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          >
-            Submit
-          </button>
-        </div>
-      </form>
+            <FormInput
+              id="credit"
+              label="Credit Amount"
+              type="number"
+              value={formData.credit}
+              onChange={handleChange}
+              required
+            />
+
+            <FormInput
+              id="debit"
+              label="Debit Amount"
+              type="number"
+              value={formData.debit}
+              onChange={handleChange}
+              required
+            />
+
+            <div className="md:col-span-2">
+              <FormSelect
+                id="subscription"
+                label="Subscription Type"
+                value={formData.subscription}
+                onChange={handleChange}
+                options={["Weekly", "Monthly", "Yearly"]}
+                required
+              />
+            </div>
+
+            <div className="md:col-span-2">
+              <FormInput
+                id="subscriptionEndDate"
+                label="Subscription End Date"
+                type="date"
+                value={formData.subscriptionEndDate}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Additional Notes
+              </label>
+              <textarea
+                id="note"
+                value={formData.note}
+                onChange={handleChange}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                rows="3"
+                placeholder="Enter any additional notes..."
+              />
+            </div>
+          </div>
+
+          <div className="mt-6 flex justify-end">
+            <button
+              type="submit"
+              className={`${COLORS.primary} text-white px-8 py-3 rounded-lg hover:${COLORS.secondary} transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400`}
+            >
+              Create Customer
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
+
+// Reusable Form Input Component
+const FormInput = ({ id, label, type, value, onChange, required }) => (
+  <div className="space-y-1">
+    <label htmlFor={id} className="block text-sm font-medium text-gray-700">
+      {label} {required && <span className="text-red-500">*</span>}
+    </label>
+    <input
+      id={id}
+      type={type}
+      value={value}
+      onChange={onChange}
+      className={`w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent ${
+        type === "date" ? "custom-date-input" : ""
+      }`}
+      required={required}
+    />
+  </div>
+);
+
+// Reusable Form Select Component
+const FormSelect = ({ id, label, value, onChange, options, required }) => (
+  <div className="space-y-1">
+    <label htmlFor={id} className="block text-sm font-medium text-gray-700">
+      {label} {required && <span className="text-red-500">*</span>}
+    </label>
+    <select
+      id={id}
+      value={value}
+      onChange={onChange}
+      className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+      required={required}
+    >
+      <option value="">Select {label}</option>
+      {options.map((option) => (
+        <option key={option} value={option}>
+          {option}
+        </option>
+      ))}
+    </select>
+  </div>
+);
 
 export default Form;

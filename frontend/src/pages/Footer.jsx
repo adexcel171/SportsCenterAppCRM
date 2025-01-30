@@ -1,176 +1,137 @@
 import React from "react";
+import { FaFacebook, FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
+import { GiGymBag, GiTrophyCup, GiWeightLiftingUp } from "react-icons/gi";
+import { MdEmail, MdLocationOn, MdPhone, MdSchedule } from "react-icons/md";
 
 const Footer = () => {
   return (
     <footer className="bg-gray-900 text-gray-300">
-      {/* CTA Banner */}
-      <div className="bg-blue-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-8 items-center">
-            <div>
-              <h2 className="text-3xl font-bold mb-4">
-                Start Your Fitness Journey Today!
+      {/* CTA Section */}
+      <div className="bg-gradient-to-r from-gray-800 to-red-900 py-16 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('https://example.com/gym-floor.jpg')] bg-cover opacity-10" />
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="text-left">
+              <h2 className="text-4xl font-black mb-4 text-white">
+                Transform Your Body <br />
+                <span className="text-red-500">Today</span>
               </h2>
-              <p className="mb-6">
-                Get 25% off your first month when you join D Playce Sports
-                Center.
-              </p>
-              <button className="bg-white text-blue-600 px-6 py-3 rounded-full font-semibold flex items-center gap-2 hover:bg-gray-100 transition-colors">
-                Join Now
-              </button>
-            </div>
-            <div className="grid grid-cols-3 gap-4">
-              <div className="bg-blue-700 p-4 rounded-lg text-center">
-                <p className="text-sm font-medium">Modern Equipment</p>
-              </div>
-              <div className="bg-blue-700 p-4 rounded-lg text-center">
-                <p className="text-sm font-medium">Expert Trainers</p>
-              </div>
-              <div className="bg-blue-700 p-4 rounded-lg text-center">
-                <p className="text-sm font-medium">Group Classes</p>
+              <div className="flex gap-4 mb-6">
+                <span className="bg-red-600 px-4 py-1 rounded-full text-sm">
+                  24/7 Access
+                </span>
+                <span className="bg-red-600 px-4 py-1 rounded-full text-sm">
+                  Free Trial
+                </span>
+                <span className="bg-red-600 px-4 py-1 rounded-full text-sm">
+                  Expert Coaches
+                </span>
               </div>
             </div>
+            <button className="bg-red-600 hover:bg-red-700 px-12 py-4 rounded-xl text-lg font-bold flex items-center gap-2 transition-transform hover:scale-105">
+              Start Free Trial <GiWeightLiftingUp className="text-2xl" />
+            </button>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* About Section */}
-          <div>
-            <div className="mb-4">
-              <img
-                src="/api/placeholder/200/80"
-                alt="D Playce Logo"
-                className="h-12"
-              />
+      <div className="max-w-7xl mx-auto px-4 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+          {/* Brand Section */}
+          <div className="space-y-6">
+            <div className="flex items-center gap-3">
+              <GiGymBag className="text-4xl text-red-600" />
+              <h3 className="text-2xl font-black text-white">D'PLAYCE</h3>
             </div>
-            <p className="text-sm mb-4">
-              D Playce is more than just a gym - it's a community dedicated to
-              helping you achieve your fitness goals in a motivating and
-              supportive environment.
+            <p className="text-sm leading-relaxed">
+              Premier sports complex offering world-class facilities, expert
+              coaching, and a community-driven approach to fitness excellence.
             </p>
             <div className="flex gap-4 mt-4">
-              <span className="bg-blue-600 px-3 py-1 rounded-full text-xs font-medium">
-                24/7 Access
-              </span>
-              <span className="bg-blue-600 px-3 py-1 rounded-full text-xs font-medium">
-                Free Parking
-              </span>
+              <GiTrophyCup className="text-3xl text-red-600" />
+              <GiWeightLiftingUp className="text-3xl text-red-600" />
             </div>
           </div>
 
           {/* Quick Links */}
-          <div>
-            <h4 className="text-white text-lg font-bold mb-4">Our Services</h4>
-            <ul className="space-y-2">
-              <li>
-                <a
-                  href="#"
-                  className="text-sm hover:text-white transition-colors flex items-center gap-2"
-                >
-                  Gym & Fitness
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-sm hover:text-white transition-colors flex items-center gap-2"
-                >
-                  Group Classes
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-sm hover:text-white transition-colors flex items-center gap-2"
-                >
-                  Personal Training
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-sm hover:text-white transition-colors flex items-center gap-2"
-                >
-                  Sports Courts
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-sm hover:text-white transition-colors flex items-center gap-2"
-                >
-                  Nutrition Planning
-                </a>
-              </li>
+          <div className="space-y-6">
+            <h4 className="text-white text-lg font-black">Explore</h4>
+            <ul className="space-y-3">
+              {[
+                { text: "Membership Plans", icon: <GiGymBag /> },
+                { text: "Personal Training", icon: <GiWeightLiftingUp /> },
+                { text: "Group Classes", icon: <GiTrophyCup /> },
+                { text: "Sports Facilities", icon: <GiTrophyCup /> },
+                { text: "Nutrition Guides", icon: <GiTrophyCup /> },
+              ].map((item, index) => (
+                <li key={index}>
+                  <a
+                    href="#"
+                    className="flex items-center gap-2 text-sm hover:text-red-500 transition-colors"
+                  >
+                    {item.icon} {item.text}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Contact Info */}
-          <div>
-            <h4 className="text-white text-lg font-bold mb-4">Visit Us</h4>
+          <div className="space-y-6">
+            <h4 className="text-white text-lg font-black">Contact</h4>
             <div className="space-y-4">
-              <div className="p-4 bg-gray-800 rounded-lg">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-sm font-medium text-white">
-                    Main Location
-                  </span>
+              <div className="flex items-center gap-3">
+                <MdLocationOn className="text-red-600 text-xl" />
+                <div>
+                  <p className="font-medium">Main Arena</p>
+                  <p className="text-sm">123 Fitness Road, Sport City</p>
                 </div>
-                <p className="text-sm">123 Fitness Street, Sportstown</p>
               </div>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm">(555) 123-4567</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm">info@dplayce.com</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm">Open 24/7</span>
-                </div>
+              <div className="flex items-center gap-3">
+                <MdPhone className="text-red-600 text-xl" />
+                <span className="text-sm">(234) 567-8900</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <MdEmail className="text-red-600 text-xl" />
+                <span className="text-sm">train@dplayce.com</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <MdSchedule className="text-red-600 text-xl" />
+                <span className="text-sm">Open 24/7</span>
               </div>
             </div>
           </div>
 
-          {/* Social Media & Newsletter */}
-          <div>
-            <h4 className="text-white text-lg font-bold mb-4">
-              Stay Connected
-            </h4>
-            <div className="mb-6">
-              <p className="text-sm mb-4">
-                Follow us for fitness tips and updates!
-              </p>
-              <div className="flex gap-4">
+          {/* Social & Newsletter */}
+          <div className="space-y-6">
+            <h4 className="text-white text-lg font-black">Connect</h4>
+            <div className="flex gap-4">
+              {[
+                { icon: <FaFacebook />, color: "text-blue-600" },
+                { icon: <FaInstagram />, color: "text-pink-600" },
+                { icon: <FaTwitter />, color: "text-blue-400" },
+                { icon: <FaYoutube />, color: "text-red-600" },
+              ].map((social, index) => (
                 <a
+                  key={index}
                   href="#"
-                  className="bg-gray-800 p-2 rounded-full hover:bg-blue-600 transition-colors"
-                ></a>
-                <a
-                  href="#"
-                  className="bg-gray-800 p-2 rounded-full hover:bg-blue-600 transition-colors"
-                ></a>
-                <a
-                  href="#"
-                  className="bg-gray-800 p-2 rounded-full hover:bg-blue-600 transition-colors"
-                ></a>
-                <a
-                  href="#"
-                  className="bg-gray-800 p-2 rounded-full hover:bg-blue-600 transition-colors"
-                ></a>
-              </div>
+                  className={`text-2xl hover:scale-125 transition-transform ${social.color}`}
+                >
+                  {social.icon}
+                </a>
+              ))}
             </div>
-            <div>
-              <p className="text-sm mb-2">Subscribe to our newsletter</p>
+
+            <div className="space-y-4">
+              <p className="text-sm font-medium">Get Fitness Tips</p>
               <div className="flex gap-2">
                 <input
                   type="email"
-                  placeholder="Your email"
-                  className="bg-gray-800 rounded px-3 py-2 text-sm flex-grow focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter your email"
+                  className="bg-gray-800 rounded-lg px-4 py-3 text-sm flex-grow focus:outline-none focus:ring-2 focus:ring-red-600"
                 />
-                <button className="bg-blue-600 px-4 py-2 rounded text-white text-sm hover:bg-blue-700 transition-colors">
-                  Join
+                <button className="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-lg text-sm font-bold transition-colors">
+                  Subscribe
                 </button>
               </div>
             </div>
@@ -178,30 +139,23 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-12 pt-8 border-t border-gray-800">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-sm">
-              © 2025 D Playce Sports Center. All rights reserved.
+        <div className="mt-16 pt-8 border-t border-gray-800">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-center">
+            <p className="text-sm text-gray-400">
+              © 2024 D'PLAYCE. All rights reserved.
             </p>
-            <div className="flex gap-4">
-              <a
-                href="#"
-                className="text-sm hover:text-white transition-colors"
-              >
-                Privacy Policy
-              </a>
-              <a
-                href="#"
-                className="text-sm hover:text-white transition-colors"
-              >
-                Terms of Service
-              </a>
-              <a
-                href="#"
-                className="text-sm hover:text-white transition-colors"
-              >
-                Membership Agreement
-              </a>
+            <div className="flex gap-6">
+              {["Privacy Policy", "Terms", "FAQs", "Careers"].map(
+                (item, index) => (
+                  <a
+                    key={index}
+                    href="#"
+                    className="text-sm text-gray-400 hover:text-red-500 transition-colors"
+                  >
+                    {item}
+                  </a>
+                )
+              )}
             </div>
           </div>
         </div>

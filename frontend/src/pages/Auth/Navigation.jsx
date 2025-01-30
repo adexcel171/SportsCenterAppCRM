@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 import {
   AiOutlineHome,
-  AiOutlineForm,
+  AiOutlineCalendar,
   AiOutlineLogin,
   AiOutlineUserAdd,
   AiOutlineMenu,
   AiOutlineClose,
-  AiOutlineInfoCircle,
-  AiOutlineBook,
+  AiOutlineTeam,
+  AiOutlineContacts,
 } from "react-icons/ai";
-import { FaDumbbell } from "react-icons/fa";
+import { FaDumbbell, FaRunning, FaPhone } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useLogoutMutation } from "../../redux/api/usersApiSlice";
@@ -61,39 +61,54 @@ const Navigation = () => {
   }, []);
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-gray-200 shadow-lg z-50">
+    <nav className="fixed top-0 w-full bg-gray-900 text-white shadow-xl z-50">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         {/* Logo and Brand */}
-        <Link
-          to="/"
-          className="flex items-center space-x-2"
-          onClick={closeSidebar}
-        >
-          <h1 className="flex items-center font-extrabold text-2xl text-blue-900">
-            <FaDumbbell className="mr-2" /> {/* Fitness icon */}D PLAYCE
+        <Link to="/" className="flex items-center space-x-2">
+          <div className="bg-red-600 p-2 rounded-full">
+            <FaDumbbell className="text-2xl text-white" />
+          </div>
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent">
+            D PLAYCE
           </h1>
         </Link>
 
         {/* Desktop Navigation Links */}
-        <div className="hidden md:flex items-center space-x-6">
+        <div className="hidden md:flex items-center space-x-8">
           <Link
-            to="/form"
-            className="flex items-center text-black hover:text-blue-600 transition-transform hover:translate-x-2"
+            to="/"
+            className="flex items-center hover:text-red-500 transition-colors"
           >
-            <AiOutlineForm className="mr-2" size={24} />
-            <span>Form</span>
+            <AiOutlineHome className="mr-1" />
+            Home
+          </Link>
+          <Link
+            to="/programs"
+            className="flex items-center hover:text-red-500 transition-colors"
+          >
+            <FaDumbbell className="mr-1" />
+            Programs
+          </Link>
+          <Link
+            to="/schedule"
+            className="flex items-center hover:text-red-500 transition-colors"
+          >
+            <AiOutlineCalendar className="mr-1" />
+            Schedule
           </Link>
           <Link
             to="/about"
-            className="flex items-center text-black hover:text-blue-600 transition-transform hover:translate-x-2"
+            className="flex items-center hover:text-red-500 transition-colors"
           >
-            <span>About</span>
+            <AiOutlineTeam className="mr-1" />
+            About
           </Link>
           <Link
-            to="/blog"
-            className="flex items-center text-black hover:text-blue-600 transition-transform hover:translate-x-2"
+            to="/contact"
+            className="flex items-center hover:text-red-500 transition-colors"
           >
-            <span>Blog</span>
+            <FaPhone className="mr-1" />
+            Contact
           </Link>
 
           {/* User Dropdown */}
@@ -101,62 +116,57 @@ const Navigation = () => {
             <div className="relative">
               <button
                 onClick={toggleDropdown}
-                className="flex items-center text-black focus:outline-none"
+                className="flex items-center hover:text-red-500 transition-colors"
               >
-                <span>{userInfo.username}</span>
+                <span className="flex items-center">
+                  <FaRunning className="mr-2" />
+                  {userInfo.username}
+                </span>
                 <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-5 ml-2"
-                  fill="none"
+                  className={`ml-2 transition-transform ${
+                    dropdownOpen ? "rotate-180" : ""
+                  }`}
+                  width="16"
+                  height="16"
                   viewBox="0 0 24 24"
-                  stroke="currentColor"
+                  fill="currentColor"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={3}
-                    d="M19 9l-7 7-7-7"
-                  />
+                  <path d="M7 10l5 5 5-5z" />
                 </svg>
               </button>
 
               {dropdownOpen && (
-                <ul className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg">
-                  <li>
-                    <Link
-                      to="/profile"
-                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                      onClick={closeSidebar}
-                    >
-                      Profile
-                    </Link>
-                  </li>
-                  <li>
-                    <button
-                      onClick={logoutHandler}
-                      className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
-                    >
-                      Logout
-                    </button>
-                  </li>
-                </ul>
+                <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-xl">
+                  <Link
+                    to="/profile"
+                    className="block px-4 py-3 hover:bg-gray-700 rounded-t-lg"
+                  >
+                    My Profile
+                  </Link>
+                  <button
+                    onClick={logoutHandler}
+                    className="block w-full px-4 py-3 text-left hover:bg-gray-700 rounded-b-lg"
+                  >
+                    Logout
+                  </button>
+                </div>
               )}
             </div>
           ) : (
             <div className="flex items-center space-x-4">
               <Link
                 to="/login"
-                className="flex items-center text-black hover:text-blue-600 transition-transform hover:translate-x-2"
+                className="flex items-center px-4 py-2 bg-red-600 rounded-lg hover:bg-red-700 transition-colors"
               >
-                <AiOutlineLogin size={24} />
-                <span className="ml-2">Login</span>
+                <AiOutlineLogin className="mr-2" />
+                Login
               </Link>
               <Link
                 to="/register"
-                className="flex items-center text-black hover:text-blue-600 transition-transform hover:translate-x-2"
+                className="flex items-center px-4 py-2 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors"
               >
-                <AiOutlineUserAdd size={24} />
-                <span className="ml-2">Register</span>
+                <AiOutlineUserAdd className="mr-2" />
+                Register
               </Link>
             </div>
           )}
@@ -165,7 +175,7 @@ const Navigation = () => {
         {/* Mobile Hamburger Menu */}
         <button
           onClick={toggleSidebar}
-          className="md:hidden text-black focus:outline-none"
+          className="md:hidden text-white hover:text-red-500 transition-colors"
         >
           {isSidebarOpen ? (
             <AiOutlineClose size={24} />
@@ -177,75 +187,76 @@ const Navigation = () => {
 
       {/* Mobile Sidebar */}
       {isSidebarOpen && (
-        <div className="md:hidden fixed inset-0 bg-gray-200 z-40">
-          <div className="flex flex-col items-center space-y-6 py-8">
-            <Link
-              to="/"
-              className="flex items-center text-black hover:text-blue-600"
-              onClick={closeSidebar}
-            >
-              <AiOutlineHome className="mr-2" size={24} />
-              <span>Home</span>
+        <div className="md:hidden fixed inset-0 bg-gray-900 bg-opacity-95 z-40">
+          <div className="flex flex-col items-center space-y-8 py-8 text-xl">
+            <Link to="/" className="hover:text-red-500" onClick={closeSidebar}>
+              <AiOutlineHome className="inline mr-2" />
+              Home
             </Link>
             <Link
-              to="/form"
-              className="flex items-center text-black hover:text-blue-600"
+              to="/programs"
+              className="hover:text-red-500"
               onClick={closeSidebar}
             >
-              <AiOutlineForm className="mr-2" size={24} />
-              <span>Form</span>
+              <FaDumbbell className="inline mr-2" />
+              Programs
+            </Link>
+            <Link
+              to="/schedule"
+              className="hover:text-red-500"
+              onClick={closeSidebar}
+            >
+              <AiOutlineCalendar className="inline mr-2" />
+              Schedule
             </Link>
             <Link
               to="/about"
-              className="flex items-center text-black hover:text-blue-600"
+              className="hover:text-red-500"
               onClick={closeSidebar}
             >
-              <AiOutlineInfoCircle className="mr-2" size={24} />{" "}
-              {/* About icon */}
-              <span>About</span>
+              <AiOutlineTeam className="inline mr-2" />
+              About
             </Link>
             <Link
-              to="/blog"
-              className="flex items-center text-black hover:text-blue-600"
+              to="/contact"
+              className="hover:text-red-500"
               onClick={closeSidebar}
             >
-              <AiOutlineBook className="mr-2" size={24} /> {/* Blog icon */}
-              <span>Blog</span>
+              <FaPhone className="inline mr-2" />
+              Contact
             </Link>
 
             {userInfo ? (
-              <div className="flex flex-col items-center space-y-4">
+              <div className="flex flex-col items-center space-y-6 mt-8">
                 <Link
                   to="/profile"
-                  className="text-black hover:text-blue-600"
+                  className="px-6 py-2 bg-gray-800 rounded-lg hover:bg-gray-700"
                   onClick={closeSidebar}
                 >
                   Profile
                 </Link>
                 <button
                   onClick={logoutHandler}
-                  className="text-black hover:text-blue-600"
+                  className="px-6 py-2 bg-red-600 rounded-lg hover:bg-red-700"
                 >
                   Logout
                 </button>
               </div>
             ) : (
-              <div className="flex flex-col items-center space-y-4">
+              <div className="flex flex-col space-y-6 mt-8">
                 <Link
                   to="/login"
-                  className="flex items-center text-black hover:text-blue-600"
+                  className="px-6 py-2 bg-red-600 rounded-lg hover:bg-red-700 text-center"
                   onClick={closeSidebar}
                 >
-                  <AiOutlineLogin size={24} />
-                  <span className="ml-2">Login</span>
+                  Login
                 </Link>
                 <Link
                   to="/register"
-                  className="flex items-center text-black hover:text-blue-600"
+                  className="px-6 py-2 bg-gray-800 rounded-lg hover:bg-gray-700 text-center"
                   onClick={closeSidebar}
                 >
-                  <AiOutlineUserAdd size={24} />
-                  <span className="ml-2">Register</span>
+                  Register
                 </Link>
               </div>
             )}

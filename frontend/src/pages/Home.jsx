@@ -1,477 +1,276 @@
-import React, { useEffect, useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import React, { useEffect, useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import SkeletonLoader from "../components/SkeletonLoader";
 import { useAllUserdataQuery } from "../redux/api/userdataApiSlice";
 import { useSelector } from "react-redux";
 import Landing from "./Landing";
+import { AiOutlineForm, AiOutlineFilter } from "react-icons/ai";
 
-import { AiOutlineForm } from "react-icons/ai";
+// Color scheme constants
+const COLORS = {
+  primary: "bg-blue-800",
+  secondary: "bg-blue-600",
+  accent: "bg-blue-400",
+  text: "text-gray-800",
+  highlight: "bg-yellow-100",
+  success: "bg-green-600",
+  warning: "bg-orange-600",
+  danger: "bg-red-600",
+};
+
 const Home = () => {
   const { userInfo } = useSelector((state) => state.auth);
   const navigate = useNavigate();
-
   const { data: allUserdata, error, isLoading } = useAllUserdataQuery();
 
-  // State for total debit, credit, and balance (today's calculations)
-  const [totalDebit, setTotalDebit] = useState(0);
-  const [totalCredit, setTotalCredit] = useState(0);
-  const [balance, setBalance] = useState(0);
-
-  // State for all-time totals
-  const [allTimeTotalDebit, setAllTimeTotalDebit] = useState(0);
-  const [allTimeTotalCredit, setAllTimeTotalCredit] = useState(0);
-
-  // State for search query
+  // State management
   const [searchQuery, setSearchQuery] = useState("");
-
-  // Filtered user data based on search query
-  const filteredUserdata = allUserdata
-    ? allUserdata.filter((userdata) =>
-        userdata.name.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : [];
-
-  // State for pagination
-  const [filterType, setFilterType] = useState("all"); // Ne
+  const [filterType, setFilterType] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; // Number of items to display per page
+  const itemsPerPage = 10;
 
-  // Calculate the index of the last item on the current page
-  const indexOfLastUser = currentPage * itemsPerPage;
-  const indexOfFirstUser = indexOfLastUser - itemsPerPage;
-  const currentUsers = filteredUserdata.slice(
-    indexOfFirstUser,
-    indexOfLastUser
-  );
-  const filterUserdata = (userData) => {
-    if (!userData) return [];
+  // Derived data calculations
+  const dashboardStats = useMemo(() => {
+    if (!allUserdata) return {};
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    let filteredData = userData.filter((user) =>
-      user.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
-    switch (filterType) {
-      case "expiring_soon":
-        filteredData = filteredData.filter((user) => {
-          const subEndDate = new Date(user.subscriptionEndDate);
-          return (
-            subEndDate <= new Date() ||
-            (subEndDate - new Date()) / (1000 * 60 * 60 * 24) <= 3
-          );
-        });
-        break;
-      case "today_birthdays":
-        filteredData = filteredData.filter((user) => {
-          const createdDate = new Date(user.createdAt);
-          return (
-            createdDate.getFullYear() === today.getFullYear() &&
-            createdDate.getMonth() === today.getMonth() &&
-            createdDate.getDate() === today.getDate()
-          );
-        });
-        break;
-      case "active_subscription":
-        filteredData = filteredData.filter((user) => {
-          const subEndDate = new Date(user.subscriptionEndDate);
-          return subEndDate > new Date();
-        });
-        break;
-      case "expired_subscription":
-        filteredData = filteredData.filter((user) => {
-          const subEndDate = new Date(user.subscriptionEndDate);
-          return subEndDate <= new Date();
-        });
-        break;
-      default: // "all"
-        break;
-    }
-
-    return filteredData;
-
-    const filteredUserdata = filterUserdata(allUserdata);
-    const indexOfLastUser = currentPage * itemsPerPage;
-    const indexOfFirstUser = indexOfLastUser - itemsPerPage;
-    const currentUsers = filteredUserdata.slice(
-      indexOfFirstUser,
-      indexOfLastUser
-    );
-  };
-  useEffect(() => {
-    if (allUserdata) {
-      // Get the current date at midnight (00:00:00) to filter today's transactions
-      const today = new Date();
-      today.setHours(0, 0, 0, 0); // Reset time to 00:00:00 to start from midnight
-
-      // Filter transactions for today only
-      const todayTransactions = allUserdata.filter((user) => {
-        const transactionDate = new Date(user.createdAt);
-        return transactionDate >= today; // Include transactions from today
-      });
-
-      // Calculate the total debit and credit for today's transactions
-      const totalDebitCalc = todayTransactions.reduce(
-        (acc, user) => acc + (user.debit || 0),
-        0
-      );
-      const totalCreditCalc = todayTransactions.reduce(
-        (acc, user) => acc + (user.credit || 0),
-        0
-      );
-
-      setTotalDebit(totalDebitCalc);
-      setTotalCredit(totalCreditCalc);
-
-      // Calculate balance
-      const calculatedBalance = totalCreditCalc - totalDebitCalc;
-      setBalance(calculatedBalance);
-
-      // Calculate all-time total debit and credit
-      const allTimeDebit = allUserdata.reduce(
-        (acc, user) => acc + (user.debit || 0),
-        0
-      );
-      const allTimeCredit = allUserdata.reduce(
-        (acc, user) => acc + (user.credit || 0),
-        0
-      );
-
-      setAllTimeTotalDebit(allTimeDebit);
-      setAllTimeTotalCredit(allTimeCredit);
-    }
-  }, [allUserdata]);
-
-  // Add these state variables near the top of your component
-  const [totalRegisteredUsers, setTotalRegisteredUsers] = useState(0);
-  const [usersWithSubEndToday, setUsersWithSubEndToday] = useState(0);
-  const [todayDataCount, setTodayDataCount] = useState(0);
-
-  useEffect(() => {
-    if (allUserdata) {
-      // Total number of registered users
-      setTotalRegisteredUsers(allUserdata.length);
-
-      // Get current date
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      // Count users with subscription end date today
-      const subEndToday = allUserdata.filter((user) => {
+    return allUserdata.reduce(
+      (acc, user) => {
         const subEndDate = new Date(user.subscriptionEndDate);
-        return (
-          subEndDate.getFullYear() === today.getFullYear() &&
-          subEndDate.getMonth() === today.getMonth() &&
-          subEndDate.getDate() === today.getDate()
-        );
-      }).length;
-      setUsersWithSubEndToday(subEndToday);
+        const createdAt = new Date(user.createdAt);
 
-      // Count data created today
-      const todayData = allUserdata.filter((user) => {
-        const createdDate = new Date(user.createdAt);
-        return (
-          createdDate.getFullYear() === today.getFullYear() &&
-          createdDate.getMonth() === today.getMonth() &&
-          createdDate.getDate() === today.getDate()
-        );
-      }).length;
-      setTodayDataCount(todayData);
-    }
+        // Today's transactions
+        if (new Date(user.createdAt) >= today) {
+          acc.todayCredit += user.credit || 0;
+          acc.todayDebit += user.debit || 0;
+        }
+
+        // All-time totals
+        acc.allTimeCredit += user.credit || 0;
+        acc.allTimeDebit += user.debit || 0;
+
+        // Subscription status
+        if (subEndDate <= today) acc.expiredSubs++;
+        if (subEndDate > today) acc.activeSubs++;
+        if (subEndDate.toDateString() === today.toDateString())
+          acc.subsEndToday++;
+
+        // Birthdays
+        if (
+          createdAt.getDate() === today.getDate() &&
+          createdAt.getMonth() === today.getMonth()
+        ) {
+          acc.todayBirthdays++;
+        }
+
+        return acc;
+      },
+      {
+        totalUsers: allUserdata.length,
+        todayCredit: 0,
+        todayDebit: 0,
+        allTimeCredit: 0,
+        allTimeDebit: 0,
+        expiredSubs: 0,
+        activeSubs: 0,
+        subsEndToday: 0,
+        todayBirthdays: 0,
+      }
+    );
   }, [allUserdata]);
 
-  useEffect(() => {
-    if (allUserdata) {
-      // Get the current date at midnight (00:00:00) to filter today's transactions
+  // Filtered data
+  const filteredData = useMemo(() => {
+    if (!allUserdata) return [];
+
+    return allUserdata.filter((user) => {
+      const matchesSearch = user.name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
+      const subEnd = new Date(user.subscriptionEndDate);
+      const createdAt = new Date(user.createdAt);
       const today = new Date();
-      today.setHours(0, 0, 0, 0); // Reset time to 00:00:00 to start from midnight
 
-      // Filter transactions for today only
-      const todayTransactions = allUserdata.filter((user) => {
-        const transactionDate = new Date(user.createdAt);
-        return transactionDate >= today; // Include transactions from today
-      });
+      switch (filterType) {
+        case "expiring":
+          return subEnd <= new Date(today.getTime() + 3 * 86400000);
+        case "birthdays":
+          return (
+            createdAt.getDate() === today.getDate() &&
+            createdAt.getMonth() === today.getMonth()
+          );
+        case "active":
+          return subEnd > today;
+        case "expired":
+          return subEnd <= today;
+        default:
+          return matchesSearch;
+      }
+    });
+  }, [allUserdata, searchQuery, filterType]);
 
-      // Initialize variables to hold today's totals
-      let totalDebitCalc = 0;
-      let totalCreditCalc = 0;
+  // Pagination
+  const paginatedData = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return filteredData.slice(start, start + itemsPerPage);
+  }, [filteredData, currentPage]);
 
-      // Loop through the filtered transactions to calculate the totals
-      todayTransactions.forEach((user) => {
-        totalDebitCalc += user.debit || 0;
-        totalCreditCalc += user.credit || 0;
-      });
-
-      // Set the today's debit and credit totals in state
-      setTotalDebit(totalDebitCalc);
-      setTotalCredit(totalCreditCalc);
-
-      // Calculate balance
-      const calculatedBalance = totalCreditCalc - totalDebitCalc;
-      setBalance(calculatedBalance);
-
-      // Initialize variables to hold all-time totals
-      let allTimeDebit = 0;
-      let allTimeCredit = 0;
-
-      // Loop through all user data to calculate all-time totals
-      allUserdata.forEach((user) => {
-        allTimeDebit += user.debit || 0;
-        allTimeCredit += user.credit || 0;
-      });
-
-      // Set all-time totals in state
-      setAllTimeTotalDebit(allTimeDebit);
-      setAllTimeTotalCredit(allTimeCredit);
-    }
-  }, [allUserdata]);
-
-  if (isLoading) {
-    return <SkeletonLoader />;
-  }
-
-  if (error) {
-    return <p>Error fetching user data: {error.message}</p>;
-  }
-  if (!userInfo) {
-    return <Landing />;
-  }
+  if (isLoading) return <SkeletonLoader />;
+  if (error) return <p className="text-red-500 p-4">Error: {error.message}</p>;
+  if (!userInfo) return <Landing />;
 
   return (
-    <>
-      {!userInfo || !userInfo.isAdmin ? (
-        <Landing />
-      ) : (
-        <div className="container mx-auto p-4 sm:p-8 mt-6  bg-gray-50 rounded-lg shadow-md">
-          <h1 className="text-3xl mt-10 sm:text-4xl mb-4 sm:mb-8 text-center text-gray-800">
-            Customer Management Dashboard
-          </h1>
+    <div className="min-h-screen bg-gray-50 mt-[70px] p-4 md:p-8">
+      <header className="mb-8 text-center">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+          Customer Management Dashboard
+        </h1>
 
-          <div className="flex justify-center items-center">
-            <div className="mt-2 flex justify-center items-center gap-6 text-center w-full max-w-[600px] rounded-md bg-blue-950 p-5">
-              <h1 className="text-lg font-bold text-white">
-                Credit (Today):{" "}
-                {totalCredit.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </h1>
-              <p className="text-lg font-bold text-white">
-                Debit (Today):{" "}
-                {totalDebit.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </p>
-              <p className="text-lg font-bold text-white">
-                Current Balance:{" "}
-                {balance.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </p>
-            </div>
-          </div>
-          {/* <div className="flex justify-center items-center">
-        <div className="mt-2 flex justify-center items-center gap-6 text-center w-full max-w-[600px] rounded-md bg-green-700 p-5">
-          <h1 className="text-lg font-bold text-white">
-            Total Credit:{" "}
-            {allTimeTotalCredit.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
-          </h1>
-          <p className="text-lg font-bold text-white">
-            Total Debit:{" "}
-            {allTimeTotalDebit.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
-          </p>
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <StatCard
+            title="Today's Balance"
+            value={dashboardStats.todayCredit - dashboardStats.todayDebit}
+            color={COLORS.primary}
+          />
+          <StatCard
+            title="Active Subs"
+            value={dashboardStats.activeSubs}
+            color={COLORS.success}
+          />
+          <StatCard
+            title="Expiring Soon"
+            value={dashboardStats.subsEndToday}
+            color={COLORS.warning}
+          />
         </div>
-      </div> */}
-          <div className="flex justify-center items-center">
-            <div className="mt-2 flex justify-center items-center gap-6 text-center w-full max-w-[800px] rounded-md bg-blue-800 p-5">
-              <h1 className="text-lg font-bold text-white">
-                Total Users: {totalRegisteredUsers}
-              </h1>
-              <h1 className="text-lg font-bold text-white">
-                Sub End Today: {usersWithSubEndToday}
-              </h1>
-              <h1 className="text-lg font-bold text-white">
-                birthays today: {todayDataCount}
-              </h1>
-            </div>
-          </div>
-          {/* Search Input */}
-          <div className="mb-4 mt-8 flex justify-center">
-            <input
-              type="text"
-              placeholder="Search by name..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="border rounded p-2 w-full max-w-[600px] focus:outline-none focus:ring focus:ring-blue-300"
-            />
-          </div>
-          <Link to="/Form" className="flex  justify-center  items-center ">
-            <span>click to fill Customer details</span>
-            <AiOutlineForm className="mr-2  " size={24} />
-          </Link>
-          <div className="bg-white p-4 sm:p-6 mt-5 shadow-md rounded-lg overflow-x-auto">
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse text-center min-w-[800px]">
-                <thead>
-                  <tr className="bg-blue-800 hover:bg-gray-800 transition text-white">
-                    <th className="py-2 px-2 w-[5%] border">#</th>
-                    <th className="py-2 px-2 w-[12%] border">Date</th>
-                    <th className="py-2 px-2 w-[10%] border sticky left-0 bg-blue-800">
-                      Name
-                    </th>
-                    <th className="py-2 px-2 w-[8%] border">Number</th>
-                    <th className="py-2 px-2 w-[10%] border">Email</th>
-                    <th className="py-2 px-2 w-[10%] border">Credit</th>
-                    <th className="py-2 px-2 w-[10%] border">Debit</th>
-                    <th className="py-2 px-2 w-[25%] hidden  border">Notes</th>
-                    <th className="py-2 px-2 w-[15%] border">Subscription</th>
-                    <th className="py-2 px-2 w-[15%] border">Sub End Date</th>
-                    <th className="py-2 px-2 w-[10%] border">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentUsers.map((userdata, index) => {
-                    const createdAtDate = new Date(userdata.createdAt);
-                    const optionsDateTime = {
-                      month: "short",
-                      day: "numeric",
 
-                      hour: "numeric",
-                      minute: "numeric",
-                      hour12: true,
-                    };
-                    const formattedDateTime = createdAtDate.toLocaleDateString(
-                      "en-GB",
-                      optionsDateTime
-                    );
+        {/* Controls */}
+        <div className="flex flex-col md:flex-row gap-4 mb-8">
+          <input
+            type="text"
+            placeholder="Search customers..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
 
-                    const displayIndex = indexOfFirstUser + index + 1;
-
-                    const subEndDate = new Date(userdata.subscriptionEndDate);
-
-                    const formattedSubEndDate = subEndDate.toLocaleDateString(
-                      "en-GB",
-                      {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                      }
-                    );
-
-                    // Check if the subscription is expiring soon
-                    const isExpiringSoon =
-                      new Date() > subEndDate ||
-                      (subEndDate - new Date()) / (1000 * 60 * 60 * 24) <= 3;
-
-                    return (
-                      <tr
-                        className={`text-black hover:bg-gray-50 transition-colors ${
-                          isExpiringSoon ? "bg-red-100" : ""
-                        }`}
-                        key={userdata._id}
-                      >
-                        <td className="py-2 px-2 border text-center">
-                          {displayIndex}
-                        </td>
-                        <td
-                          className={`py-2 px-2 border text-sm ${
-                            new Date(userdata.date).toLocaleDateString(
-                              "en-GB",
-                              {
-                                day: "2-digit",
-                                month: "2-digit",
-                              }
-                            ) ===
-                            new Date().toLocaleDateString("en-GB", {
-                              day: "2-digit",
-                              month: "2-digit",
-                            })
-                              ? "bg-blue-300 text-black"
-                              : "text-black"
-                          }`}
-                        >
-                          {new Date(userdata.date).toLocaleDateString("en-GB", {
-                            day: "2-digit",
-                            month: "2-digit",
-                          })}
-                        </td>
-
-                        <td className="py-2 px-2 border font-medium sticky left-0 bg-white">
-                          {userdata.name}
-                        </td>
-                        <td className="py-2 px-2 border">{userdata.number}</td>
-                        <td className="py-2 px-2 border">{userdata.email}</td>
-                        <td className="py-2 px-2 border font-medium text-green-600 hover:text-white hover:bg-slate-900 transition-colors">
-                          {userdata.credit.toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })}
-                        </td>
-                        <td className="py-2 px-2 border font-medium text-red-600 hover:text-white hover:bg-slate-900 transition-colors">
-                          {userdata.debit.toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })}
-                        </td>
-                        <td className="py-2 px-2 hidden border">
-                          <div className="max-h-[80px]  overflow-y-auto text-sm">
-                            {userdata.note}
-                          </div>
-                        </td>
-                        <td className="py-2 px-2 border text-sm">
-                          {userdata.subscription}
-                        </td>
-                        <td
-                          className={`py-2 px-2 border text-sm ${
-                            isExpiringSoon ? "text-red-600 font-bold" : ""
-                          }`}
-                        >
-                          {formattedSubEndDate}
-                        </td>
-                        <td className="py-2 px-2 border">
-                          <Link
-                            to={`/Userdetails/${userdata._id}`}
-                            className="block w-full text-center py-1 px-2 bg-blue-400 text-white hover:bg-gray-800 transition-colors rounded"
-                          >
-                            Edit
-                          </Link>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-          {/* Pagination Controls */}
-          <div className="flex justify-between items-center mt-4">
-            <button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-              className="bg-blue-500 text-white px-4 py-2 rounded disabled:opacity-50"
+          <div className="relative flex-1">
+            <select
+              value={filterType}
+              onChange={(e) => setFilterType(e.target.value)}
+              className="w-full p-2 border rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
-              Previous
-            </button>
-            <button
-              onClick={() => setCurrentPage((prev) => prev + 1)}
-              disabled={indexOfLastUser >= filteredUserdata.length}
-              className="bg-blue-500 text-white px-4 py-2 rounded disabled:opacity-50"
-            >
-              Next
-            </button>
+              <option value="all">All Customers</option>
+              <option value="expiring">Subs Expiring Soon</option>
+              <option value="birthdays">Today's Birthdays</option>
+              <option value="active">Active Subs</option>
+              <option value="expired">Expired Subs</option>
+            </select>
+            <AiOutlineFilter className="absolute right-3 top-3 text-gray-500" />
           </div>
         </div>
-      )}
-    </>
+      </header>
+
+      {/* Data Table */}
+      <div className="bg-white rounded-lg shadow overflow-x-auto">
+        <table className="w-full">
+          <thead className={`${COLORS.primary} text-white`}>
+            <tr>
+              {[
+                "Name",
+                "Contact",
+                "Credit",
+                "Debit",
+                "Subscription",
+                "Actions",
+              ].map((header) => (
+                <th key={header} className="p-3 text-left whitespace-nowrap">
+                  {header}
+                </th>
+              ))}
+            </tr>
+          </thead>
+
+          <tbody>
+            {paginatedData.map((user, index) => (
+              <TableRow key={user._id} user={user} index={index} />
+            ))}
+          </tbody>
+        </table>
+
+        {/* Pagination */}
+        <div className="flex justify-between items-center p-4 border-t">
+          <button
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            className="px-4 py-2 rounded-lg hover:bg-gray-100 disabled:opacity-50"
+          >
+            Previous
+          </button>
+          <span>Page {currentPage}</span>
+          <button
+            onClick={() => setCurrentPage((p) => p + 1)}
+            disabled={paginatedData.length < itemsPerPage}
+            className="px-4 py-2 rounded-lg hover:bg-gray-100 disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Helper components
+const StatCard = ({ title, value, color }) => (
+  <div className={`${color} p-4 rounded-lg text-white`}>
+    <h3 className="text-sm font-medium">{title}</h3>
+    <p className="text-2xl font-bold">
+      {typeof value === "number" ? value.toLocaleString() : value}
+    </p>
+  </div>
+);
+
+const TableRow = ({ user, index }) => {
+  const subEnd = new Date(user.subscriptionEndDate);
+  const isExpiring = subEnd < new Date(new Date().getTime() + 3 * 86400000);
+
+  return (
+    <tr className={`hover:bg-gray-50 ${index % 2 ? "bg-gray-100" : ""}`}>
+      <td className="p-3 font-medium">{user.name}</td>
+      <td className="p-3">
+        <div className="text-sm">
+          <p>{user.number}</p>
+          <p className="text-gray-600">{user.email}</p>
+        </div>
+      </td>
+      <td className="p-3 text-green-600 font-medium">
+        {user.credit.toFixed(2)}
+      </td>
+      <td className="p-3 text-red-600 font-medium">{user.debit.toFixed(2)}</td>
+      <td className="p-3">
+        <span
+          className={`px-2 py-1 rounded-full text-sm ${
+            isExpiring
+              ? "bg-red-100 text-red-700"
+              : "bg-green-100 text-green-700"
+          }`}
+        >
+          {subEnd.toLocaleDateString()}
+        </span>
+      </td>
+      <td className="p-3">
+        <Link
+          to={`/Userdetails/${user._id}`}
+          className="inline-block px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+        >
+          Manage
+        </Link>
+      </td>
+    </tr>
   );
 };
 
