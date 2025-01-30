@@ -100,11 +100,11 @@ const Landing = () => {
           </div>
 
           {/* Content */}
-          <div className="container mx-auto px-4 mt-[150px] text-center relative z-10">
+          <div className="container mx-auto px-4 mt-[50px] text-center relative z-10">
             <h1 className="text-5xl  font-extrabold mb-6 md:text-6xl">
               Welcome to <br /> D' PLAYCE RECREATIONAL CENTER
             </h1>
-            <p className="text-xl mb-8 max-w-2xl mx-auto md:text-2xl">
+            <p className="text-xl max-w-2xl mx-auto md:text-2xl">
               Your Premier Destination for Sports and Fitness
             </p>
 
