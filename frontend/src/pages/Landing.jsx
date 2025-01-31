@@ -67,22 +67,22 @@ const Landing = () => {
       <section className="relative bg-gradient-to-br from-gray-900 to-red-900 h-screen text-white">
         <div className="absolute inset-0 bg-[url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMY1WUoftSjmj_TnBucSTs3_QSzo6NhzLDVA&s')] bg-cover bg-center mix-blend-overlay" />
         <div className="container mx-auto px-4 h-full flex items-center relative z-10">
-          <div className="max-w-4xl text-center mx-auto">
+          <div className="max-w-4xl justify-center text-center mx-auto">
             <h1 className="text-5xl md:text-5xl font-black mb-6 leading-tight">
-              <span className="bg-gradient-to-r from-red-500 to-orange-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-red-500 text-center to-orange-400 bg-clip-text text-transparent">
                 D'PLAYCE
               </span>
               <br />
               SPORTS & PERFORMANCE
             </h1>
             <p className="text-xl md:text-2xl mb-8 font-light">
-              Lagos' premier destination for elite training and competition
+              Abuja's premier destination for elite training and competition
             </p>
             <div className="flex flex-col md:flex-row gap-4 justify-center items-center ">
-              <button className="bg-red-500 hover:bg-red-700 px-8 py-4 rounded-xl font-bold w-[250px] flex items-center gap-2 transition-all transform hover:scale-105">
+              <button className="bg-red-500 hover:bg-red-700 px-8 py-4 rounded-xl text-center font-bold w-[250px] flex items-center gap-2 transition-all transform hover:scale-105">
                 <GiTrophyCup /> Book Facility
               </button>
-              <button className="border-2 border-white hover:border-red-500  w-[250px]  hover:text-red-500 px-8 py-4 rounded-xl font-bold flex items-center gap-2 transition-all">
+              <button className="border-2 border-white hover:border-red-500 text-center  w-[250px]  hover:text-red-500 px-8 py-4 rounded-xl font-bold flex items-center gap-2 transition-all">
                 <FaRunning /> Join Club
               </button>
             </div>
