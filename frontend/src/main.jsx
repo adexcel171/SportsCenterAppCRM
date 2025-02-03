@@ -20,6 +20,8 @@ import Form from "./pages/Form.jsx";
 
 import AdminDashboard from "./pages/Admin/AdminDashboard.jsx";
 import PageNotFound from "./components/PageNotFound.jsx";
+import LandingPage from "./pages/Landing.jsx";
+import Contact from "./pages/Contact.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -29,12 +31,14 @@ const router = createBrowserRouter(
       <Route index={true} path="/" element={<Home />} />
       <Route path="/form" element={<Form />} />
       <Route path="*" element={<PageNotFound />} />
+      <Route path="contact" element={<Contact />} />
 
       {/* Registered users */}
       <Route path="" element={<PrivateRoute />}>
         <Route path="/profile" element={<Profile />} />
         <Route path="/userdetails/:id" element={<Userdetails />} />
         <Route path="dashboard" element={<AdminDashboard />} />
+        <Route path="landing" element={<LandingPage />} />
       </Route>
 
       <Route path="/admin" element={<AdminRoute />}>

@@ -64,25 +64,33 @@ const Landing = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-gray-900 to-red-900 h-screen text-white">
-        <div className="absolute inset-0 bg-[url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMY1WUoftSjmj_TnBucSTs3_QSzo6NhzLDVA&s')] bg-cover bg-center mix-blend-overlay" />
+      <section className="relative bg-blue-900 h-screen text-white">
+        {/* Background Image */}
+        <div className="absolute inset-0 bg-[url('https://img.freepik.com/free-photo/beautiful-black-girl-is-engaged-gym_1157-24008.jpg?t=st=1738595882~exp=1738599482~hmac=117918f2125c7d1dae8235cd1abbfca81cafaab7fd10eb6aca99c0a687e5a88b&w=740')] bg-cover bg-center" />
+
+        {/* Content Container */}
         <div className="container mx-auto px-4 h-full flex items-center relative z-10">
-          <div className="max-w-4xl justify-center flex flex-col md:flex  text-center mx-auto">
-            <h1 className="text-5xl md:text-5xl font-black mb-6 leading-tight">
-              <span className="bg-gradient-to-r from-red-500 text-center to-orange-400 bg-clip-text text-transparent">
+          <div className="max-w-4xl justify-center flex flex-col text-center mx-auto">
+            {/* Heading */}
+            <h1 className="text-5xl md:text-6xl font-black mb-6 leading-tight">
+              <span className="bg-gradient-to-r from-red-500 to-orange-400 bg-clip-text text-transparent">
                 D'PLAYCE
               </span>
               <br />
               SPORTS & PERFORMANCE
             </h1>
-            <p className="text-xl md:text-2xl mb-8 font-light">
+
+            {/* Subheading */}
+            <p className="text-xl md:text-2xl mb-8 font-light bg-black bg-opacity-50 px-4 py-2 rounded-lg inline-block">
               Abuja's premier destination for elite training and competition
             </p>
-            <div className="flex flex-col md:flex-row gap-4 justify-center items-center ">
+
+            {/* Buttons */}
+            <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
               <button className="bg-red-500 hover:bg-red-700 px-8 py-4 rounded-xl text-center font-bold w-[200px] flex items-center gap-2 transition-all transform hover:scale-105">
                 <GiTrophyCup /> Book Facility
               </button>
-              <button className="border-2 border-white hover:border-red-500 text-center  w-[200px]  hover:text-red-500 px-8 py-4 rounded-xl font-bold flex items-center gap-2 transition-all">
+              <button className="border-2 border-white hover:border-red-500 text-center w-[200px] hover:text-red-500 px-8 py-4 rounded-xl font-bold flex items-center gap-2 transition-all">
                 <FaRunning /> Join Club
               </button>
             </div>
