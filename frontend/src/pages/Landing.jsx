@@ -64,11 +64,11 @@ const Landing = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="relative bg-gray-900 h-screen md:min-h-screen text-white">
+      <section className="relative h-screen md:min-h-screen text-white">
         {/* Background Image */}
         <div
-          className="absolute inset-0 bg-[url('https://img.freepik.com/free-photo/beautiful-black-girl-is-engaged-gym_1157-24008.jpg?t=st=1738595882~exp=1738599482~hmac=117918f2125c7d1dae8235cd1abbfca81cafaab7fd10eb6aca99c0a687e5a88b&w=740')] 
-      bg-center bg-no-repeat sm:bg-[size:contain] md:bg-cover"
+          className="absolute inset-0 mr-5 min-h-screen bg-[url('https://img.freepik.com/free-photo/beautiful-black-girl-is-engaged-gym_1157-24008.jpg?t=st=1738595882~exp=1738599482~hmac=117918f2125c7d1dae8235cd1abbfca81cafaab7fd10eb6aca99c0a687e5a88b&w=740')] 
+  bg-cover bg-top bg-no-repeat"
         ></div>
 
         {/* Content Container */}
