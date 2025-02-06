@@ -139,13 +139,13 @@ const Navigation = () => {
                 <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-xl">
                   <Link
                     to="/profile"
-                    className="block px-4 py-3 hover:bg-gray-700 rounded-t-lg"
+                    className="block px-4 py-3  text-white hover:bg-gray-700 rounded-t-lg"
                   >
                     My Profile
                   </Link>
                   <button
                     onClick={logoutHandler}
-                    className="block w-full px-4 py-3 text-left hover:bg-gray-700 rounded-b-lg"
+                    className="block w-full px-4 py-3 text-left  text-white hover:bg-gray-700 rounded-b-lg"
                   >
                     Logout
                   </button>
