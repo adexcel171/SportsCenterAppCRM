@@ -67,7 +67,7 @@ const Landing = () => {
       <section className="relative h-screen md:min-h-screen text-white">
         {/* Background Image */}
         <div
-          className="absolute inset-0 mr-5 min-h-screen bg-[url('https://img.freepik.com/free-photo/beautiful-black-girl-is-engaged-gym_1157-24008.jpg?t=st=1738595882~exp=1738599482~hmac=117918f2125c7d1dae8235cd1abbfca81cafaab7fd10eb6aca99c0a687e5a88b&w=740')] 
+          className="absolute inset-0 min-h-screen bg-[url('https://img.freepik.com/free-photo/beautiful-black-girl-is-engaged-gym_1157-24008.jpg?t=st=1738595882~exp=1738599482~hmac=117918f2125c7d1dae8235cd1abbfca81cafaab7fd10eb6aca99c0a687e5a88b&w=740')] 
   bg-cover bg-top bg-no-repeat"
         ></div>
 
