@@ -1,6 +1,7 @@
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
+import About from "./pages/About.jsx";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 import { Route, RouterProvider, createRoutesFromElements } from "react-router";
@@ -22,6 +23,7 @@ import AdminDashboard from "./pages/Admin/AdminDashboard.jsx";
 import PageNotFound from "./components/PageNotFound.jsx";
 import LandingPage from "./pages/Landing.jsx";
 import Contact from "./pages/Contact.jsx";
+import Programs from "./pages/Program.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -32,6 +34,8 @@ const router = createBrowserRouter(
       <Route path="/form" element={<Form />} />
       <Route path="*" element={<PageNotFound />} />
       <Route path="contact" element={<Contact />} />
+      <Route path="programs" element={<Programs />} />
+      <Route path="about" element={<About />} />
 
       {/* Registered users */}
       <Route path="" element={<PrivateRoute />}>

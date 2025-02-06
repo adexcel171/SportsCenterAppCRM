@@ -5,6 +5,7 @@ import { useAllUserdataQuery } from "../redux/api/userdataApiSlice";
 import { useSelector } from "react-redux";
 import Landing from "./Landing";
 import { AiOutlineForm, AiOutlineFilter } from "react-icons/ai";
+import Form from "./Form";
 
 // Color scheme constants
 const COLORS = {
@@ -173,6 +174,13 @@ const Home = () => {
           </div>
         </div>
       </header>
+      <Link
+        to="/form"
+        className="flex items-center hover:text-red-500 transition-colors"
+      >
+        <AiOutlineForm className="mr-1" />
+        User Data Form
+      </Link>
 
       {/* Data Table */}
       <div className="bg-white rounded-lg shadow overflow-x-auto">

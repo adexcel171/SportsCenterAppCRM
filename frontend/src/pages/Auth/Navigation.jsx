@@ -61,7 +61,7 @@ const Navigation = () => {
   }, []);
 
   return (
-    <nav className="fixed top-0 w-full bg-gray-900 text-white shadow-xl z-50">
+    <nav className="fixed top-0 w-full bg-gray-200 text-black shadow-xl z-50">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         {/* Logo and Brand */}
         <Link to="/" className="flex items-center space-x-2">
@@ -89,13 +89,13 @@ const Navigation = () => {
             <FaDumbbell className="mr-1" />
             Programs
           </Link>
-          <Link
+          {/* <Link
             to="/schedule"
             className="flex items-center hover:text-red-500 transition-colors"
           >
             <AiOutlineCalendar className="mr-1" />
             Schedule
-          </Link>
+          </Link> */}
           <Link
             to="/about"
             className="flex items-center hover:text-red-500 transition-colors"
@@ -156,14 +156,14 @@ const Navigation = () => {
             <div className="flex items-center space-x-4">
               <Link
                 to="/login"
-                className="flex items-center px-4 py-2 bg-red-600 rounded-lg hover:bg-red-700 transition-colors"
+                className="flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
               >
                 <AiOutlineLogin className="mr-2" />
                 Login
               </Link>
               <Link
                 to="/register"
-                className="flex items-center px-4 py-2 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors"
+                className="flex items-center px-4 py-2 text-white bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors"
               >
                 <AiOutlineUserAdd className="mr-2" />
                 Register
@@ -175,7 +175,7 @@ const Navigation = () => {
         {/* Mobile Hamburger Menu */}
         <button
           onClick={toggleSidebar}
-          className="md:hidden text-white hover:text-red-500 transition-colors"
+          className="md:hidden text-black hover:text-red-500 transition-colors"
         >
           {isSidebarOpen ? (
             <AiOutlineClose size={24} />
@@ -187,7 +187,7 @@ const Navigation = () => {
 
       {/* Mobile Sidebar */}
       {isSidebarOpen && (
-        <div className="md:hidden fixed inset-0 bg-gray-900 bg-opacity-95 z-40">
+        <div className="md:hidden fixed inset-0 bg-gray-800 text-white bg-opacity-95 z-40">
           <div className="flex flex-col items-center space-y-8 py-8 text-xl">
             <Link to="/" className="hover:text-red-500" onClick={closeSidebar}>
               <AiOutlineHome className="inline mr-2" />
@@ -201,14 +201,14 @@ const Navigation = () => {
               <FaDumbbell className="inline mr-2" />
               Programs
             </Link>
-            <Link
+            {/* <Link
               to="/schedule"
               className="hover:text-red-500"
               onClick={closeSidebar}
             >
               <AiOutlineCalendar className="inline mr-2" />
               Schedule
-            </Link>
+            </Link> */}
             <Link
               to="/about"
               className="hover:text-red-500"

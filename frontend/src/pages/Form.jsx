@@ -53,17 +53,14 @@ const Form = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-8 text-center">
+    <div className="min-h-screen mt-6  flex items-center justify-center p-4">
+      <div className="max-w-3xl w-full bg-white/80 backdrop-blur-lg shadow-2xl rounded-2xl p-6 md:p-10">
+        <h1 className="text-4xl font-extrabold text-gray-800 text-center mb-6">
           Customer Registration
         </h1>
 
-        <form
-          onSubmit={handleSubmit}
-          className="bg-white rounded-xl shadow-lg p-6 md:p-8"
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormInput
               id="name"
               label="Full Name"
@@ -117,48 +114,44 @@ const Form = () => {
               onChange={handleChange}
               required
             />
-
-            <div className="md:col-span-2">
-              <FormSelect
-                id="subscription"
-                label="Subscription Type"
-                value={formData.subscription}
-                onChange={handleChange}
-                options={["Weekly", "Monthly", "Yearly"]}
-                required
-              />
-            </div>
-
-            <div className="md:col-span-2">
-              <FormInput
-                id="subscriptionEndDate"
-                label="Subscription End Date"
-                type="date"
-                value={formData.subscriptionEndDate}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Additional Notes
-              </label>
-              <textarea
-                id="note"
-                value={formData.note}
-                onChange={handleChange}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-                rows="3"
-                placeholder="Enter any additional notes..."
-              />
-            </div>
           </div>
 
-          <div className="mt-6 flex justify-end">
+          <FormSelect
+            id="subscription"
+            label="Subscription Type"
+            value={formData.subscription}
+            onChange={handleChange}
+            options={["Weekly", "Monthly", "Yearly"]}
+            required
+          />
+
+          <FormInput
+            id="subscriptionEndDate"
+            label="Subscription End Date"
+            type="date"
+            value={formData.subscriptionEndDate}
+            onChange={handleChange}
+            required
+          />
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Additional Notes
+            </label>
+            <textarea
+              id="note"
+              value={formData.note}
+              onChange={handleChange}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-transparent"
+              rows="3"
+              placeholder="Enter any additional notes..."
+            />
+          </div>
+
+          <div className="flex justify-center">
             <button
               type="submit"
-              className={`${COLORS.primary} text-white px-8 py-3 rounded-lg hover:${COLORS.secondary} transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400`}
+              className="bg-indigo-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-indigo-500 transition duration-300 focus:outline-none focus:ring-4 focus:ring-indigo-300"
             >
               Create Customer
             </button>
