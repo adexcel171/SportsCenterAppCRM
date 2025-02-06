@@ -69,7 +69,7 @@ const About = () => {
       <section className="bg-blue-50 py-12">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 text-center mb-8">
-            Why Choose EliteFit?
+            Why Choose D PLAYCE?
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="bg-white p-6 rounded-lg shadow-md text-center">
