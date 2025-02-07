@@ -1,0 +1,12 @@
+@keyframes progress {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.animate-progress {
+  animation: progress 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}

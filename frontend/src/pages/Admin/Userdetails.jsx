@@ -91,11 +91,11 @@ const Userdetails = () => {
     >
       <div className="max-w-4xl mx-auto mt-[60px] px-4">
         <h1 className="text-3xl font-bold mb-8 text-center">
-          🏋️♂️ Member Management
+          🏋️ Member Management
         </h1>
 
         <div className={`${SPORT_THEME.accent} rounded-xl p-6 shadow-xl`}>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6 text-white">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormInput
                 id="name"
@@ -156,7 +156,7 @@ const Userdetails = () => {
                   label="Membership Plan"
                   value={formData.subscription}
                   onChange={handleChange}
-                  options={["Basic", "Pro", "VIP"]}
+                  options={["weekly", "Monthly", "Yearly"]}
                 />
               </div>
 
@@ -219,7 +219,7 @@ const FormInput = ({ id, label, type = "text", value, onChange, required }) => (
       type={type}
       value={value}
       onChange={onChange}
-      className={`w-full p-3 ${SPORT_THEME.border} border rounded-lg focus:ring-2 focus:ring-red-500 bg-gray-800`}
+      className={`w-full p-3 ${SPORT_THEME.border} border text-white rounded-lg focus:ring-2 focus:ring-red-500 bg-gray-800`}
       required={required}
     />
   </div>
