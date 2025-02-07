@@ -19,6 +19,15 @@ const COLORS = {
   danger: "bg-red-600",
 };
 
+// Utility function to format dates
+const formatDate = (date) => {
+  return new Date(date).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+};
+
 const Home = () => {
   const { userInfo } = useSelector((state) => state.auth);
   const navigate = useNavigate();
@@ -267,7 +276,7 @@ const TableRow = ({ user, index }) => {
               : "bg-green-100 text-green-700"
           }`}
         >
-          {subEnd.toLocaleDateString()}
+          {formatDate(user.subscriptionEndDate)}
         </span>
       </td>
       <td className="p-3">
