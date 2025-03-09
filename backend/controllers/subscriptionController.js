@@ -57,8 +57,37 @@ export const createSubscription = async (req, res) => {
   }
 };
 
-// Reuse existing getMySubscriptions and cancelSubscription as they are
-export { getMySubscriptions, cancelSubscription };
+// Define getMySubscriptions
+export const getMySubscriptions = async (req, res) => {
+  try {
+    const subscriptions = await Subscription.find({ user: req.user._id }).sort({
+      startDate: -1,
+    });
+    res.status(200).json(subscriptions);
+  } catch (error) {
+    console.error("Error fetching user subscriptions:", error.message);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// Define cancelSubscription
+export const cancelSubscription = async (req, res) => {
+  try {
+    const subscription = await Subscription.findById(req.params.id);
+    if (!subscription) {
+      return res.status(404).json({ message: "Subscription not found" });
+    }
+    if (subscription.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+    subscription.status = "canceled";
+    await subscription.save();
+    res.status(200).json(subscription);
+  } catch (error) {
+    console.error("Error canceling subscription:", error.message);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
 
 // Helper function to calculate subscription end date
 const calculateEndDate = (startDate, duration) => {
