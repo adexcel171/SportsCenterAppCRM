@@ -1,10 +1,16 @@
+import { usePaystackPayment } from "react-paystack";
+import { useSelector } from "react-redux";
+import { useCreateSubscriptionMutation } from "../redux/api/subscriptionApiSlice";
+import { v4 as uuidv4 } from "uuid";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Add for navigation
+
 const Programs = () => {
-  // Subscription Plans Data
   const subscriptions = [
     {
       title: "Starter Pass",
       price: "₦25,000",
-      duration: "/month",
+      duration: "month",
       features: [
         "Basic gym access",
         "1 group class/week",
@@ -17,7 +23,7 @@ const Programs = () => {
     {
       title: "Pro Athlete",
       price: "₦65,000",
-      duration: "/month",
+      duration: "month",
       features: [
         "Unlimited gym access",
         "3 personal training sessions",
@@ -31,7 +37,7 @@ const Programs = () => {
     {
       title: "Elite Membership",
       price: "₦120,000",
-      duration: "/month",
+      duration: "month",
       features: [
         "24/7 facility access",
         "5 personal training sessions",
@@ -45,7 +51,6 @@ const Programs = () => {
     },
   ];
 
-  // Workout Programs Data
   const workoutPlans = [
     {
       title: "8-Week Transformation",
@@ -77,9 +82,117 @@ const Programs = () => {
     },
   ];
 
+  const { userInfo } = useSelector((state) => state.auth);
+  const [createSubscription] = useCreateSubscriptionMutation();
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [activeSubscription, setActiveSubscription] = useState(null);
+  const navigate = useNavigate(); // Add navigation hook
+
+  const publicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
+  console.log("Paystack Public Key:", publicKey);
+
+  if (!publicKey) {
+    console.error("Paystack public key is missing.");
+  }
+
+  const handlePaymentSuccess = async (reference) => {
+    try {
+      const subscriptionData = {
+        plan: reference.metadata.plan,
+        amount: reference.amount / 100,
+        duration: reference.metadata.duration,
+        paymentReference: reference.reference,
+        paymentType: "Paystack",
+        email: userInfo.email,
+        name: userInfo.name,
+      };
+
+      console.log("Creating subscription with data:", subscriptionData);
+
+      const result = await createSubscription(subscriptionData).unwrap();
+      console.log("Subscription created successfully:", result);
+
+      setPaymentSuccess(true);
+      setActiveSubscription({
+        plan: reference.metadata.plan,
+        expirationDate: new Date(
+          new Date().setMonth(new Date().getMonth() + 1)
+        ).toLocaleDateString(),
+      });
+
+      alert("Payment successful! Your subscription has been activated.");
+      navigate("/home"); // Navigate to Home after success
+    } catch (err) {
+      console.error("Failed to save subscription:", err);
+      alert("Payment failed. Please try again.");
+    }
+  };
+
+  const handlePayment = (plan) => {
+    if (!userInfo) {
+      navigate("/login"); // Use navigate instead of window.location
+      return;
+    }
+
+    if (!userInfo?.email || !userInfo.email.includes("@")) {
+      console.error("Invalid email:", userInfo?.email);
+      alert("Invalid email address. Please update your profile.");
+      return;
+    }
+
+    const amountInKobo = parseInt(plan.price.replace(/\D/g, "")) * 100;
+
+    if (isNaN(amountInKobo) || amountInKobo <= 0) {
+      console.error("Invalid amount:", plan.price);
+      alert("Invalid plan price. Please contact support.");
+      return;
+    }
+
+    const paymentConfig = {
+      reference: uuidv4(),
+      email: userInfo.email,
+      amount: amountInKobo,
+      publicKey: publicKey,
+      metadata: {
+        plan: plan.title,
+        duration: plan.duration,
+        userId: userInfo._id,
+      },
+    };
+
+    console.log("Payment Config:", paymentConfig);
+
+    if (
+      !paymentConfig.email ||
+      !paymentConfig.amount ||
+      !paymentConfig.publicKey
+    ) {
+      console.error("Invalid payment configuration:", paymentConfig);
+      alert("Payment configuration error. Please contact support.");
+      return;
+    }
+
+    const initializePayment = usePaystackPayment(paymentConfig);
+    initializePayment(
+      (reference) => handlePaymentSuccess(reference),
+      () => console.log("Payment closed")
+    );
+  };
+
   return (
     <div className="py-20">
-      {/* Subscription Plans Section */}
+      {paymentSuccess && activeSubscription && (
+        <div className="container mx-auto px-4 mb-8">
+          <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-lg">
+            <p>
+              Welcome back, <strong>{userInfo?.name}</strong>! Your{" "}
+              <strong>{activeSubscription.plan}</strong> subscription is active
+              until <strong>{activeSubscription.expirationDate}</strong>.
+            </p>
+          </div>
+        </div>
+      )}
+
       <section className="mb-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
@@ -106,7 +219,7 @@ const Programs = () => {
                   <div className="text-4xl font-black mb-4">
                     {plan.price}
                     <span className="text-lg text-gray-600">
-                      {plan.duration}
+                      /{plan.duration}
                     </span>
                   </div>
                   <ul className="space-y-3 mb-6">
@@ -119,7 +232,10 @@ const Programs = () => {
                       </li>
                     ))}
                   </ul>
-                  <button className="w-full bg-red-500 hover:bg-red-600 py-3 rounded-xl font-bold text-white transition-all">
+                  <button
+                    onClick={() => handlePayment(plan)}
+                    className="w-full bg-red-500 hover:bg-red-600 py-3 rounded-xl font-bold text-white transition-all"
+                  >
                     Choose Plan
                   </button>
                 </div>
@@ -129,7 +245,6 @@ const Programs = () => {
         </div>
       </section>
 
-      {/* Workout Programs Section */}
       <section className="bg-gray-900 text-white py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
@@ -147,7 +262,6 @@ const Programs = () => {
                 className="bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl transition-all overflow-hidden group"
               >
                 <div className="p-6">
-                  <div className="mb-4">{plan.icon}</div>
                   <h3 className="text-2xl font-bold mb-2">{plan.title}</h3>
                   <div className="space-y-2 text-gray-400">
                     <div className="flex justify-between">
