@@ -1,42 +1,45 @@
-// subscriptionController.js
 import Subscription from "../models/subscriptionModel.js";
 import { verifyPayment } from "../paystack.js";
+import asyncHandler from "../middlewares/asyncHandler.js";
 
-export const createSubscription = async (req, res) => {
+// Create a new subscription
+export const createSubscription = asyncHandler(async (req, res) => {
   try {
-    console.log("Authenticated User in Controller:", req.user);
+    const { paymentReference, plan, amount, duration, paymentType } = req.body;
 
-    const {
-      paymentReference,
-      plan,
-      amount,
-      duration,
-      name,
-      email,
-      paymentType,
-    } = req.body;
+    console.log("Subscription request data:", req.body); // Debug input
 
-    // Verify payment with Paystack
     const payment = await verifyPayment(paymentReference);
-    if (!payment.status) {
-      return res.status(400).json({ message: "Payment verification failed" });
+    console.log("Payment verification result:", payment); // Debug result
+
+    // Check Paystack response: status must be true and transaction status must be "success"
+    if (!payment.status || payment.data?.status !== "success") {
+      return res
+        .status(400)
+        .json({ message: payment.message || "Payment verification failed" });
     }
 
-    // Check if the user already has an active subscription for the same plan
+    const user = req.user;
+    if (!user) {
+      return res.status(401).json({ message: "User not authenticated" });
+    }
+
     const existingSubscription = await Subscription.findOne({
-      user: req.user._id,
+      user: user._id,
       plan,
       status: "active",
     });
 
     if (existingSubscription) {
       return res.status(400).json({
-        message: "User already has an active subscription for this plan",
+        message: "You already have an active subscription for this plan",
       });
     }
 
     const subscription = new Subscription({
-      user: req.user._id,
+      user: user._id,
+      email: user.email,
+      name: user.name,
       plan,
       amount,
       duration,
@@ -44,21 +47,20 @@ export const createSubscription = async (req, res) => {
       endDate: calculateEndDate(new Date(), duration),
       status: "active",
       paymentReference,
-      name, // Save name
-      email, // Save email
-      paymentType, // Save payment type
+      paymentType,
     });
 
     await subscription.save();
+    console.log("Subscription created:", subscription); // Debug success
     res.status(201).json(subscription);
   } catch (error) {
     console.error("Error creating subscription:", error.message);
     res.status(400).json({ message: error.message });
   }
-};
+});
 
-// Define getMySubscriptions
-export const getMySubscriptions = async (req, res) => {
+// Get user's subscriptions
+export const getMySubscriptions = asyncHandler(async (req, res) => {
   try {
     const subscriptions = await Subscription.find({ user: req.user._id }).sort({
       startDate: -1,
@@ -68,10 +70,10 @@ export const getMySubscriptions = async (req, res) => {
     console.error("Error fetching user subscriptions:", error.message);
     res.status(500).json({ message: "Server error", error: error.message });
   }
-};
+});
 
-// Define cancelSubscription
-export const cancelSubscription = async (req, res) => {
+// Cancel a subscription
+export const cancelSubscription = asyncHandler(async (req, res) => {
   try {
     const subscription = await Subscription.findById(req.params.id);
     if (!subscription) {
@@ -87,7 +89,7 @@ export const cancelSubscription = async (req, res) => {
     console.error("Error canceling subscription:", error.message);
     res.status(500).json({ message: "Server error", error: error.message });
   }
-};
+});
 
 // Helper function to calculate subscription end date
 const calculateEndDate = (startDate, duration) => {

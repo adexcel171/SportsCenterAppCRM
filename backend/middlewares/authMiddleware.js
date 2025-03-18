@@ -1,10 +1,9 @@
-// authMiddleware.js
 import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
 import asyncHandler from "./asyncHandler.js";
 
 const authenticate = asyncHandler(async (req, res, next) => {
-  console.log("Incoming Headers:", req.headers); // Debugging
+  console.log("Incoming Headers:", req.headers);
 
   let token =
     req.cookies?.jwt ||
@@ -12,7 +11,7 @@ const authenticate = asyncHandler(async (req, res, next) => {
       ? req.headers.authorization.split(" ")[1]
       : null);
 
-  console.log("Extracted Token:", token); // Debugging
+  console.log("Extracted Token:", token);
 
   if (!token) {
     console.error("No token found in request");
@@ -21,7 +20,7 @@ const authenticate = asyncHandler(async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("Decoded Token:", decoded); // Debugging
+    console.log("Decoded Token:", decoded);
 
     const user = await User.findById(decoded.userId).select("-password");
 
@@ -32,8 +31,8 @@ const authenticate = asyncHandler(async (req, res, next) => {
         .json({ message: "Not authorized, user not found" });
     }
 
-    console.log("Authenticated User:", user); // Debugging
-    req.user = user; // Attach user to the request
+    console.log("Authenticated User:", user);
+    req.user = user;
     next();
   } catch (error) {
     console.error("JWT Verification Error:", error.message);

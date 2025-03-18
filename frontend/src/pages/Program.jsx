@@ -1,9 +1,9 @@
-import { usePaystackPayment } from "react-paystack";
 import { useSelector } from "react-redux";
-import { useCreateSubscriptionMutation } from "../redux/api/subscriptionApiSlice";
-import { v4 as uuidv4 } from "uuid";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Add for navigation
+import { useNavigate } from "react-router-dom";
+import { jsPDF } from "jspdf";
+import { v4 as uuidv4 } from "uuid";
+import { useCreateSubscriptionMutation } from "../redux/api/subscriptionApiSlice";
 
 const Programs = () => {
   const subscriptions = [
@@ -51,100 +51,124 @@ const Programs = () => {
     },
   ];
 
-  const workoutPlans = [
-    {
-      title: "8-Week Transformation",
-      focus: "Fat Loss",
-      duration: "8 Weeks",
-      equipment: "Full Gym",
-      intensity: "High",
-    },
-    {
-      title: "Strength Foundation",
-      focus: "Muscle Building",
-      duration: "12 Weeks",
-      equipment: "Free Weights",
-      intensity: "Medium",
-    },
-    {
-      title: "Sport-Specific Training",
-      focus: "Performance",
-      duration: "Custom",
-      equipment: "Sport-Specific",
-      intensity: "High",
-    },
-    {
-      title: "Mobility Mastery",
-      focus: "Flexibility",
-      duration: "6 Weeks",
-      equipment: "Bodyweight",
-      intensity: "Low",
-    },
-  ];
-
   const { userInfo } = useSelector((state) => state.auth);
   const [createSubscription] = useCreateSubscriptionMutation();
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [activeSubscription, setActiveSubscription] = useState(null);
-  const navigate = useNavigate(); // Add navigation hook
+  const [ticket, setTicket] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const navigate = useNavigate();
 
-  const publicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
-  console.log("Paystack Public Key:", publicKey);
+  const publicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || "";
 
-  if (!publicKey) {
-    console.error("Paystack public key is missing.");
-  }
+  const generateTicket = (subscriptionData, reference) => {
+    const ticketId = uuidv4().slice(0, 8);
+    const expirationDate = new Date();
+    expirationDate.setMonth(expirationDate.getMonth() + 1);
 
-  const handlePaymentSuccess = async (reference) => {
+    return {
+      ticketId,
+      userName: userInfo?.username || "Unknown User",
+      userEmail: userInfo?.email || "N/A",
+      plan: subscriptionData.plan,
+      amount: subscriptionData.amount,
+      paymentReference: reference,
+      purchaseDate: new Date().toLocaleString(),
+      expirationDate: expirationDate.toLocaleString(),
+    };
+  };
+
+  const downloadTicket = (ticket) => {
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    doc.text("Gym Subscription Ticket", 20, 20);
+    doc.setFontSize(12);
+    doc.text(`Ticket ID: ${ticket.ticketId}`, 20, 40);
+    doc.text(`Name: ${ticket.userName}`, 20, 50);
+    doc.text(`Email: ${ticket.userEmail}`, 20, 60);
+    doc.text(`Plan: ${ticket.plan}`, 20, 70);
+    doc.text(`Amount: ₦${ticket.amount.toLocaleString()}`, 20, 80);
+    doc.text(`Payment Reference: ${ticket.paymentReference}`, 20, 90);
+    doc.text(`Purchased: ${ticket.purchaseDate}`, 20, 100);
+    doc.text(`Expires: ${ticket.expirationDate}`, 20, 110);
+    doc.save(`ticket_${ticket.ticketId}.pdf`);
+  };
+
+  const handlePaymentSuccess = async (reference, paymentConfig) => {
     try {
+      console.log("Paystack callback response:", reference);
+      if (!reference || typeof reference.reference !== "string") {
+        throw new Error(
+          "Invalid payment response from Paystack: " + JSON.stringify(reference)
+        );
+      }
+
+      if (!userInfo) {
+        throw new Error("User not authenticated. Please log in.");
+      }
+
+      console.log("UserInfo before subscription:", userInfo);
+      const token = userInfo.token || userInfo.jwt;
+      if (!token) {
+        console.error("No token found in userInfo:", userInfo);
+        throw new Error("No token found in userInfo. Please log in again.");
+      }
+
       const subscriptionData = {
-        plan: reference.metadata.plan,
-        amount: reference.amount / 100,
-        duration: reference.metadata.duration,
+        plan: paymentConfig.metadata.plan,
+        amount: paymentConfig.amount / 100,
+        duration: paymentConfig.metadata.duration,
         paymentReference: reference.reference,
         paymentType: "Paystack",
-        email: userInfo.email,
-        name: userInfo.name,
       };
 
       console.log("Creating subscription with data:", subscriptionData);
-
       const result = await createSubscription(subscriptionData).unwrap();
       console.log("Subscription created successfully:", result);
 
+      const newTicket = generateTicket(subscriptionData, reference.reference);
+      setTicket(newTicket);
       setPaymentSuccess(true);
       setActiveSubscription({
-        plan: reference.metadata.plan,
+        plan: subscriptionData.plan,
         expirationDate: new Date(
           new Date().setMonth(new Date().getMonth() + 1)
         ).toLocaleDateString(),
       });
-
-      alert("Payment successful! Your subscription has been activated.");
-      navigate("/home"); // Navigate to Home after success
+      downloadTicket(newTicket); // Initial download happens here
+      // Removed navigation timeout to keep the success UI visible
     } catch (err) {
-      console.error("Failed to save subscription:", err);
-      alert("Payment failed. Please try again.");
+      console.error("Subscription creation failed:", err);
+      setErrorMessage(
+        err.data?.message ||
+          err.message ||
+          "Failed to create subscription. Please try again."
+      );
+      if (
+        err.status === 401 ||
+        err.message?.includes("Unauthorized") ||
+        err.message?.includes("No token")
+      ) {
+        console.warn("Auth issue detected - Redirecting to login");
+        navigate("/login");
+      }
     }
   };
 
   const handlePayment = (plan) => {
     if (!userInfo) {
-      navigate("/login"); // Use navigate instead of window.location
+      navigate("/login");
       return;
     }
 
-    if (!userInfo?.email || !userInfo.email.includes("@")) {
-      console.error("Invalid email:", userInfo?.email);
-      alert("Invalid email address. Please update your profile.");
+    if (!publicKey) {
+      setErrorMessage("Payment system is unavailable. Contact support.");
       return;
     }
 
     const amountInKobo = parseInt(plan.price.replace(/\D/g, "")) * 100;
-
     if (isNaN(amountInKobo) || amountInKobo <= 0) {
-      console.error("Invalid amount:", plan.price);
-      alert("Invalid plan price. Please contact support.");
+      setErrorMessage("Invalid plan price. Please contact support.");
       return;
     }
 
@@ -152,7 +176,7 @@ const Programs = () => {
       reference: uuidv4(),
       email: userInfo.email,
       amount: amountInKobo,
-      publicKey: publicKey,
+      key: publicKey,
       metadata: {
         plan: plan.title,
         duration: plan.duration,
@@ -160,23 +184,33 @@ const Programs = () => {
       },
     };
 
-    console.log("Payment Config:", paymentConfig);
+    console.log("Payment config:", paymentConfig);
 
-    if (
-      !paymentConfig.email ||
-      !paymentConfig.amount ||
-      !paymentConfig.publicKey
-    ) {
-      console.error("Invalid payment configuration:", paymentConfig);
-      alert("Payment configuration error. Please contact support.");
-      return;
-    }
+    const loadPaystackScript = () => {
+      const script = document.createElement("script");
+      script.src = "https://js.paystack.co/v1/inline.js";
+      script.async = true;
+      script.onload = () => {
+        const handler = window.PaystackPop.setup({
+          ...paymentConfig,
+          callback: (response) => handlePaymentSuccess(response, paymentConfig),
+          onClose: () => setErrorMessage("Payment was closed by user."),
+        });
+        handler.openIframe();
+      };
+      script.onerror = () =>
+        setErrorMessage("Failed to load payment system. Please try again.");
+      document.body.appendChild(script);
+    };
 
-    const initializePayment = usePaystackPayment(paymentConfig);
-    initializePayment(
-      (reference) => handlePaymentSuccess(reference),
-      () => console.log("Payment closed")
-    );
+    loadPaystackScript();
+  };
+
+  const dismissSuccessMessage = () => {
+    setPaymentSuccess(false);
+    setActiveSubscription(null);
+    setTicket(null);
+    navigate("/landing"); // Navigate only when user dismisses the success message
   };
 
   return (
@@ -185,10 +219,51 @@ const Programs = () => {
         <div className="container mx-auto px-4 mb-8">
           <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-lg">
             <p>
-              Welcome back, <strong>{userInfo?.name}</strong>! Your{" "}
+              Welcome back, <strong>{userInfo?.username}</strong>! Your{" "}
               <strong>{activeSubscription.plan}</strong> subscription is active
               until <strong>{activeSubscription.expirationDate}</strong>.
             </p>
+            {ticket && (
+              <div className="mt-4 p-4 bg-white rounded-lg shadow">
+                <h3 className="text-lg font-bold">Your Subscription Ticket</h3>
+                <p>
+                  Ticket ID: <strong>{ticket.ticketId}</strong>
+                </p>
+                <p>Name: {ticket.userName}</p>
+                <p>Email: {ticket.userEmail}</p>
+                <p>Plan: {ticket.plan}</p>
+                <p>Amount: ₦{ticket.amount.toLocaleString()}</p>
+                <p>Payment Reference: {ticket.paymentReference}</p>
+                <p>Purchased: {ticket.purchaseDate}</p>
+                <p>Expires: {ticket.expirationDate}</p>
+                <button
+                  onClick={() => downloadTicket(ticket)}
+                  className="mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg transition-all"
+                >
+                  Download Ticket Again
+                </button>
+                <button
+                  onClick={dismissSuccessMessage}
+                  className="mt-4 ml-4 bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg transition-all"
+                >
+                  Dismiss
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {errorMessage && (
+        <div className="container mx-auto px-4 mb-8">
+          <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg">
+            <p>{errorMessage}</p>
+            <button
+              onClick={() => setErrorMessage(null)}
+              className="mt-2 text-sm underline"
+            >
+              Dismiss
+            </button>
           </div>
         </div>
       )}
@@ -237,52 +312,6 @@ const Programs = () => {
                     className="w-full bg-red-500 hover:bg-red-600 py-3 rounded-xl font-bold text-white transition-all"
                   >
                     Choose Plan
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-gray-900 text-white py-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-black mb-4">
-              Training Programs
-            </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto text-lg">
-              Expert-designed regimens for all fitness levels
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {workoutPlans.map((plan, index) => (
-              <div
-                key={index}
-                className="bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl transition-all overflow-hidden group"
-              >
-                <div className="p-6">
-                  <h3 className="text-2xl font-bold mb-2">{plan.title}</h3>
-                  <div className="space-y-2 text-gray-400">
-                    <div className="flex justify-between">
-                      <span>Focus:</span>
-                      <span className="text-white">{plan.focus}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Duration:</span>
-                      <span className="text-white">{plan.duration}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Equipment:</span>
-                      <span className="text-white">{plan.equipment}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Intensity:</span>
-                      <span className="text-white">{plan.intensity}</span>
-                    </div>
-                  </div>
-                  <button className="mt-6 w-full bg-red-500 hover:bg-red-600 py-3 rounded-xl font-bold text-white transition-all">
-                    View Program
                   </button>
                 </div>
               </div>

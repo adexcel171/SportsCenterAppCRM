@@ -11,7 +11,10 @@ const createUser = asyncHandler(async (req, res) => {
   }
 
   const userExists = await User.findOne({ email });
-  if (userExists) res.status(400).send("User already exists");
+  if (userExists) {
+    res.status(400);
+    throw new Error("User already exists");
+  }
 
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
@@ -19,13 +22,14 @@ const createUser = asyncHandler(async (req, res) => {
 
   try {
     await newUser.save();
-    createToken(res, newUser._id);
+    const token = createToken(res, newUser._id);
 
     res.status(201).json({
       _id: newUser._id,
       username: newUser.username,
       email: newUser.email,
       isAdmin: newUser.isAdmin,
+      token, // Include token in response
     });
   } catch (error) {
     res.status(400);
@@ -36,8 +40,7 @@ const createUser = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  console.log(email);
-  console.log(password);
+  console.log("Login attempt - Email:", email);
 
   const existingUser = await User.findOne({ email });
 
@@ -46,24 +49,27 @@ const loginUser = asyncHandler(async (req, res) => {
       password,
       existingUser.password
     );
-
     if (isPasswordValid) {
-      createToken(res, existingUser._id);
+      const token = createToken(res, existingUser._id);
 
-      res.status(201).json({
+      res.status(200).json({
         _id: existingUser._id,
         username: existingUser.username,
         email: existingUser.email,
         isAdmin: existingUser.isAdmin,
+        token, // Include token in response
       });
       return;
     }
   }
+
+  res.status(401);
+  throw new Error("Invalid email or password");
 });
 
 const logoutCurrentUser = asyncHandler(async (req, res) => {
   res.cookie("jwt", "", {
-    httyOnly: true,
+    httpOnly: true,
     expires: new Date(0),
   });
 

@@ -1,5 +1,5 @@
-import { SUBSCRIPTION_URL } from "../constants";
 import { apiSlice } from "./apiSlice";
+import { SUBSCRIPTION_URL } from "../constants";
 
 export const subscriptionApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -11,7 +11,7 @@ export const subscriptionApi = apiSlice.injectEndpoints({
     }),
     createSubscription: builder.mutation({
       query: (subscriptionData) => ({
-        url: `${SUBSCRIPTION_URL}`,
+        url: SUBSCRIPTION_URL,
         method: "POST",
         body: subscriptionData,
       }),

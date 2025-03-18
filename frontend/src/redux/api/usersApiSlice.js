@@ -22,9 +22,6 @@ export const userApiSlice = apiSlice.injectEndpoints({
         url: `${USERS_URL}/logout`,
         method: "POST",
       }),
-      onError: (error) => {
-        console.error('Logout failed:', error);
-      },
     }),
     profile: builder.mutation({
       query: (data) => ({

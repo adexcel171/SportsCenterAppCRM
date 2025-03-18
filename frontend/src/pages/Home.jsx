@@ -65,8 +65,17 @@ const SubscriptionRow = ({ subscription, index }) => (
     <td className="p-3 font-medium">{subscription.name}</td>
     <td className="p-3">{subscription.email}</td>
     <td className="p-3">{subscription.plan}</td>
+    <td className="p-3">{subscription.ticketId || "N/A"}</td>
     <td className="p-3">{subscription.paymentType}</td>
+    <td className="p-3">{subscription.paymentReference || "N/A"}</td>
     <td className="p-3">{subscription.amount.toLocaleString()}</td>
+    <td className="p-3">
+      {new Date(subscription.purchaseDate).toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }) || "N/A"}
+    </td>
     <td className="p-3">
       {new Date(subscription.endDate).toLocaleDateString("en-GB", {
         day: "2-digit",
@@ -95,7 +104,7 @@ const Home = () => {
     data: allSubscriptions,
     error: subError,
     isLoading: subLoading,
-    refetch, // Add refetch function
+    refetch,
   } = useGetAllSubscriptionsQuery();
 
   console.log("All Subscriptions in Home:", allSubscriptions); // Debug log
@@ -305,8 +314,11 @@ const Home = () => {
                 "Name",
                 "Email",
                 "Plan",
+                "Ticket ID",
                 "Payment Type",
+                "Payment Ref",
                 "Amount",
+                "Purchase Date",
                 "End Date",
                 "Status",
               ].map((header) => (
