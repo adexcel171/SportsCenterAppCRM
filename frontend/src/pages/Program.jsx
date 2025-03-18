@@ -82,7 +82,7 @@ const Programs = () => {
     const doc = new jsPDF();
     doc.setFontSize(18);
     doc.text("Gym Subscription Ticket", 20, 20);
-    doc.setFontSize(12);
+    doc.setFontSize(14);
     doc.text(`Ticket ID: ${ticket.ticketId}`, 20, 40);
     doc.text(`Name: ${ticket.userName}`, 20, 50);
     doc.text(`Email: ${ticket.userEmail}`, 20, 60);
