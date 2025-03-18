@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { logout } from "../features/auth/authSlice";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:5000",
+  baseUrl: "https://management-api-wyce.onrender.com",
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
     const userInfo = getState().auth.userInfo;
