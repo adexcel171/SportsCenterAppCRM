@@ -23,6 +23,13 @@ export const subscriptionApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["Subscription"],
     }),
+    cancelSubscription: builder.mutation({
+      query: (subscriptionId) => ({
+        url: `${SUBSCRIPTION_URL}/cancel/${subscriptionId}`, // Updated endpoint
+        method: "PUT",
+      }),
+      invalidatesTags: ["Subscription"],
+    }),
   }),
 });
 
@@ -30,4 +37,5 @@ export const {
   useGetMySubscriptionsQuery,
   useCreateSubscriptionMutation,
   useGetAllSubscriptionsQuery,
+  useCancelSubscriptionMutation,
 } = subscriptionApi;

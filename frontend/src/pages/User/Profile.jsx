@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-
 import Loader from "../../components/Loader";
 import { useProfileMutation } from "../../redux/api/usersApiSlice";
 import { setCredentials } from "../../redux/features/auth/authSlice";
-import { Link } from "react-router-dom";
+import {
+  useGetMySubscriptionsQuery,
+  useCancelSubscriptionMutation,
+} from "../../redux/api/subscriptionApiSlice";
 
 const Profile = () => {
   const [username, setUserName] = useState("");
@@ -14,16 +16,22 @@ const Profile = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const { userInfo } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
   const [updateProfile, { isLoading: loadingUpdateProfile }] =
     useProfileMutation();
+  const {
+    data: subscriptions,
+    isLoading: loadingSubscriptions,
+    refetch,
+  } = useGetMySubscriptionsQuery();
+  const [cancelSubscription, { isLoading: loadingCancel }] =
+    useCancelSubscriptionMutation();
 
   useEffect(() => {
     setUserName(userInfo.username);
     setEmail(userInfo.email);
   }, [userInfo.email, userInfo.username]);
-
-  const dispatch = useDispatch();
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -42,6 +50,18 @@ const Profile = () => {
       } catch (err) {
         toast.error(err?.data?.message || err.error);
       }
+    }
+  };
+
+  const handleCancelSubscription = async (subscriptionId) => {
+    try {
+      await cancelSubscription(subscriptionId).unwrap();
+      toast.success("Subscription canceled successfully");
+      refetch(); // Refresh the subscriptions list
+    } catch (err) {
+      toast.error(
+        err?.data?.message || err.error || "Failed to cancel subscription"
+      );
     }
   };
 
@@ -102,10 +122,46 @@ const Profile = () => {
               >
                 Update
               </button>
-
             </div>
             {loadingUpdateProfile && <Loader />}
           </form>
+
+          {/* Subscriptions Section */}
+          <div className="mt-8">
+            <h2 className="text-2xl font-semibold mb-4">My Subscriptions</h2>
+            {loadingSubscriptions ? (
+              <Loader />
+            ) : subscriptions?.length > 0 ? (
+              <div className="space-y-4">
+                {subscriptions.map((sub) => (
+                  <div
+                    key={sub._id}
+                    className="border p-4 rounded-lg flex justify-between items-center"
+                  >
+                    <div>
+                      <p className="font-medium">Plan: {sub.plan}</p>
+                      <p>Amount: ${sub.amount}</p>
+                      <p>
+                        End Date: {new Date(sub.endDate).toLocaleDateString()}
+                      </p>
+                      <p>Status: {sub.status}</p>
+                    </div>
+                    {sub.status === "active" && (
+                      <button
+                        onClick={() => handleCancelSubscription(sub._id)}
+                        disabled={loadingCancel}
+                        className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 disabled:opacity-50"
+                      >
+                        {loadingCancel ? "Canceling..." : "Cancel Subscription"}
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>No subscriptions found</p>
+            )}
+          </div>
         </div>
       </div>
     </div>

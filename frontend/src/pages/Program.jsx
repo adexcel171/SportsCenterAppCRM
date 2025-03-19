@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { jsPDF } from "jspdf";
 import { v4 as uuidv4 } from "uuid";
+import QRCode from "qrcode"; // Import qrcode library
 import { useCreateSubscriptionMutation } from "../redux/api/subscriptionApiSlice";
 
 const Programs = () => {
@@ -79,19 +80,73 @@ const Programs = () => {
   };
 
   const downloadTicket = (ticket) => {
-    const doc = new jsPDF();
-    doc.setFontSize(18);
-    doc.text("Gym Subscription Ticket", 20, 20);
+    const doc = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
+    });
+
+    // Background and Header
+    doc.setFillColor(240, 240, 240); // Light gray background
+    doc.rect(0, 0, 210, 297, "F"); // Full page
+    doc.setFillColor(255, 69, 58); // Red header
+    doc.rect(0, 0, 210, 40, "F");
+    doc.setFontSize(22);
+    doc.setTextColor(255, 255, 255); // White text
+    doc.setFont("helvetica", "bold");
+    doc.text("Gym Subscription Ticket", 105, 20, { align: "center" });
+
+    // Ticket Details Section
     doc.setFontSize(14);
-    doc.text(`Ticket ID: ${ticket.ticketId}`, 20, 40);
-    doc.text(`Name: ${ticket.userName}`, 20, 50);
-    doc.text(`Email: ${ticket.userEmail}`, 20, 60);
-    doc.text(`Plan: ${ticket.plan}`, 20, 70);
-    doc.text(`Amount: ₦${ticket.amount.toLocaleString()}`, 20, 80);
-    doc.text(`Payment Reference: ${ticket.paymentReference}`, 20, 90);
-    doc.text(`Purchased: ${ticket.purchaseDate}`, 20, 100);
-    doc.text(`Expires: ${ticket.expirationDate}`, 20, 110);
-    doc.save(`ticket_${ticket.ticketId}.pdf`);
+    doc.setTextColor(0, 0, 0); // Black text
+    doc.setFont("helvetica", "normal");
+    doc.setDrawColor(255, 69, 58); // Red border
+    doc.setLineWidth(1);
+    doc.roundedRect(10, 50, 190, 200, 5, 5, "D"); // Ticket body
+
+    const contentX = 20;
+    let contentY = 65;
+    const lineHeight = 10;
+
+    doc.setFont("helvetica", "bold");
+    doc.text("Ticket Details", contentX, contentY);
+    doc.setFont("helvetica", "normal");
+    contentY += lineHeight;
+
+    doc.text(`Ticket ID: ${ticket.ticketId}`, contentX, contentY);
+    contentY += lineHeight;
+    doc.text(`Name: ${ticket.userName}`, contentX, contentY);
+    contentY += lineHeight;
+    doc.text(`Email: ${ticket.userEmail}`, contentX, contentY);
+    contentY += lineHeight;
+    doc.text(`Plan: ${ticket.plan}`, contentX, contentY);
+    contentY += lineHeight;
+    doc.text(`Amount: ₦${ticket.amount.toLocaleString()}`, contentX, contentY);
+    contentY += lineHeight;
+    doc.text(
+      `Payment Reference: ${ticket.paymentReference}`,
+      contentX,
+      contentY
+    );
+    contentY += lineHeight;
+    doc.text(`Purchased: ${ticket.purchaseDate}`, contentX, contentY);
+    contentY += lineHeight;
+    doc.text(`Expires: ${ticket.expirationDate}`, contentX, contentY);
+
+    // Generate and Add QR Code
+    QRCode.toDataURL(
+      ticket.ticketId, // QR code content (could also include more ticket data)
+      { errorCorrectionLevel: "H", width: 100 },
+      (err, url) => {
+        if (!err) {
+          doc.addImage(url, "PNG", 140, 180, 50, 50); // Position QR code
+          doc.save(`ticket_${ticket.ticketId}.pdf`); // Save after QR code is added
+        } else {
+          console.error("QR Code generation failed:", err);
+          doc.save(`ticket_${ticket.ticketId}.pdf`); // Save without QR code if it fails
+        }
+      }
+    );
   };
 
   const handlePaymentSuccess = async (reference, paymentConfig) => {
@@ -135,8 +190,7 @@ const Programs = () => {
           new Date().setMonth(new Date().getMonth() + 1)
         ).toLocaleDateString(),
       });
-      downloadTicket(newTicket); // Initial download happens here
-      // Removed navigation timeout to keep the success UI visible
+      downloadTicket(newTicket); // Initial download with QR code
     } catch (err) {
       console.error("Subscription creation failed:", err);
       setErrorMessage(

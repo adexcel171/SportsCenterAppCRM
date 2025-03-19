@@ -62,20 +62,9 @@ const TableRow = ({ user, index }) => {
 
 const SubscriptionRow = ({ subscription, index }) => (
   <tr className={`hover:bg-gray-50 ${index % 2 ? "bg-gray-100" : ""}`}>
-    <td className="p-3 font-medium">{subscription.name}</td>
-    <td className="p-3">{subscription.email}</td>
     <td className="p-3">{subscription.plan}</td>
-    <td className="p-3">{subscription.ticketId || "N/A"}</td>
-    <td className="p-3">{subscription.paymentType}</td>
     <td className="p-3">{subscription.paymentReference || "N/A"}</td>
     <td className="p-3">{subscription.amount.toLocaleString()}</td>
-    <td className="p-3">
-      {new Date(subscription.purchaseDate).toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      }) || "N/A"}
-    </td>
     <td className="p-3">
       {new Date(subscription.endDate).toLocaleDateString("en-GB", {
         day: "2-digit",
@@ -310,22 +299,13 @@ const Home = () => {
         <table className="w-full">
           <thead className="bg-red-500 text-white">
             <tr>
-              {[
-                "Name",
-                "Email",
-                "Plan",
-                "Ticket ID",
-                "Payment Type",
-                "Payment Ref",
-                "Amount",
-                "Purchase Date",
-                "End Date",
-                "Status",
-              ].map((header) => (
-                <th key={header} className="p-3 text-left whitespace-nowrap">
-                  {header}
-                </th>
-              ))}
+              {["Plan", "Payment Ref", "Amount", "End Date", "Status"].map(
+                (header) => (
+                  <th key={header} className="p-3 text-left whitespace-nowrap">
+                    {header}
+                  </th>
+                )
+              )}
             </tr>
           </thead>
           <tbody>
