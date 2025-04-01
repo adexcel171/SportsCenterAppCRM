@@ -77,12 +77,10 @@ const Contact = () => {
           {/* Google Map Embed */}
           <div className="rounded-lg overflow-hidden shadow-lg">
             <iframe
-              title="Sports Center Location"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3940.123456789012!2d7.384556415734123!3d9.123456789012345!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zOcKwMDcnMjQuNCJOIDfCsDIzJzA0LjgiRQ!5e0!3m2!1sen!2sng!4v1234567890123!5m2!1sen!2sng"
-              width="100%"
-              height="500"
-              style={{ border: 0 }}
-              allowFullScreen=""
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3940.513293662626!2d7.531334075018715!3d9.016851691043982!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x104e0f006fb6cf13%3A0x22ef733213f3f012!2sTee%20dreams%20Suite%20and%20Apartments!5e0!3m2!1sen!2sng!4v1743509738217!5m2!1sen!2sng"
+              width="600"
+              height="450"
+              allowfullscreen=""
               loading="lazy"
             ></iframe>
           </div>

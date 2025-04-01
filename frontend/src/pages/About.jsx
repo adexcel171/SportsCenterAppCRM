@@ -14,7 +14,7 @@ const About = () => {
       <header className=" text-black mt-5 py-12">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Welcome to D'playce Sports & Recreation Hub
+            Welcome to X'Fitness Sports & Recreation Hub
           </h1>
           <p className="text-lg md:text-xl">
             Your Destination for Fitness, Fun, and Wellness
@@ -29,8 +29,8 @@ const About = () => {
             About Us
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            At D PLAYCE Sports & Recreation Hub, we are committed to providing a
-            clean, safe, and inspiring environment for individuals and
+            At X Fitness Sports & Recreation Hub, we are committed to providing
+            a clean, safe, and inspiring environment for individuals and
             organizations to achieve their fitness and wellness goals. Our
             state-of-the-art facilities are designed to keep both your body and
             mind in shape.
@@ -69,7 +69,7 @@ const About = () => {
       <section className="bg-blue-50 py-12">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 text-center mb-8">
-            Why Choose D PLAYCE?
+            Why Choose X Fitness?
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="bg-white p-6 rounded-lg shadow-md text-center">
@@ -134,7 +134,7 @@ const About = () => {
       {/* Footer Section */}
       <footer className="bg-gray-800 text-white py-6">
         <div className="container mx-auto px-4 text-center">
-          <p>© 2025 D PLAYCE Sports & Recreation Hub. All rights reserved.</p>
+          <p>© 2025 Admire Excellence Tech. All rights reserved.</p>
         </div>
       </footer>
     </div>

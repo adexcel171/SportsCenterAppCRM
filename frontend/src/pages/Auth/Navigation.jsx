@@ -40,7 +40,7 @@ const Navigation = () => {
       await logoutApiCall().unwrap();
       dispatch(logout());
       navigate("/login");
-      closeSidebar(); // Close sidebar after logout
+      closeSidebar();
     } catch (err) {
       console.error("Logout error:", err);
       alert(
@@ -49,103 +49,74 @@ const Navigation = () => {
     }
   };
 
-  // Close dropdown and sidebar on scroll
   useEffect(() => {
     const handleScroll = () => {
       setDropdownOpen(false);
       setIsSidebarOpen(false);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
-    <nav className="fixed top-0 w-full bg-gray-200 text-black shadow-xl z-50">
-      <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+    <nav className="fixed top-0 w-full bg-white text-gray-900 shadow-lg z-50 transition-all duration-300">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
         {/* Logo and Brand */}
-        <Link to="/" className="flex items-center space-x-2">
-          <div className="bg-red-600 p-2 rounded-full">
+        <Link to="/" className="flex items-center space-x-3">
+          <div className="bg-gradient-to-r from-red-600 to-orange-500 p-2 rounded-full shadow-md transform hover:scale-105 transition-transform">
             <FaDumbbell className="text-2xl text-white" />
           </div>
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent">
-            D PLAYCE
+          <h1 className=" sm:text-2xl font-extrabold bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent">
+            X FITNESS
           </h1>
         </Link>
 
         {/* Desktop Navigation Links */}
-        <div className="hidden md:flex items-center space-x-8">
-          <Link
-            to="/"
-            className="flex items-center hover:text-red-500 transition-colors"
-          >
-            <AiOutlineHome className="mr-1" />
-            Home
-          </Link>
-          <Link
-            to="/programs"
-            className="flex items-center hover:text-red-500 transition-colors"
-          >
-            <FaDumbbell className="mr-1" />
-            Programs
-          </Link>
-          {/* <Link
-            to="/schedule"
-            className="flex items-center hover:text-red-500 transition-colors"
-          >
-            <AiOutlineCalendar className="mr-1" />
-            Schedule
-          </Link> */}
-          <Link
-            to="/about"
-            className="flex items-center hover:text-red-500 transition-colors"
-          >
-            <AiOutlineTeam className="mr-1" />
-            About
-          </Link>
-          <Link
-            to="/contact"
-            className="flex items-center hover:text-red-500 transition-colors"
-          >
-            <FaPhone className="mr-1" />
-            Contact
-          </Link>
+        <div className="hidden lg:flex items-center space-x-8">
+          <NavLink to="/" icon={<AiOutlineHome />} text="Home" />
+          <NavLink to="/programs" icon={<FaDumbbell />} text="Programs" />
+          {/* Uncomment if needed */}
+          {/* <NavLink to="/schedule" icon={<AiOutlineCalendar />} text="Schedule" /> */}
+          <NavLink to="/about" icon={<AiOutlineTeam />} text="About" />
+          <NavLink to="/contact" icon={<FaPhone />} text="Contact" />
 
           {/* User Dropdown */}
           {userInfo ? (
             <div className="relative">
               <button
                 onClick={toggleDropdown}
-                className="flex items-center hover:text-red-500 transition-colors"
+                className="flex items-center space-x-2 text-gray-900 hover:text-red-500 transition-colors focus:outline-none"
               >
-                <span className="flex items-center">
-                  <FaRunning className="mr-2" />
-                  {userInfo.username}
-                </span>
+                <FaRunning className="text-lg" />
+                <span className="font-medium">{userInfo.username}</span>
                 <svg
-                  className={`ml-2 transition-transform ${
+                  className={`w-4 h-4 transition-transform ${
                     dropdownOpen ? "rotate-180" : ""
                   }`}
-                  width="16"
-                  height="16"
+                  fill="none"
+                  stroke="currentColor"
                   viewBox="0 0 24 24"
-                  fill="currentColor"
                 >
-                  <path d="M7 10l5 5 5-5z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M19 9l-7 7-7-7"
+                  />
                 </svg>
               </button>
-
               {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-xl">
+                <div className="absolute right-0 mt-3 w-56 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden">
                   <Link
                     to="/profile"
-                    className="block px-4 py-3  text-white hover:bg-gray-700 rounded-t-lg"
+                    className="block px-4 py-3 text-gray-900 hover:bg-red-50 hover:text-red-600 transition-colors"
+                    onClick={() => setDropdownOpen(false)}
                   >
                     My Profile
                   </Link>
                   <button
                     onClick={logoutHandler}
-                    className="block w-full px-4 py-3 text-left  text-white hover:bg-gray-700 rounded-b-lg"
+                    className="block w-full text-left px-4 py-3 text-gray-900 hover:bg-red-50 hover:text-red-600 transition-colors"
                   >
                     Logout
                   </button>
@@ -156,104 +127,112 @@ const Navigation = () => {
             <div className="flex items-center space-x-4">
               <Link
                 to="/login"
-                className="flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors shadow-md"
               >
-                <AiOutlineLogin className="mr-2" />
+                <AiOutlineLogin className="inline mr-2" />
                 Login
               </Link>
               <Link
                 to="/register"
-                className="flex items-center px-4 py-2 text-white bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors"
+                className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors shadow-md"
               >
-                <AiOutlineUserAdd className="mr-2" />
+                <AiOutlineUserAdd className="inline mr-2" />
                 Register
               </Link>
             </div>
           )}
         </div>
 
-        {/* Mobile Hamburger Menu */}
+        {/* Hamburger Menu Button */}
         <button
           onClick={toggleSidebar}
-          className="md:hidden text-black hover:text-red-500 transition-colors"
+          className="lg:hidden text-gray-900 hover:text-red-500 transition-colors focus:outline-none"
         >
-          {isSidebarOpen ? (
-            <AiOutlineClose size={24} />
-          ) : (
-            <AiOutlineMenu size={24} />
-          )}
+          <AiOutlineMenu size={28} />
         </button>
       </div>
 
       {/* Mobile Sidebar */}
       {isSidebarOpen && (
-        <div className="md:hidden fixed inset-0 bg-gray-800 text-white bg-opacity-95 z-40">
-          <div className="flex flex-col items-center space-y-8 py-8 text-xl">
-            <Link to="/" className="hover:text-red-500" onClick={closeSidebar}>
-              <AiOutlineHome className="inline mr-2" />
-              Home
-            </Link>
+        <div className="lg:hidden fixed inset-0 bg-gray-900 bg-opacity-95 z-40 flex flex-col transition-transform duration-300">
+          <div className="flex justify-between items-center px-6 py-4 border-b border-gray-800">
             <Link
+              to="/"
+              className="flex items-center space-x-3"
+              onClick={closeSidebar}
+            >
+              <div className="bg-gradient-to-r from-red-600 to-orange-500 p-2 rounded-full shadow-md">
+                <FaDumbbell className="text-2xl text-white" />
+              </div>
+              <h1 className="text-xl font-extrabold text-white">D'PLAYCE</h1>
+            </Link>
+            <button
+              onClick={closeSidebar}
+              className="text-white hover:text-red-500 transition-colors focus:outline-none"
+            >
+              <AiOutlineClose size={28} />
+            </button>
+          </div>
+          <div className="flex flex-col items-center space-y-6 py-8 text-white text-lg">
+            <NavLink
+              to="/"
+              icon={<AiOutlineHome />}
+              text="Home"
+              onClick={closeSidebar}
+              mobile
+            />
+            <NavLink
               to="/programs"
-              className="hover:text-red-500"
+              icon={<FaDumbbell />}
+              text="Programs"
               onClick={closeSidebar}
-            >
-              <FaDumbbell className="inline mr-2" />
-              Programs
-            </Link>
-            {/* <Link
-              to="/schedule"
-              className="hover:text-red-500"
-              onClick={closeSidebar}
-            >
-              <AiOutlineCalendar className="inline mr-2" />
-              Schedule
-            </Link> */}
-            <Link
+              mobile
+            />
+            {/* Uncomment if needed */}
+            {/* <NavLink to="/schedule" icon={<AiOutlineCalendar />} text="Schedule" onClick={closeSidebar} mobile /> */}
+            <NavLink
               to="/about"
-              className="hover:text-red-500"
+              icon={<AiOutlineTeam />}
+              text="About"
               onClick={closeSidebar}
-            >
-              <AiOutlineTeam className="inline mr-2" />
-              About
-            </Link>
-            <Link
+              mobile
+            />
+            <NavLink
               to="/contact"
-              className="hover:text-red-500"
+              icon={<FaPhone />}
+              text="Contact"
               onClick={closeSidebar}
-            >
-              <FaPhone className="inline mr-2" />
-              Contact
-            </Link>
+              mobile
+            />
 
             {userInfo ? (
-              <div className="flex flex-col items-center space-y-6 mt-8">
+              <div className="flex flex-col items-center space-y-4 mt-6">
                 <Link
                   to="/profile"
-                  className="px-6 py-2 bg-gray-800 rounded-lg hover:bg-gray-700"
+                  className="w-48 px-6 py-3 bg-gray-800 rounded-lg text-center hover:bg-gray-700 transition-colors"
                   onClick={closeSidebar}
                 >
                   Profile
                 </Link>
                 <button
                   onClick={logoutHandler}
-                  className="px-6 py-2 bg-red-600 rounded-lg hover:bg-red-700"
+                  className="w-48 px-6 py-3 bg-red-600 rounded-lg hover:bg-red-700 transition-colors"
                 >
                   Logout
                 </button>
               </div>
             ) : (
-              <div className="flex flex-col space-y-6 mt-8">
+              <div className="flex flex-col space-y-4 mt-6">
                 <Link
                   to="/login"
-                  className="px-6 py-2 bg-red-600 rounded-lg hover:bg-red-700 text-center"
+                  className="w-48 px-6 py-3 bg-red-600 rounded-lg text-center hover:bg-red-700 transition-colors"
                   onClick={closeSidebar}
                 >
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className="px-6 py-2 bg-gray-800 rounded-lg hover:bg-gray-700 text-center"
+                  className="w-48 px-6 py-3 bg-gray-800 rounded-lg text-center hover:bg-gray-700 transition-colors"
                   onClick={closeSidebar}
                 >
                   Register
@@ -266,5 +245,21 @@ const Navigation = () => {
     </nav>
   );
 };
+
+// Reusable NavLink Component
+const NavLink = ({ to, icon, text, onClick, mobile }) => (
+  <Link
+    to={to}
+    onClick={onClick}
+    className={`flex items-center space-x-2 ${
+      mobile
+        ? "text-white hover:text-red-500"
+        : "text-gray-900 hover:text-red-500"
+    } transition-colors`}
+  >
+    {icon}
+    <span>{text}</span>
+  </Link>
+);
 
 export default Navigation;
