@@ -40,12 +40,10 @@ app.use(express.urlencoded({ extended: true }));
 
 // Test route to verify server
 app.get("/api/test", (req, res) => {
-  res
-    .status(200)
-    .json({
-      message: "Server is running correctly",
-      timestamp: new Date().toISOString(),
-    });
+  res.status(200).json({
+    message: "Server is running correctly",
+    timestamp: new Date().toISOString(),
+  });
 });
 
 // Routes
@@ -66,7 +64,7 @@ const server = createServer(app);
 // Initialize Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: "https://excel-crm.onrender.com",
     methods: ["GET", "POST"],
     credentials: true,
   },
