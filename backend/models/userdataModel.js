@@ -1,61 +1,36 @@
 import mongoose from "mongoose";
 
-const userdataSchema = mongoose.Schema(
+const userDataSchema = mongoose.Schema(
   {
-    name: {
-      type: String,
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
-    number: {
-      type: String,
-      required: true,
-    },
-    email: {
-      type: String,
-      required: true,
-    },
-    credit: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-    debit: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-    note: {
-      type: String,
-      required: false,
-    },
-    date: {
-      type: Date,
-      required: true,
-    },
-    subscription: {
-      type: String,
-      required: true,
-    },
-    subscriptionEndDate: {
-      type: Date,
-      required: true,
-    },
-    lastReminderSent: {
-      type: Date,
-      default: null,
+    name: { type: String, required: true },
+    number: { type: String, required: true },
+    email: { type: String, required: true },
+    credit: { type: Number, required: true },
+    debit: { type: Number, required: true },
+    note: { type: String, required: true },
+    dateOfBirth: { type: Date, required: true },
+    subscription: { type: String, required: true },
+    subscriptionEndDate: { type: Date, required: true },
+    height: { type: Number, required: true },
+    bodyType: { type: String, required: true },
+    fitnessGoals: { type: String, required: true },
+    activityLevel: { type: String, required: true },
+    dietaryPreferences: { type: String, required: true },
+    preferredSports: { type: String, required: true },
+    gender: { type: String, required: true },
+    recommendations: {
+      workoutPlan: { type: String },
+      dietPlan: { type: String },
+      exerciseTypes: { type: String },
+      goalActions: { type: [String], default: [] },
     },
   },
   { timestamps: true }
 );
 
-// Add a method to check if subscription is expiring soon
-userdataSchema.methods.isSubscriptionExpiringSoon = function () {
-  const today = new Date();
-  const daysUntilExpiry = Math.ceil(
-    (this.subscriptionEndDate - today) / (1000 * 60 * 60 * 24)
-  );
-  return daysUntilExpiry <= 7; // Return true if 7 or fewer days remaining
-};
-
-const UserData = mongoose.model("UserData", userdataSchema);
-export default UserData;
+export default mongoose.model("UserData", userDataSchema);

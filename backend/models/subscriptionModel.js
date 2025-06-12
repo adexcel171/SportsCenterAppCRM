@@ -1,5 +1,11 @@
 import mongoose from "mongoose";
 
+// Log to confirm this file is loaded
+console.log(
+  "SUBSCRIPTIONMODEL.JS LOADED - FIX_500_TOKEN -",
+  new Date().toISOString()
+);
+
 const subscriptionSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
@@ -37,16 +43,16 @@ const subscriptionSchema = new mongoose.Schema({
   status: {
     type: String,
     required: true,
-    enum: ["active", "expired", "canceled"], // Updated to include "canceled"
+    enum: ["active", "expired", "canceled"],
     default: "active",
   },
   paymentReference: {
     type: String,
-    required: true,
+    required: false, // Made optional for bypass logic
   },
   paymentType: {
     type: String,
-    required: true,
+    required: false, // Made optional for bypass logic
   },
 });
 
