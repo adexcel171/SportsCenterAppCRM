@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../components/Loader";
-import { useRegisterMutation } from "../../redux/api/usersApiSlice";
+import { useRegisterMutation } from "../../redux/api/apiSlice"; // Updated import to use apiSlice
 import { setCredentials } from "../../redux/features/auth/authSlice";
 import { toast } from "react-toastify";
 
 const Register = () => {
-  const [username, setName] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -36,13 +36,13 @@ const Register = () => {
       toast.error("Passwords do not match");
     } else {
       try {
-        const res = await register({ username, email, password }).unwrap();
-        dispatch(setCredentials({ ...res }));
+        const res = await register({ name, email, password }).unwrap();
+        dispatch(setCredentials(res));
         navigate(redirect);
         toast.success("User successfully registered");
       } catch (err) {
-        console.log(err);
-        toast.error(err.data.message);
+        console.error("Register error:", err?.data?.message || err.error);
+        toast.error(err?.data?.message || "Registration failed");
       }
     }
   };
@@ -79,7 +79,7 @@ const Register = () => {
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                 placeholder="Name"
-                value={username}
+                value={name}
                 onChange={(e) => setName(e.target.value)}
               />
             </div>

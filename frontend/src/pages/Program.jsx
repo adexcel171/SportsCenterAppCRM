@@ -3,8 +3,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { jsPDF } from "jspdf";
 import { v4 as uuidv4 } from "uuid";
-import QRCode from "qrcode"; // Import qrcode library
+import QRCode from "qrcode";
 import { useCreateSubscriptionMutation } from "../redux/api/subscriptionApiSlice";
+import { useAddUserDataMutation } from "../redux/api/userdataApiSlice"; // Add this import
 
 const Programs = () => {
   const subscriptions = [
@@ -36,6 +37,21 @@ const Programs = () => {
       color: "from-red-100 to-red-200",
     },
     {
+      title: "Personalized Plan",
+      price: "₦85,000",
+      duration: "month",
+      features: [
+        "AI-driven workout & diet plans",
+        "Unlimited gym access",
+        "3 personal training sessions",
+        "Nutrition consultation",
+        "Priority court booking",
+        "Sauna & VIP locker access",
+      ],
+      popular: false,
+      color: "from-blue-100 to-blue-200",
+    },
+    {
       title: "Elite Membership",
       price: "₦120,000",
       duration: "month",
@@ -54,6 +70,7 @@ const Programs = () => {
 
   const { userInfo } = useSelector((state) => state.auth);
   const [createSubscription] = useCreateSubscriptionMutation();
+  const [addUserData] = useAddUserDataMutation(); // Add this mutation
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [activeSubscription, setActiveSubscription] = useState(null);
   const [ticket, setTicket] = useState(null);
@@ -86,29 +103,26 @@ const Programs = () => {
       format: "a4",
     });
 
-    // Background and Header
-    doc.setFillColor(240, 240, 240); // Light gray background
-    doc.rect(0, 0, 210, 297, "F"); // Full page
-    doc.setFillColor(255, 69, 58); // Red header
+    doc.setFillColor(240, 240, 240);
+    doc.rect(0, 0, 210, 297, "F");
+    doc.setFillColor(255, 69, 58);
     doc.rect(0, 0, 210, 40, "F");
     doc.setFontSize(22);
-    doc.setTextColor(255, 255, 255); // White text
+    doc.setTextColor(255, 255, 255);
     doc.setFont("helvetica", "bold");
     doc.text("Gym Subscription Ticket", 105, 20, { align: "center" });
 
-    // Ticket Details Section
     doc.setFontSize(14);
-    doc.setTextColor(0, 0, 0); // Black text
+    doc.setTextColor(0, 0, 0);
     doc.setFont("helvetica", "normal");
-    doc.setDrawColor(255, 69, 58); // Red border
+    doc.setDrawColor(255, 69, 58);
     doc.setLineWidth(1);
-    doc.roundedRect(10, 50, 190, 200, 5, 5, "D"); // Ticket body
+    doc.roundedRect(10, 50, 190, 200, 5, 5, "D");
 
     const contentX = 20;
     let contentY = 65;
     const lineHeight = 10;
 
-    doc.setFont("helvetica", "bold");
     doc.text("Ticket Details", contentX, contentY);
     doc.setFont("helvetica", "normal");
     contentY += lineHeight;
@@ -133,17 +147,16 @@ const Programs = () => {
     contentY += lineHeight;
     doc.text(`Expires: ${ticket.expirationDate}`, contentX, contentY);
 
-    // Generate and Add QR Code
     QRCode.toDataURL(
-      ticket.ticketId, // QR code content (could also include more ticket data)
+      ticket.ticketId,
       { errorCorrectionLevel: "H", width: 100 },
       (err, url) => {
         if (!err) {
-          doc.addImage(url, "PNG", 140, 180, 50, 50); // Position QR code
-          doc.save(`ticket_${ticket.ticketId}.pdf`); // Save after QR code is added
+          doc.addImage(url, "PNG", 140, 180, 50, 50);
+          doc.save(`ticket_${ticket.ticketId}.pdf`);
         } else {
           console.error("QR Code generation failed:", err);
-          doc.save(`ticket_${ticket.ticketId}.pdf`); // Save without QR code if it fails
+          doc.save(`ticket_${ticket.ticketId}.pdf`);
         }
       }
     );
@@ -169,17 +182,51 @@ const Programs = () => {
         throw new Error("No token found in userInfo. Please log in again.");
       }
 
+      const startDate = new Date();
+      const endDate = new Date();
+      endDate.setMonth(endDate.getMonth() + 1);
+
       const subscriptionData = {
         plan: paymentConfig.metadata.plan,
         amount: paymentConfig.amount / 100,
         duration: paymentConfig.metadata.duration,
         paymentReference: reference.reference,
         paymentType: "Paystack",
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
       };
 
       console.log("Creating subscription with data:", subscriptionData);
-      const result = await createSubscription(subscriptionData).unwrap();
-      console.log("Subscription created successfully:", result);
+      const subscriptionResult = await createSubscription(
+        subscriptionData
+      ).unwrap();
+      console.log("Subscription created successfully:", subscriptionResult);
+
+      // Update or create UserData entry
+      if (paymentConfig.metadata.plan === "Personalized Plan") {
+        const userDataPayload = {
+          userId: userInfo._id,
+          name: userInfo.username || "Unknown User",
+          number: userInfo.number || "N/A", // Adjust based on your user model
+          email: userInfo.email || "N/A",
+          credit: 0, // Default value, adjust as needed
+          debit: 0, // Default value, adjust as needed
+          note: "Subscribed to Personalized Plan",
+          dateOfBirth: userInfo.dateOfBirth || new Date().toISOString(), // Adjust as needed
+          subscription: paymentConfig.metadata.plan,
+          subscriptionEndDate: endDate.toISOString(),
+          height: 170, // Default value, adjust as needed
+          bodyType: "Average", // Default value
+          fitnessGoals: "General Fitness", // Default value
+          activityLevel: "Moderate", // Default value
+          dietaryPreferences: "Nigerian Traditional", // Default value
+          preferredSports: "None", // Default value
+          gender: userInfo.gender || "Not Specified", // Adjust as needed
+        };
+
+        console.log("Creating/Updating UserData with:", userDataPayload);
+        await addUserData(userDataPayload).unwrap();
+      }
 
       const newTicket = generateTicket(subscriptionData, reference.reference);
       setTicket(newTicket);
@@ -190,7 +237,7 @@ const Programs = () => {
           new Date().setMonth(new Date().getMonth() + 1)
         ).toLocaleDateString(),
       });
-      downloadTicket(newTicket); // Initial download with QR code
+      downloadTicket(newTicket);
     } catch (err) {
       console.error("Subscription creation failed:", err);
       setErrorMessage(
@@ -264,7 +311,7 @@ const Programs = () => {
     setPaymentSuccess(false);
     setActiveSubscription(null);
     setTicket(null);
-    navigate("/landing"); // Navigate only when user dismisses the success message
+    navigate("/landing");
   };
 
   return (

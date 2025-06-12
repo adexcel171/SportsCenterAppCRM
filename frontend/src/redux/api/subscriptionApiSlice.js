@@ -1,32 +1,49 @@
 import { apiSlice } from "./apiSlice";
 import { SUBSCRIPTION_URL } from "../constants";
 
-export const subscriptionApi = apiSlice.injectEndpoints({
+export const subscriptionApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getMySubscriptions: builder.query({
-      query: () => ({
-        url: `${SUBSCRIPTION_URL}/my-subscriptions`,
-      }),
-      providesTags: ["Subscription"],
-    }),
     createSubscription: builder.mutation({
-      query: (subscriptionData) => ({
+      query: (data) => ({
         url: SUBSCRIPTION_URL,
         method: "POST",
-        body: subscriptionData,
+        body: data,
       }),
       invalidatesTags: ["Subscription"],
     }),
-    getAllSubscriptions: builder.query({
-      query: () => ({
-        url: `${SUBSCRIPTION_URL}/all`,
+    getUserSubscriptions: builder.query({
+      query: (userId) => ({
+        url: `${SUBSCRIPTION_URL}/my`,
       }),
       providesTags: ["Subscription"],
+      keepUnusedDataFor: 5,
+    }),
+    getAllSubscriptions: builder.query({
+      query: () => ({
+        url: SUBSCRIPTION_URL,
+      }),
+      providesTags: ["Subscription"],
+      keepUnusedDataFor: 5,
+    }),
+    updateSubscription: builder.mutation({
+      query: (data) => ({
+        url: `${SUBSCRIPTION_URL}/${data.subscriptionId}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Subscription"],
+    }),
+    deleteSubscription: builder.mutation({
+      query: (subscriptionId) => ({
+        url: `${SUBSCRIPTION_URL}/${subscriptionId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Subscription"],
     }),
     cancelSubscription: builder.mutation({
       query: (subscriptionId) => ({
-        url: `${SUBSCRIPTION_URL}/cancel/${subscriptionId}`, // Updated endpoint
-        method: "PUT",
+        url: `${SUBSCRIPTION_URL}/cancel/${subscriptionId}`,
+        method: "PATCH",
       }),
       invalidatesTags: ["Subscription"],
     }),
@@ -34,8 +51,10 @@ export const subscriptionApi = apiSlice.injectEndpoints({
 });
 
 export const {
-  useGetMySubscriptionsQuery,
   useCreateSubscriptionMutation,
+  useGetUserSubscriptionsQuery,
   useGetAllSubscriptionsQuery,
+  useUpdateSubscriptionMutation,
+  useDeleteSubscriptionMutation,
   useCancelSubscriptionMutation,
-} = subscriptionApi;
+} = subscriptionApiSlice;

@@ -1,50 +1,93 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useCreateUserdataMutation } from "../redux/api/userdataApiSlice";
-
-// Color scheme constants
-const COLORS = {
-  primary: "bg-blue-800",
-  secondary: "bg-blue-600",
-  accent: "bg-blue-400",
-  text: "text-gray-800",
-  highlight: "bg-yellow-100",
-};
+import {
+  useAddUserDataMutation,
+  useUpdateUserDataMutation,
+  useGetUserDataByUserIdQuery,
+} from "../redux/api/userdataApiSlice";
+import { useSelector } from "react-redux";
 
 const Form = () => {
   const navigate = useNavigate();
-  const [createUserdata] = useCreateUserdataMutation();
+  const { userInfo } = useSelector((state) => state.auth);
+  const [addUserData] = useAddUserDataMutation();
+  const [updateUserData] = useUpdateUserDataMutation();
+  const { data: userData, isLoading } = useGetUserDataByUserIdQuery(
+    userInfo?._id,
+    {
+      skip: !userInfo?._id || !userInfo,
+    }
+  );
+
   const [formData, setFormData] = useState({
     name: "",
     number: "",
     email: "",
-    credit: 0,
-    debit: 0,
-    note: "",
-    date: "",
+    credit: "",
+    debit: "0",
+    dateOfBirth: "",
     subscription: "",
     subscriptionEndDate: "",
+    height: "",
+    bodyType: "",
+    fitnessGoals: "",
+    activityLevel: "",
+    dietaryPreferences: "",
+    preferredSports: "",
+    gender: "",
+    note: "",
   });
+
+  useEffect(() => {
+    if (userData && userData.length > 0) {
+      const data = userData[0];
+      setFormData({
+        name: data.name || "",
+        number: data.number || "",
+        email: data.email || "",
+        credit: data.credit || "",
+        debit: data.debit || "0",
+        dateOfBirth: data.dateOfBirth
+          ? new Date(data.dateOfBirth).toISOString().split("T")[0]
+          : "",
+        subscription: data.subscription || "",
+        subscriptionEndDate: data.subscriptionEndDate
+          ? new Date(data.subscriptionEndDate).toISOString().split("T")[0]
+          : "",
+        height: data.height || "",
+        bodyType: data.bodyType || "",
+        fitnessGoals: data.fitnessGoals || "",
+        activityLevel: data.activityLevel || "",
+        dietaryPreferences: data.dietaryPreferences || "",
+        preferredSports: data.preferredSports || "",
+        gender: data.gender || "",
+        note: data.note || "",
+      });
+    }
+  }, [userData]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!userInfo) {
+      toast.error("Please log in");
+      navigate("/login");
+      return;
+    }
     try {
-      const userData = new FormData();
-      Object.entries(formData).forEach(([key, value]) => {
-        userData.append(key, value);
-      });
-
-      const { data } = await createUserdata(userData);
-
-      if (data?.name) {
-        toast.success(`${data.name} created successfully!`);
-        navigate("/");
+      const data = { ...formData, userId: userInfo._id };
+      console.log("Form.jsx: Submitting data =", data); // Debug submission
+      if (userData && userData.length > 0) {
+        await updateUserData({ id: userData[0]._id, ...data }).unwrap();
+        toast.success("Profile updated!");
       } else {
-        toast.warning("Please verify your input and try again.");
+        await addUserData(data).unwrap();
+        toast.success("Profile created!");
       }
+      navigate("/");
     } catch (error) {
-      toast.error("Submission failed. Please try again.");
+      console.error("Form.jsx: Submission error =", error); // Debug error
+      toast.error(error?.data?.message || "Failed to submit");
     }
   };
 
@@ -52,108 +95,163 @@ const Form = () => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
-  return (
-    <div className="min-h-screen mt-6  flex items-center justify-center p-4">
-      <div className="max-w-3xl w-full bg-white/80 backdrop-blur-lg shadow-2xl rounded-2xl p-6 md:p-10">
-        <h1 className="text-4xl font-extrabold text-gray-800 text-center mb-6">
-          Customer Registration
-        </h1>
+  if (isLoading) return <div className="p-4 text-center">Loading...</div>;
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+  return (
+    <div className="min-h-screen bg-gray-50 p-4 md:p-6">
+      <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
+        <h1 className="text-lg font-bold text-center mb-4">
+          {userData && userData.length > 0
+            ? "Update Profile"
+            : "Create Profile"}
+        </h1>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <FormInput
               id="name"
-              label="Full Name"
+              label="Name"
               type="text"
               value={formData.name}
               onChange={handleChange}
               required
             />
-
             <FormInput
               id="number"
-              label="Phone Number"
+              label="Phone"
               type="tel"
               value={formData.number}
               onChange={handleChange}
               required
             />
-
             <FormInput
               id="email"
-              label="Email Address"
+              label="Email"
               type="email"
               value={formData.email}
               onChange={handleChange}
               required
             />
-
             <FormInput
-              id="date"
+              id="dateOfBirth"
               label="Date of Birth"
               type="date"
-              value={formData.date}
+              value={formData.dateOfBirth}
               onChange={handleChange}
               required
             />
-
             <FormInput
               id="credit"
-              label="Credit Amount"
+              label="Weight (kg)"
               type="number"
               value={formData.credit}
               onChange={handleChange}
               required
             />
-
+            <FormInput
+              id="height"
+              label="Height (cm)"
+              type="number"
+              value={formData.height}
+              onChange={handleChange}
+              required
+            />
             <FormInput
               id="debit"
-              label="Debit Amount"
+              label="Debit Balance"
               type="number"
               value={formData.debit}
               onChange={handleChange}
               required
             />
+            <FormSelect
+              id="bodyType"
+              label="Body Type"
+              value={formData.bodyType}
+              onChange={handleChange}
+              options={["Ectomorph", "Mesomorph", "Endomorph"]}
+              required
+            />
+            <FormSelect
+              id="fitnessGoals"
+              label="Goals"
+              value={formData.fitnessGoals}
+              onChange={handleChange}
+              options={["Weight Loss", "Muscle Gain", "Endurance & Stamina"]}
+              required
+            />
+            <FormSelect
+              id="activityLevel"
+              label="Activity"
+              value={formData.activityLevel}
+              onChange={handleChange}
+              options={["Sedentary", "Moderate", "Active"]}
+              required
+            />
+            <FormSelect
+              id="dietaryPreferences"
+              label="Dietary"
+              value={formData.dietaryPreferences}
+              onChange={handleChange}
+              options={["Nigerian Traditional", "Vegetarian", "Vegan"]}
+              required
+            />
+            <FormSelect
+              id="preferredSports"
+              label="Sports"
+              value={formData.preferredSports}
+              onChange={handleChange}
+              options={["Football", "Running", "Dance", "Boxing"]}
+              required
+            />
+            <FormSelect
+              id="gender"
+              label="Gender"
+              value={formData.gender}
+              onChange={handleChange}
+              options={["Male", "Female", "Other"]}
+              required
+            />
           </div>
-
           <FormSelect
             id="subscription"
-            label="Subscription Type"
+            label="Subscription"
             value={formData.subscription}
             onChange={handleChange}
-            options={["Weekly", "Monthly", "Yearly"]}
+            options={[
+              "Starter Pass",
+              "Pro Athlete",
+              "Personalized Plan",
+              "Elite Membership",
+            ]}
             required
           />
-
           <FormInput
             id="subscriptionEndDate"
-            label="Subscription End Date"
+            label="Sub End Date"
             type="date"
             value={formData.subscriptionEndDate}
             onChange={handleChange}
             required
           />
-
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Additional Notes
+            <label className="block text-sm font-medium text-gray-700">
+              Notes
             </label>
             <textarea
               id="note"
               value={formData.note}
               onChange={handleChange}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-transparent"
-              rows="3"
-              placeholder="Enter any additional notes..."
+              className="w-full p-2 border rounded-lg"
+              rows="2"
+              required
             />
           </div>
-
           <div className="flex justify-center">
             <button
               type="submit"
-              className="bg-indigo-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-indigo-500 transition duration-300 focus:outline-none focus:ring-4 focus:ring-indigo-300"
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             >
-              Create Customer
+              Save
             </button>
           </div>
         </form>
@@ -162,42 +260,34 @@ const Form = () => {
   );
 };
 
-// Reusable Form Input Component
 const FormInput = ({ id, label, type, value, onChange, required }) => (
-  <div className="space-y-1">
-    <label htmlFor={id} className="block text-sm font-medium text-gray-700">
-      {label} {required && <span className="text-red-500">*</span>}
-    </label>
+  <div>
+    <label className="block text-sm font-medium text-gray-700">{label}</label>
     <input
       id={id}
       type={type}
       value={value}
       onChange={onChange}
-      className={`w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent ${
-        type === "date" ? "custom-date-input" : ""
-      }`}
+      className="w-full p-2 border rounded-lg"
       required={required}
     />
   </div>
 );
 
-// Reusable Form Select Component
 const FormSelect = ({ id, label, value, onChange, options, required }) => (
-  <div className="space-y-1">
-    <label htmlFor={id} className="block text-sm font-medium text-gray-700">
-      {label} {required && <span className="text-red-500">*</span>}
-    </label>
+  <div>
+    <label className="block text-sm font-medium text-gray-700">{label}</label>
     <select
       id={id}
       value={value}
       onChange={onChange}
-      className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+      className="w-full p-2 border rounded-lg"
       required={required}
     >
-      <option value="">Select {label}</option>
-      {options.map((option) => (
-        <option key={option} value={option}>
-          {option}
+      <option value="">Select</option>
+      {options.map((opt) => (
+        <option key={opt} value={opt}>
+          {opt}
         </option>
       ))}
     </select>

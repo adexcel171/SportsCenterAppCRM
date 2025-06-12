@@ -19,7 +19,6 @@ const Loader = () => {
 
         {/* Animated text with fade effect */}
         <p className="text-gray-600 font-medium animate-pulse">
-          Loading Products...
           <span className="ml-2 text-xs text-gray-400">(Please wait)</span>
         </p>
 

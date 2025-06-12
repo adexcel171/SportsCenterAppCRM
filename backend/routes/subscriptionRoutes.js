@@ -2,33 +2,53 @@ import express from "express";
 import {
   createSubscription,
   getMySubscriptions,
+  getAllSubscriptions,
   cancelSubscription,
 } from "../controllers/subscriptionController.js";
-import { authenticate } from "../middlewares/authMiddleware.js";
-import Subscription from "../models/subscriptionModel.js";
+import { authenticate, authorizeAdmin } from "../middlewares/authMiddleware.js";
+
+// Log to confirm this file is loaded
+console.log(
+  "SUBSCRIPTIONROUTES.JS LOADED - FIX_500_404 -",
+  new Date().toISOString()
+);
 
 const router = express.Router();
 
-// Create a new subscription (authenticated users only)
-router.route("/").post(authenticate, createSubscription);
-
-// Get logged-in user's subscriptions (authenticated users only)
-router.route("/my-subscriptions").get(authenticate, getMySubscriptions);
-
-// Get all active subscriptions (no authentication required)
-router.route("/all").get(async (req, res) => {
-  try {
-    const activeSubscriptions = await Subscription.find({ status: "active" })
-      .populate("user", "name email")
-      .sort({ startDate: -1 });
-    res.status(200).json(activeSubscriptions);
-  } catch (error) {
-    console.error("Error fetching active subscriptions:", error.message);
-    res.status(500).json({ message: "Server error", error: error.message });
-  }
+// Create a new subscription
+router.post("/", authenticate, (req, res, next) => {
+  console.log(
+    "ROUTE: POST /api/subscriptions EXECUTED -",
+    new Date().toISOString()
+  );
+  createSubscription(req, res, next);
 });
 
-// Cancel a subscription (authenticated users only)
-router.route("/cancel/:id").put(authenticate, cancelSubscription);
+// Get all active subscriptions (admin only)
+router.get("/", authenticate, authorizeAdmin, (req, res, next) => {
+  console.log(
+    "ROUTE: GET /api/subscriptions EXECUTED -",
+    new Date().toISOString()
+  );
+  getAllSubscriptions(req, res, next);
+});
+
+// Get user's subscriptions
+router.get("/my", authenticate, (req, res, next) => {
+  console.log(
+    "ROUTE: GET /api/subscriptions/my EXECUTED -",
+    new Date().toISOString()
+  );
+  getMySubscriptions(req, res, next);
+});
+
+// Cancel a subscription
+router.patch("/cancel/:id", authenticate, (req, res, next) => {
+  console.log(
+    "ROUTE: PATCH /api/subscriptions/cancel/:id EXECUTED -",
+    new Date().toISOString()
+  );
+  cancelSubscription(req, res, next);
+});
 
 export default router;
