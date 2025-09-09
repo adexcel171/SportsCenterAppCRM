@@ -33,23 +33,26 @@ export const userdataApi = apiSlice.injectEndpoints({
       keepUnusedDataFor: 5,
     }),
     updateUserData: builder.mutation({
-      query: (data) => ({
-        url: `${USERDATA_URL}/${data.userdataId}`,
-        method: "PUT",
-        body: data,
-      }),
+      query: ({ id, ...data }) => {
+        if (!id) throw new Error("Missing user ID for update");
+        return {
+          url: `${USERDATA_URL}/${id}`, // ✅ correct
+          method: "PUT",
+          body: data,
+        };
+      },
       invalidatesTags: ["UserData"],
     }),
     deleteUserData: builder.mutation({
-      query: (userdataId) => ({
-        url: `${USERDATA_URL}/${userdataId}`,
+      query: (id) => ({
+        url: `${USERDATA_URL}/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["UserData"],
     }),
     sendReminder: builder.mutation({
-      query: (userdataId) => ({
-        url: `${USERDATA_URL}/reminder/${userdataId}`,
+      query: (id) => ({
+        url: `${USERDATA_URL}/reminder/${id}`,
         method: "POST",
       }),
       invalidatesTags: ["UserData"],

@@ -3,13 +3,11 @@ import {
   AiOutlineHome,
   AiOutlineCalendar,
   AiOutlineLogin,
-  AiOutlineUserAdd,
   AiOutlineMenu,
   AiOutlineClose,
   AiOutlineTeam,
-  AiOutlineContacts,
 } from "react-icons/ai";
-import { FaDumbbell, FaRunning, FaPhone } from "react-icons/fa";
+import { FaDumbbell, FaRunning, FaPhone, FaImages } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useLogoutMutation } from "../../redux/api/usersApiSlice";
@@ -75,12 +73,11 @@ const Navigation = () => {
         <div className="hidden lg:flex items-center space-x-8">
           <NavLink to="/" icon={<AiOutlineHome />} text="Home" />
           <NavLink to="/programs" icon={<FaDumbbell />} text="Programs" />
-          {/* Uncomment if needed */}
-          {/* <NavLink to="/schedule" icon={<AiOutlineCalendar />} text="Schedule" /> */}
+          <NavLink to="/gallery" icon={<FaImages />} text="Gallery" />
           <NavLink to="/about" icon={<AiOutlineTeam />} text="About" />
           <NavLink to="/contact" icon={<FaPhone />} text="Contact" />
 
-          {/* User Dropdown */}
+          {/* User Dropdown / Admin Login */}
           {userInfo ? (
             <div className="relative">
               <button
@@ -130,14 +127,7 @@ const Navigation = () => {
                 className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors shadow-md"
               >
                 <AiOutlineLogin className="inline mr-2" />
-                Login
-              </Link>
-              <Link
-                to="/register"
-                className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors shadow-md"
-              >
-                <AiOutlineUserAdd className="inline mr-2" />
-                Register
+                Admin Login
               </Link>
             </div>
           )}
@@ -164,7 +154,7 @@ const Navigation = () => {
               <div className="bg-gradient-to-r from-red-600 to-orange-500 p-2 rounded-full shadow-md">
                 <FaDumbbell className="text-2xl text-white" />
               </div>
-              <h1 className="text-xl font-extrabold text-white">D'PLAYCE</h1>
+              <h1 className="text-xl font-extrabold text-white">X FITNESS</h1>
             </Link>
             <button
               onClick={closeSidebar}
@@ -188,8 +178,13 @@ const Navigation = () => {
               onClick={closeSidebar}
               mobile
             />
-            {/* Uncomment if needed */}
-            {/* <NavLink to="/schedule" icon={<AiOutlineCalendar />} text="Schedule" onClick={closeSidebar} mobile /> */}
+            <NavLink
+              to="/gallery"
+              icon={<FaImages />}
+              text="Gallery"
+              onClick={closeSidebar}
+              mobile
+            />
             <NavLink
               to="/about"
               icon={<AiOutlineTeam />}
@@ -228,14 +223,7 @@ const Navigation = () => {
                   className="w-48 px-6 py-3 bg-red-600 rounded-lg text-center hover:bg-red-700 transition-colors"
                   onClick={closeSidebar}
                 >
-                  Login
-                </Link>
-                <Link
-                  to="/register"
-                  className="w-48 px-6 py-3 bg-gray-800 rounded-lg text-center hover:bg-gray-700 transition-colors"
-                  onClick={closeSidebar}
-                >
-                  Register
+                  Admin Login
                 </Link>
               </div>
             )}

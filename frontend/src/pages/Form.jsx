@@ -7,36 +7,28 @@ import {
   useGetUserDataByUserIdQuery,
 } from "../redux/api/userdataApiSlice";
 import { useSelector } from "react-redux";
+import DatePicker from "react-datepicker";
 
 const Form = () => {
   const navigate = useNavigate();
   const { userInfo } = useSelector((state) => state.auth);
   const [addUserData] = useAddUserDataMutation();
   const [updateUserData] = useUpdateUserDataMutation();
-  const { data: userData, isLoading } = useGetUserDataByUserIdQuery(
-    userInfo?._id,
-    {
-      skip: !userInfo?._id || !userInfo,
-    }
-  );
+  const {
+    data: userData,
+    isLoading,
+    error: userDataError,
+  } = useGetUserDataByUserIdQuery(userInfo?._id, {
+    skip: !userInfo?._id || !userInfo,
+  });
 
   const [formData, setFormData] = useState({
     name: "",
-    number: "",
     email: "",
-    credit: "",
-    debit: "0",
+    whatsappNumber: "",
+    socialMedia: { facebook: "", twitter: "", instagram: "" },
     dateOfBirth: "",
-    subscription: "",
-    subscriptionEndDate: "",
-    height: "",
-    bodyType: "",
-    fitnessGoals: "",
-    activityLevel: "",
-    dietaryPreferences: "",
-    preferredSports: "",
-    gender: "",
-    note: "",
+    attendance: [],
   });
 
   useEffect(() => {
@@ -44,39 +36,46 @@ const Form = () => {
       const data = userData[0];
       setFormData({
         name: data.name || "",
-        number: data.number || "",
         email: data.email || "",
-        credit: data.credit || "",
-        debit: data.debit || "0",
+        whatsappNumber: data.whatsappNumber || "",
+        socialMedia: {
+          facebook: data.socialMedia?.facebook || "",
+          twitter: data.socialMedia?.twitter || "",
+          instagram: data.socialMedia?.instagram || "",
+        },
         dateOfBirth: data.dateOfBirth
           ? new Date(data.dateOfBirth).toISOString().split("T")[0]
           : "",
-        subscription: data.subscription || "",
-        subscriptionEndDate: data.subscriptionEndDate
-          ? new Date(data.subscriptionEndDate).toISOString().split("T")[0]
-          : "",
-        height: data.height || "",
-        bodyType: data.bodyType || "",
-        fitnessGoals: data.fitnessGoals || "",
-        activityLevel: data.activityLevel || "",
-        dietaryPreferences: data.dietaryPreferences || "",
-        preferredSports: data.preferredSports || "",
-        gender: data.gender || "",
-        note: data.note || "",
+        attendance: Array.isArray(data.attendance)
+          ? data.attendance.map((date) => new Date(date))
+          : [],
       });
     }
-  }, [userData]);
+    if (userDataError) {
+      console.log(
+        "Form.jsx: No user data found, allowing profile creation =",
+        userDataError
+      );
+      // Silently allow profile creation
+    }
+  }, [userData, userDataError]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!userInfo) {
-      toast.error("Please log in");
+    if (!userInfo?._id || typeof userInfo._id !== "string") {
+      toast.error("Please log in with a valid user account");
       navigate("/login");
       return;
     }
     try {
-      const data = { ...formData, userId: userInfo._id };
-      console.log("Form.jsx: Submitting data =", data); // Debug submission
+      const data = {
+        ...formData,
+        userId: userInfo._id,
+        attendance: Array.isArray(formData.attendance)
+          ? formData.attendance.map((date) => date.toISOString().split("T")[0])
+          : [],
+      };
+      console.log("Form.jsx: Submitting data =", data);
       if (userData && userData.length > 0) {
         await updateUserData({ id: userData[0]._id, ...data }).unwrap();
         toast.success("Profile updated!");
@@ -86,14 +85,35 @@ const Form = () => {
       }
       navigate("/");
     } catch (error) {
-      console.error("Form.jsx: Submission error =", error); // Debug error
-      toast.error(error?.data?.message || "Failed to submit");
+      console.error("Form.jsx: Submission error =", error);
+      toast.error(error?.data?.error || "Failed to submit");
     }
   };
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
+    const { id, value, type, checked } = e.target;
+    if (id.startsWith("socialMedia.")) {
+      const platform = id.split(".")[1];
+      setFormData({
+        ...formData,
+        socialMedia: { ...formData.socialMedia, [platform]: value },
+      });
+    } else {
+      setFormData({ ...formData, [id]: type === "checkbox" ? checked : value });
+    }
   };
+
+  const handleAttendanceChange = (dates) => {
+    setFormData({ ...formData, attendance: Array.isArray(dates) ? dates : [] });
+  };
+
+  if (!userInfo) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-4 text-center">
+        <p className="text-red-500">Please log in to access this page</p>
+      </div>
+    );
+  }
 
   if (isLoading) return <div className="p-4 text-center">Loading...</div>;
 
@@ -116,20 +136,41 @@ const Form = () => {
               required
             />
             <FormInput
-              id="number"
-              label="Phone"
-              type="tel"
-              value={formData.number}
-              onChange={handleChange}
-              required
-            />
-            <FormInput
               id="email"
               label="Email"
               type="email"
               value={formData.email}
               onChange={handleChange}
               required
+            />
+            <FormInput
+              id="whatsappNumber"
+              label="WhatsApp Number"
+              type="tel"
+              value={formData.whatsappNumber}
+              onChange={handleChange}
+              required
+            />
+            <FormInput
+              id="socialMedia.facebook"
+              label="Facebook URL"
+              type="url"
+              value={formData.socialMedia.facebook}
+              onChange={handleChange}
+            />
+            <FormInput
+              id="socialMedia.twitter"
+              label="Twitter/X URL"
+              type="url"
+              value={formData.socialMedia.twitter}
+              onChange={handleChange}
+            />
+            <FormInput
+              id="socialMedia.instagram"
+              label="Instagram URL"
+              type="url"
+              value={formData.socialMedia.instagram}
+              onChange={handleChange}
             />
             <FormInput
               id="dateOfBirth"
@@ -139,112 +180,27 @@ const Form = () => {
               onChange={handleChange}
               required
             />
-            <FormInput
-              id="credit"
-              label="Weight (kg)"
-              type="number"
-              value={formData.credit}
-              onChange={handleChange}
-              required
-            />
-            <FormInput
-              id="height"
-              label="Height (cm)"
-              type="number"
-              value={formData.height}
-              onChange={handleChange}
-              required
-            />
-            <FormInput
-              id="debit"
-              label="Debit Balance"
-              type="number"
-              value={formData.debit}
-              onChange={handleChange}
-              required
-            />
-            <FormSelect
-              id="bodyType"
-              label="Body Type"
-              value={formData.bodyType}
-              onChange={handleChange}
-              options={["Ectomorph", "Mesomorph", "Endomorph"]}
-              required
-            />
-            <FormSelect
-              id="fitnessGoals"
-              label="Goals"
-              value={formData.fitnessGoals}
-              onChange={handleChange}
-              options={["Weight Loss", "Muscle Gain", "Endurance & Stamina"]}
-              required
-            />
-            <FormSelect
-              id="activityLevel"
-              label="Activity"
-              value={formData.activityLevel}
-              onChange={handleChange}
-              options={["Sedentary", "Moderate", "Active"]}
-              required
-            />
-            <FormSelect
-              id="dietaryPreferences"
-              label="Dietary"
-              value={formData.dietaryPreferences}
-              onChange={handleChange}
-              options={["Nigerian Traditional", "Vegetarian", "Vegan"]}
-              required
-            />
-            <FormSelect
-              id="preferredSports"
-              label="Sports"
-              value={formData.preferredSports}
-              onChange={handleChange}
-              options={["Football", "Running", "Dance", "Boxing"]}
-              required
-            />
-            <FormSelect
-              id="gender"
-              label="Gender"
-              value={formData.gender}
-              onChange={handleChange}
-              options={["Male", "Female", "Other"]}
-              required
-            />
-          </div>
-          <FormSelect
-            id="subscription"
-            label="Subscription"
-            value={formData.subscription}
-            onChange={handleChange}
-            options={[
-              "Starter Pass",
-              "Pro Athlete",
-              "Personalized Plan",
-              "Elite Membership",
-            ]}
-            required
-          />
-          <FormInput
-            id="subscriptionEndDate"
-            label="Sub End Date"
-            type="date"
-            value={formData.subscriptionEndDate}
-            onChange={handleChange}
-            required
-          />
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Notes
-            </label>
-            <textarea
-              id="note"
-              value={formData.note}
-              onChange={handleChange}
-              className="w-full p-2 border rounded-lg"
-              rows="2"
-              required
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Attendance Dates
+              </label>
+              <DatePicker
+                selected={null}
+                onChange={handleAttendanceChange}
+                multiple
+                dateFormat="yyyy-MM-dd"
+                className="w-full p-2 border rounded-lg"
+                placeholderText="Select attendance dates"
+                value={
+                  Array.isArray(formData.attendance) &&
+                  formData.attendance.length > 0
+                    ? formData.attendance
+                        .map((date) => new Date(date).toLocaleDateString())
+                        .join(", ")
+                    : ""
+                }
+              />
+            </div>
           </div>
           <div className="flex justify-center">
             <button
@@ -271,26 +227,6 @@ const FormInput = ({ id, label, type, value, onChange, required }) => (
       className="w-full p-2 border rounded-lg"
       required={required}
     />
-  </div>
-);
-
-const FormSelect = ({ id, label, value, onChange, options, required }) => (
-  <div>
-    <label className="block text-sm font-medium text-gray-700">{label}</label>
-    <select
-      id={id}
-      value={value}
-      onChange={onChange}
-      className="w-full p-2 border rounded-lg"
-      required={required}
-    >
-      <option value="">Select</option>
-      {options.map((opt) => (
-        <option key={opt} value={opt}>
-          {opt}
-        </option>
-      ))}
-    </select>
   </div>
 );
 
