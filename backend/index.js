@@ -29,7 +29,7 @@ app.use(cookieParser());
 console.log("INDEX.JS LOADED - NO_COOKIES_FIX -", new Date().toISOString());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://excel-crm.onrender.com",
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -64,7 +64,7 @@ const server = createServer(app);
 // Initialize Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: "https://excel-crm.onrender.com",
+    origin: "http://lo",
     methods: ["GET", "POST"],
     credentials: true,
   },
