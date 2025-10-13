@@ -65,7 +65,7 @@ const Navigation = () => {
             <FaDumbbell className="text-2xl text-white" />
           </div>
           <h1 className=" sm:text-2xl font-extrabold bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent">
-            X FITNESS
+            D' Playce
           </h1>
         </Link>
 
@@ -154,7 +154,7 @@ const Navigation = () => {
               <div className="bg-gradient-to-r from-red-600 to-orange-500 p-2 rounded-full shadow-md">
                 <FaDumbbell className="text-2xl text-white" />
               </div>
-              <h1 className="text-xl font-extrabold text-white">X FITNESS</h1>
+              <h1 className="text-xl font-extrabold text-white">D' Playce</h1>
             </Link>
             <button
               onClick={closeSidebar}

@@ -7,7 +7,6 @@ import {
   useUpdateUserDataMutation,
 } from "../../redux/api/userdataApiSlice";
 
-// Sport Center Color Theme
 const SPORT_THEME = {
   primary: "bg-gray-900",
   secondary: "bg-red-600",
@@ -39,6 +38,7 @@ const Userdetails = () => {
     socialMedia: { facebook: "", twitter: "", instagram: "" },
     dateOfBirth: "",
     subscriptionEndDate: "",
+    attendance: [],
   });
 
   useEffect(() => {
@@ -47,6 +47,7 @@ const Userdetails = () => {
       navigate("/");
       return;
     }
+
     if (userdata) {
       setFormData({
         name: userdata.name || "",
@@ -59,20 +60,23 @@ const Userdetails = () => {
         },
         dateOfBirth: userdata.dateOfBirth?.split("T")[0] || "",
         subscriptionEndDate: userdata.subscriptionEndDate?.split("T")[0] || "",
+        attendance: userdata.attendance || [],
       });
     }
   }, [userdata, id, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!id || typeof id !== "string" || id.trim() === "") {
       toast.error("Invalid user data ID");
       navigate("/");
       return;
     }
+
     try {
       await updateUserData({
-        id, // ✅ this is normalized from route param
+        id,
         ...formData,
       }).unwrap();
       toast.success("Member updated successfully!");
@@ -89,6 +93,7 @@ const Userdetails = () => {
       navigate("/");
       return;
     }
+
     if (!window.confirm("Delete this member permanently?")) return;
     try {
       await deleteUserData(id).unwrap();
@@ -111,6 +116,25 @@ const Userdetails = () => {
     } else {
       setFormData({ ...formData, [id]: value });
     }
+  };
+
+  const handleAddAttendance = (date) => {
+    if (!date) return;
+    if (
+      !formData.attendance.some(
+        (d) => new Date(d).toDateString() === new Date(date).toDateString()
+      )
+    ) {
+      setFormData({
+        ...formData,
+        attendance: [...formData.attendance, date],
+      });
+    }
+  };
+
+  const handleRemoveAttendance = (index) => {
+    const updated = formData.attendance.filter((_, i) => i !== index);
+    setFormData({ ...formData, attendance: updated });
   };
 
   if (userLoading) {
@@ -150,65 +174,107 @@ const Userdetails = () => {
 
         <div className={`${SPORT_THEME.accent} rounded-xl p-6 shadow-xl`}>
           <form onSubmit={handleSubmit} className="space-y-6 text-white">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormInput
-                id="name"
-                label="Member Name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-              />
-              <FormInput
-                id="whatsappNumber"
-                label="WhatsApp Number"
-                type="tel"
-                value={formData.whatsappNumber}
-                onChange={handleChange}
-                required
-              />
-              <FormInput
-                id="email"
-                label="Email Address"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
-              <FormInput
-                id="socialMedia.facebook"
-                label="Facebook URL"
-                type="url"
-                value={formData.socialMedia.facebook}
-                onChange={handleChange}
-              />
-              <FormInput
-                id="socialMedia.twitter"
-                label="Twitter/X URL"
-                type="url"
-                value={formData.socialMedia.twitter}
-                onChange={handleChange}
-              />
-              <FormInput
-                id="socialMedia.instagram"
-                label="Instagram URL"
-                type="url"
-                value={formData.socialMedia.instagram}
-                onChange={handleChange}
-              />
-              <FormInput
-                id="dateOfBirth"
-                label="Date of Birth"
+            <table className="w-full table-auto border-collapse">
+              <tbody>
+                <TableRow
+                  label="Member Name"
+                  id="name"
+                  type="text"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
+                <TableRow
+                  label="WhatsApp Number"
+                  id="whatsappNumber"
+                  type="tel"
+                  value={formData.whatsappNumber}
+                  onChange={handleChange}
+                  required
+                />
+                <TableRow
+                  label="Email Address"
+                  id="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+                <TableRow
+                  label="Facebook URL"
+                  id="socialMedia.facebook"
+                  type="url"
+                  value={formData.socialMedia.facebook}
+                  onChange={handleChange}
+                />
+                <TableRow
+                  label="Twitter/X URL"
+                  id="socialMedia.twitter"
+                  type="url"
+                  value={formData.socialMedia.twitter}
+                  onChange={handleChange}
+                />
+                <TableRow
+                  label="Instagram URL"
+                  id="socialMedia.instagram"
+                  type="url"
+                  value={formData.socialMedia.instagram}
+                  onChange={handleChange}
+                />
+                <TableRow
+                  label="Date of Birth"
+                  id="dateOfBirth"
+                  type="date"
+                  value={formData.dateOfBirth}
+                  onChange={handleChange}
+                  required
+                />
+                <TableRow
+                  label="Membership Expiry"
+                  id="subscriptionEndDate"
+                  type="date"
+                  value={formData.subscriptionEndDate}
+                  onChange={handleChange}
+                />
+              </tbody>
+            </table>
+
+            {/* Attendance Management */}
+            <div className="mt-6">
+              <label className="block text-sm font-medium mb-2">
+                Attendance Dates
+              </label>
+
+              <div className="flex flex-wrap gap-2 mb-3">
+                {formData.attendance && formData.attendance.length > 0 ? (
+                  formData.attendance.map((date, index) => (
+                    <span
+                      key={index}
+                      className="flex items-center gap-1 bg-green-700 text-white px-3 py-1 rounded-full text-sm"
+                    >
+                      {new Date(date).toLocaleDateString("en-GB", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })}
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveAttendance(index)}
+                        className="ml-1 text-red-300 hover:text-red-500 font-bold"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))
+                ) : (
+                  <p className="text-gray-400 text-sm">No attendance yet.</p>
+                )}
+              </div>
+
+              <input
                 type="date"
-                value={formData.dateOfBirth}
-                onChange={handleChange}
-                required
-              />
-              <FormInput
-                id="subscriptionEndDate"
-                label="Membership Expiry"
-                type="date"
-                value={formData.subscriptionEndDate}
-                onChange={handleChange}
+                onChange={(e) => handleAddAttendance(e.target.value)}
+                className="w-full p-3 border border-gray-700 bg-gray-800 rounded-lg focus:ring-2 focus:ring-green-500 text-white"
               />
             </div>
 
@@ -234,20 +300,22 @@ const Userdetails = () => {
   );
 };
 
-const FormInput = ({ id, label, type = "text", value, onChange, required }) => (
-  <div>
-    <label htmlFor={id} className="block text-sm font-medium mb-2">
+const TableRow = ({ label, id, type = "text", value, onChange, required }) => (
+  <tr className="border-b border-gray-700">
+    <td className="py-3 px-4 text-sm font-medium">
       {label} {required && <span className="text-red-500">*</span>}
-    </label>
-    <input
-      id={id}
-      type={type}
-      value={value}
-      onChange={onChange}
-      className={`w-full p-3 ${SPORT_THEME.border} border text-white rounded-lg focus:ring-2 focus:ring-red-500 bg-gray-800`}
-      required={required}
-    />
-  </div>
+    </td>
+    <td className="py-3 px-4">
+      <input
+        id={id}
+        type={type}
+        value={value}
+        onChange={onChange}
+        className={`w-full p-3 border border-gray-700 text-white rounded-lg focus:ring-2 focus:ring-red-500 bg-gray-800`}
+        required={required}
+      />
+    </td>
+  </tr>
 );
 
 export default Userdetails;

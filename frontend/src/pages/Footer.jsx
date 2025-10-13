@@ -45,7 +45,7 @@ const Footer = () => {
             <div className="flex items-center gap-3">
               <GiGymBag className="text-3xl sm:text-4xl text-red-600" />
               <h3 className="text-xl sm:text-2xl font-extrabold text-white">
-                X FITNESS
+                D' Playce
               </h3>
             </div>
             <p className="text-xs sm:text-sm md:text-base leading-relaxed">

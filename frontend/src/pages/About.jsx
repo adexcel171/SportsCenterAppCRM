@@ -29,7 +29,7 @@ const About = () => {
             About Us
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            At X Fitness Sports & Recreation Hub, we are committed to providing
+            At D' Playce Sports & Recreation Hub, we are committed to providing
             a clean, safe, and inspiring environment for individuals and
             organizations to achieve their fitness and wellness goals. Our
             state-of-the-art facilities are designed to keep both your body and
@@ -69,7 +69,7 @@ const About = () => {
       <section className="bg-blue-50 py-12">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 text-center mb-8">
-            Why Choose X Fitness?
+            Why Choose D' Playce?
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="bg-white p-6 rounded-lg shadow-md text-center">

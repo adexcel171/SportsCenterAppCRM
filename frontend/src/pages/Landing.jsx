@@ -89,7 +89,7 @@ const Landing = () => {
               className="text-4xl sm:text-5xl md:text-7xl font-extrabold mb-6 leading-tight tracking-tight"
             >
               <span className="bg-gradient-to-r from-red-500 via-orange-400 to-yellow-500 bg-clip-text text-transparent">
-                XFitness
+                D'playce
               </span>
               <br />
               Sports & Recreation Hub
