@@ -194,6 +194,14 @@ const Navigation = () => {
                 <FaDumbbell className="text-2xl text-white" />
               </div>
               <h1 className="text-xl font-extrabold text-white">D' Playce</h1>
+              {userInfo && (
+                <div className="flex items-center space-x-2 ml-4">
+                  <AiOutlineUser className="text-2xl text-white" />
+                  <span className="text-white font-semibold">
+                    {userInfo.username}
+                  </span>
+                </div>
+              )}
             </Link>
             <button
               onClick={closeSidebar}
@@ -248,7 +256,7 @@ const Navigation = () => {
                   />
                   <button
                     onClick={logoutHandler}
-                    className="flex items-center space-x-4 px-4 py-3 text-white background-color-red-600 hover:bg-red-700 rounded-lg transition-colors w-full"
+                    className="flex items-center space-x-4 px-4 py-3 text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors w-full"
                   >
                     <AiOutlineLogin size={24} />
                     <span className="font-medium">Logout</span>

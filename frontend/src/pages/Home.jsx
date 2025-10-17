@@ -24,78 +24,72 @@ const Home = () => {
       JSON.stringify({ userInfo, timestamp: new Date().toISOString() })
     );
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-800 via-gray-900 to-black flex items-center justify-center text-white px-4">
-        <div className="text-center space-y-6 max-w-md sm:max-w-lg">
-          <h2 className="text-xl sm:text-2xl font-bold flex items-center justify-center gap-2">
-            <AiOutlineLock className="text-2xl text-red-500" />
-            Access Restricted
-          </h2>
-          <p className="text-gray-300 text-sm sm:text-base">
-            This page is for admins only. Log out to explore our website, or:
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white px-6 py-12">
+        <div className="bg-gray-800/60 backdrop-blur-md p-10 rounded-2xl shadow-2xl w-full max-w-2xl text-center space-y-8 border border-gray-700">
+          <div className="flex items-center justify-center gap-3">
+            <AiOutlineLock className="text-3xl text-red-500" />
+            <h2 className="text-3xl font-extrabold tracking-wide">
+              Access Restricted
+            </h2>
+          </div>
+
+          <p className="text-gray-300 text-base sm:text-lg">
+            This page is for admins only. Please log out to explore the website
+            or choose one of the options below:
           </p>
-          <ul className="text-gray-300 text-sm sm:text-base space-y-2">
-            <li className="flex items-center justify-center gap-2">
-              <FaRocket className="text-blue-500" />
-              Visit{" "}
-              <Link to="/programs" className="underline hover:text-blue-400">
-                Programs
-              </Link>{" "}
-              to explore plans and make payments.
-            </li>
-            <li className="flex items-center justify-center gap-2">
-              <BsPersonCircle className="text-blue-500" />
-              Check your subscriptions in your{" "}
-              <Link to="/profile" className="underline hover:text-blue-400">
-                Profile
-              </Link>
-              .
-            </li>
-          </ul>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <div>
-              <button
-                onClick={() => {
-                  console.log(
-                    "Home.jsx: Logout to Continue clicked at",
-                    new Date().toISOString()
-                  );
-                  try {
-                    dispatch(logout());
-                    console.log("Home.jsx: Logout dispatched");
-                    navigate("/", { replace: true });
-                    console.log("Home.jsx: Navigation to / attempted");
-                  } catch (error) {
-                    console.error(
-                      "Home.jsx: Logout or navigation error =",
-                      error
-                    );
-                  }
-                }}
-                className="bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 px-8 py-4 rounded-xl font-bold w-full sm:w-[200px] flex items-center justify-center gap-2 shadow-lg transition-all"
-              >
-                🚪 Logout to Continue to Website
-              </button>
-              <p className="text-gray-500 text-sm mt-2">
+
+          <div className="space-y-4 text-gray-300 text-sm sm:text-base">
+            <div className="flex items-center justify-center gap-2">
+              <FaRocket className="text-blue-500 text-lg" />
+              <span>
+                Visit{" "}
                 <Link
-                  to="/"
-                  className="underline hover:text-red-400"
-                  onClick={() =>
-                    console.log(
-                      "Home.jsx: Fallback Link to / clicked at",
-                      new Date().toISOString()
-                    )
-                  }
+                  to="/programs"
+                  className="underline font-semibold hover:text-blue-400 transition-colors"
                 >
-                  Click here if logout doesn’t work
-                </Link>
-              </p>
+                  Programs
+                </Link>{" "}
+                to explore plans and make payments.
+              </span>
             </div>
+
+            <div className="flex items-center justify-center gap-2">
+              <BsPersonCircle className="text-blue-500 text-lg" />
+              <span>
+                Check your subscriptions in your{" "}
+                <Link
+                  to="/profile"
+                  className="underline font-semibold hover:text-blue-400 transition-colors"
+                >
+                  Profile
+                </Link>
+                .
+              </span>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-4">
+            <button
+              onClick={() => {
+                console.log("Logout clicked at", new Date().toISOString());
+                try {
+                  dispatch(logout());
+                  navigate("/", { replace: true });
+                } catch (error) {
+                  console.error("Logout or navigation error =", error);
+                }
+              }}
+              className="bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 px-8 py-4 rounded-xl font-bold w-full sm:w-[220px] flex items-center justify-center gap-2 shadow-lg transition-all duration-200 hover:scale-105"
+            >
+              🚪 Logout to Continue
+            </button>
+
             <Link
               to="/programs"
-              className="bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 px-8 py-4 rounded-xl font-bold w-full sm:w-[200px] flex items-center justify-center gap-2 shadow-lg transition-all"
+              className="bg-gradient-to-r from-blue-600 to-indigo-500 hover:from-blue-700 hover:to-indigo-600 px-8 py-4 rounded-xl font-bold w-full sm:w-[220px] flex items-center justify-center gap-2 shadow-lg transition-all duration-200 hover:scale-105"
               onClick={() =>
                 console.log(
-                  "Home.jsx: Enter Programs clicked at",
+                  "Enter Programs clicked at",
                   new Date().toISOString()
                 )
               }
@@ -103,6 +97,21 @@ const Home = () => {
               🚀 Enter Programs
             </Link>
           </div>
+
+          <p className="text-gray-500 text-sm">
+            <Link
+              to="/"
+              className="underline hover:text-red-400 transition-colors"
+              onClick={() =>
+                console.log(
+                  "Fallback link clicked at",
+                  new Date().toISOString()
+                )
+              }
+            >
+              Click here if logout doesn’t work
+            </Link>
+          </p>
         </div>
       </div>
     );
@@ -169,7 +178,7 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-800 via-gray-900 to-black text-white py-10">
       <div className="max-w-6xl mx-auto px-6">
-        <h1 className="text-3xl sm:text-4xl font-bold text-center mb-8 mt-8 text-white tracking-wide">
+        <h1 className="text-3xl sm:text-4xl font-bold text-center  mt-8 text-white tracking-wide">
           🏋️ D’Playce Fitness Management
         </h1>
 
