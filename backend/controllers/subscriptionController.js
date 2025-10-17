@@ -1,4 +1,3 @@
-// src/controllers/subscriptionController.js
 import mongoose from "mongoose";
 import Subscription from "../models/subscriptionModel.js";
 import asyncHandler from "../middlewares/asyncHandler.js";
@@ -14,12 +13,36 @@ const createSubscription = asyncHandler(async (req, res) => {
     "-",
     new Date().toISOString()
   );
-  const { plan, startDate, endDate } = req.body;
+  const {
+    plan,
+    amount,
+    duration,
+    paymentReference,
+    paymentType,
+    startDate,
+    endDate,
+  } = req.body;
 
-  if (!plan || !startDate || !endDate) {
+  if (
+    !plan ||
+    !amount ||
+    !duration ||
+    !paymentReference ||
+    !paymentType ||
+    !startDate ||
+    !endDate
+  ) {
     return res.status(400).json({
       message: "Missing required fields",
-      missing: { plan: !plan, startDate: !startDate, endDate: !endDate },
+      missing: {
+        plan: !plan,
+        amount: !amount,
+        duration: !duration,
+        paymentReference: !paymentReference,
+        paymentType: !paymentType,
+        startDate: !startDate,
+        endDate: !endDate,
+      },
     });
   }
 
@@ -49,15 +72,15 @@ const createSubscription = asyncHandler(async (req, res) => {
   const subscription = new Subscription({
     user: req.user._id,
     email: req.user.email || "unknown@example.com",
-    name: req.user.name || "Unknown User", // Fixed: use name instead of username
+    name: req.user.name || "Unknown User",
     plan,
-    amount: 0,
-    duration: "custom",
+    amount,
+    duration,
+    paymentReference,
+    paymentType,
     startDate: parsedStartDate,
     endDate: parsedEndDate,
     status: "active",
-    paymentReference: "bypassed_for_testing",
-    paymentType: "none",
   });
 
   await subscription.save();

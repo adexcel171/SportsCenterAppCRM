@@ -7,7 +7,6 @@ import {
 } from "../controllers/subscriptionController.js";
 import { authenticate, authorizeAdmin } from "../middlewares/authMiddleware.js";
 
-// Log to confirm this file is loaded
 console.log(
   "SUBSCRIPTIONROUTES.JS LOADED - FIX_500_404 -",
   new Date().toISOString()

@@ -1,11 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import {
-  useAddUserDataMutation,
-  useUpdateUserDataMutation,
-  useGetUserDataByUserIdQuery,
-} from "../redux/api/userdataApiSlice";
+import { useAddUserDataMutation } from "../redux/api/userdataApiSlice";
 import { useSelector } from "react-redux";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -14,14 +10,6 @@ const Form = () => {
   const navigate = useNavigate();
   const { userInfo } = useSelector((state) => state.auth);
   const [addUserData] = useAddUserDataMutation();
-  const [updateUserData] = useUpdateUserDataMutation();
-  const {
-    data: userData,
-    isLoading,
-    error: userDataError,
-  } = useGetUserDataByUserIdQuery(userInfo?._id, {
-    skip: !userInfo?._id || !userInfo,
-  });
 
   const [formData, setFormData] = useState({
     name: "",
@@ -29,30 +17,9 @@ const Form = () => {
     whatsappNumber: "",
     socialMedia: { facebook: "", twitter: "", instagram: "" },
     dateOfBirth: "",
+    membershipExpiryDate: "",
     attendance: [],
   });
-
-  useEffect(() => {
-    if (userData && userData.length > 0) {
-      const data = userData[0];
-      setFormData({
-        name: data.name || "",
-        email: data.email || "",
-        whatsappNumber: data.whatsappNumber || "",
-        socialMedia: {
-          facebook: data.socialMedia?.facebook || "",
-          twitter: data.socialMedia?.twitter || "",
-          instagram: data.socialMedia?.instagram || "",
-        },
-        dateOfBirth: data.dateOfBirth
-          ? new Date(data.dateOfBirth).toISOString().split("T")[0]
-          : "",
-        attendance: Array.isArray(data.attendance)
-          ? data.attendance.map((date) => new Date(date))
-          : [],
-      });
-    }
-  }, [userData, userDataError]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -69,15 +36,13 @@ const Form = () => {
         attendance: formData.attendance.map(
           (d) => d.toISOString().split("T")[0]
         ),
+        membershipExpiryDate: formData.membershipExpiryDate
+          ? new Date(formData.membershipExpiryDate).toISOString().split("T")[0]
+          : "",
       };
 
-      if (userData && userData.length > 0) {
-        await updateUserData({ id: userData[0]._id, ...data }).unwrap();
-        toast.success("Profile updated!");
-      } else {
-        await addUserData(data).unwrap();
-        toast.success("Profile created!");
-      }
+      await addUserData(data).unwrap();
+      toast.success("Profile created!");
       navigate("/");
     } catch (error) {
       toast.error(error?.data?.error || "Something went wrong");
@@ -110,17 +75,12 @@ const Form = () => {
     }
   };
 
-  const handleRemoveAttendance = (index) => {
-    const updated = formData.attendance.filter((_, i) => i !== index);
-    setFormData({ ...formData, attendance: updated });
+  const handleMembershipExpiryChange = (date) => {
+    setFormData({
+      ...formData,
+      membershipExpiryDate: date ? date.toISOString().split("T")[0] : "",
+    });
   };
-
-  if (isLoading)
-    return (
-      <div className="flex justify-center items-center min-h-screen text-gray-500">
-        Loading...
-      </div>
-    );
 
   if (!userInfo)
     return (
@@ -134,9 +94,7 @@ const Form = () => {
       <div className="w-full max-w-2xl bg-white/80 backdrop-blur-md shadow-xl rounded-2xl p-8 border border-gray-100">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-semibold text-gray-800">
-            {userData && userData.length > 0
-              ? "Update Your Profile"
-              : "Create Your Profile"}
+            Create Your Profile
           </h1>
           <Link
             to="/"
@@ -180,6 +138,27 @@ const Form = () => {
               onChange={handleChange}
               required
             />
+            <div className="flex flex-col">
+              <label
+                htmlFor="membershipExpiryDate"
+                className="text-sm font-medium text-gray-700 mb-1"
+              >
+                Membership Expiry Date
+              </label>
+              <DatePicker
+                id="membershipExpiryDate"
+                selected={
+                  formData.membershipExpiryDate
+                    ? new Date(formData.membershipExpiryDate)
+                    : null
+                }
+                onChange={handleMembershipExpiryChange}
+                dateFormat="yyyy-MM-dd"
+                placeholderText="Select membership expiry date"
+                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+                required
+              />
+            </div>
           </div>
 
           {/* Social Media */}
@@ -228,13 +207,6 @@ const Form = () => {
                       month: "short",
                       day: "numeric",
                     })}
-                    <button
-                      type="button"
-                      className="text-red-500 font-bold ml-1 hover:text-red-700"
-                      onClick={() => handleRemoveAttendance(index)}
-                    >
-                      ×
-                    </button>
                   </span>
                 ))
               ) : (

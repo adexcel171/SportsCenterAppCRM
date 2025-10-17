@@ -5,63 +5,55 @@ import { jsPDF } from "jspdf";
 import { v4 as uuidv4 } from "uuid";
 import QRCode from "qrcode";
 import { useCreateSubscriptionMutation } from "../redux/api/subscriptionApiSlice";
-import { useAddUserDataMutation } from "../redux/api/userdataApiSlice"; // Add this import
+import { useAddUserDataMutation } from "../redux/api/userdataApiSlice";
 
 const Programs = () => {
   const subscriptions = [
     {
-      title: "Starter Pass",
-      price: "₦25,000",
-      duration: "month",
+      title: "Daily Walking",
+      price: "₦3,000",
+      duration: "day",
+      features: ["Basic gym access", "Walking track access", "Locker access"],
+      popular: false,
+      color: "from-gray-100 to-gray-200",
+    },
+    {
+      title: "Weekly Plan",
+      price: "₦10,000",
+      duration: "week",
       features: [
-        "Basic gym access",
+        "Unlimited gym access",
         "1 group class/week",
         "Court booking (2hrs/week)",
         "Locker access",
       ],
       popular: false,
-      color: "from-gray-100 to-gray-200",
+      color: "from-blue-100 to-blue-200",
     },
     {
-      title: "Pro Athlete",
-      price: "₦65,000",
+      title: "Couple Monthly",
+      price: "₦50,000",
       duration: "month",
       features: [
-        "Unlimited gym access",
-        "3 personal training sessions",
-        "Unlimited group classes",
+        "Unlimited gym access for two",
+        "2 group classes/week",
         "Court priority booking",
         "Sauna access",
+        "Locker access for two",
       ],
       popular: true,
       color: "from-red-100 to-red-200",
     },
     {
-      title: "Personalized Plan",
-      price: "₦85,000",
+      title: "Monthly Plan",
+      price: "₦30,000",
       duration: "month",
       features: [
-        "AI-driven workout & diet plans",
         "Unlimited gym access",
-        "3 personal training sessions",
-        "Nutrition consultation",
-        "Priority court booking",
-        "Sauna & VIP locker access",
-      ],
-      popular: false,
-      color: "from-blue-100 to-blue-200",
-    },
-    {
-      title: "Elite Membership",
-      price: "₦120,000",
-      duration: "month",
-      features: [
-        "24/7 facility access",
-        "5 personal training sessions",
-        "Nutrition planning",
-        "VIP locker room",
-        "Guest passes",
-        "Sports massage",
+        "1 personal training session",
+        "2 group classes/week",
+        "Court booking (4hrs/week)",
+        "Sauna access",
       ],
       popular: false,
       color: "from-gray-100 to-gray-200",
@@ -70,7 +62,7 @@ const Programs = () => {
 
   const { userInfo } = useSelector((state) => state.auth);
   const [createSubscription] = useCreateSubscriptionMutation();
-  const [addUserData] = useAddUserDataMutation(); // Add this mutation
+  const [addUserData] = useAddUserDataMutation();
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [activeSubscription, setActiveSubscription] = useState(null);
   const [ticket, setTicket] = useState(null);
@@ -82,7 +74,13 @@ const Programs = () => {
   const generateTicket = (subscriptionData, reference) => {
     const ticketId = uuidv4().slice(0, 8);
     const expirationDate = new Date();
-    expirationDate.setMonth(expirationDate.getMonth() + 1);
+    if (subscriptionData.duration === "day") {
+      expirationDate.setDate(expirationDate.getDate() + 1);
+    } else if (subscriptionData.duration === "week") {
+      expirationDate.setDate(expirationDate.getDate() + 7);
+    } else {
+      expirationDate.setMonth(expirationDate.getMonth() + 1);
+    }
 
     return {
       ticketId,
@@ -184,7 +182,13 @@ const Programs = () => {
 
       const startDate = new Date();
       const endDate = new Date();
-      endDate.setMonth(endDate.getMonth() + 1);
+      if (paymentConfig.metadata.duration === "day") {
+        endDate.setDate(endDate.getDate() + 1);
+      } else if (paymentConfig.metadata.duration === "week") {
+        endDate.setDate(endDate.getDate() + 7);
+      } else {
+        endDate.setMonth(endDate.getMonth() + 1);
+      }
 
       const subscriptionData = {
         plan: paymentConfig.metadata.plan,
@@ -202,26 +206,29 @@ const Programs = () => {
       ).unwrap();
       console.log("Subscription created successfully:", subscriptionResult);
 
-      // Update or create UserData entry
-      if (paymentConfig.metadata.plan === "Personalized Plan") {
+      // Update or create UserData entry for Couple Monthly or Monthly Plan
+      if (
+        paymentConfig.metadata.plan === "Couple Monthly" ||
+        paymentConfig.metadata.plan === "Monthly Plan"
+      ) {
         const userDataPayload = {
           userId: userInfo._id,
           name: userInfo.username || "Unknown User",
-          number: userInfo.number || "N/A", // Adjust based on your user model
+          number: userInfo.number || "N/A",
           email: userInfo.email || "N/A",
-          credit: 0, // Default value, adjust as needed
-          debit: 0, // Default value, adjust as needed
-          note: "Subscribed to Personalized Plan",
-          dateOfBirth: userInfo.dateOfBirth || new Date().toISOString(), // Adjust as needed
+          credit: 0,
+          debit: 0,
+          note: `Subscribed to ${paymentConfig.metadata.plan}`,
+          dateOfBirth: userInfo.dateOfBirth || new Date().toISOString(),
           subscription: paymentConfig.metadata.plan,
           subscriptionEndDate: endDate.toISOString(),
-          height: 170, // Default value, adjust as needed
-          bodyType: "Average", // Default value
-          fitnessGoals: "General Fitness", // Default value
-          activityLevel: "Moderate", // Default value
-          dietaryPreferences: "Nigerian Traditional", // Default value
-          preferredSports: "None", // Default value
-          gender: userInfo.gender || "Not Specified", // Adjust as needed
+          height: 170,
+          bodyType: "Average",
+          fitnessGoals: "General Fitness",
+          activityLevel: "Moderate",
+          dietaryPreferences: "Nigerian Traditional",
+          preferredSports: "None",
+          gender: userInfo.gender || "Not Specified",
         };
 
         console.log("Creating/Updating UserData with:", userDataPayload);
@@ -233,9 +240,7 @@ const Programs = () => {
       setPaymentSuccess(true);
       setActiveSubscription({
         plan: subscriptionData.plan,
-        expirationDate: new Date(
-          new Date().setMonth(new Date().getMonth() + 1)
-        ).toLocaleDateString(),
+        expirationDate: endDate.toLocaleDateString(),
       });
       downloadTicket(newTicket);
     } catch (err) {

@@ -12,18 +12,18 @@ export const subscriptionApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ["Subscription"],
     }),
     getUserSubscriptions: builder.query({
-      query: (userId) => ({
+      query: () => ({
         url: `${SUBSCRIPTION_URL}/my`,
       }),
       providesTags: ["Subscription"],
-      keepUnusedDataFor: 5,
+      keepUnusedDataFor: 60, // Increased to avoid frequent cache clearing
     }),
     getAllSubscriptions: builder.query({
       query: () => ({
         url: SUBSCRIPTION_URL,
       }),
       providesTags: ["Subscription"],
-      keepUnusedDataFor: 5,
+      keepUnusedDataFor: 60,
     }),
     updateSubscription: builder.mutation({
       query: (data) => ({
