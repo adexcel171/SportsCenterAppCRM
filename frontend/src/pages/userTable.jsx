@@ -259,7 +259,7 @@ D’playce Fitness Recreational and Fitness Center wishes you joy, success, and 
                     <div className="mt-3 flex justify-end">
                       <Link
                         to={`/userdetails/${user._id}`}
-                        className="text-blue-600 font-semibold hover:underline"
+                        className="text-blue-500 font-semibold hover:underline"
                       >
                         Edit
                       </Link>
