@@ -79,7 +79,7 @@ const Navigation = () => {
             <NavLink to="/about" icon={<AiOutlineTeam />} text="About" />
             <NavLink to="/contact" icon={<FaPhone />} text="Contact" />
 
-            {/* User Dropdown / Admin Login */}
+            {/* User Dropdown / Login */}
             {userInfo ? (
               <div className="relative">
                 <button
@@ -126,7 +126,7 @@ const Navigation = () => {
               <div className="flex items-center space-x-4">
                 <Link
                   to="/login"
-                  className="px-4 py-2 bg-black text-white rounded-lg hover:bg-red-700 transition-colors shadow-md"
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors shadow-md"
                 >
                   <AiOutlineLogin className="inline mr-2" />
                   Login
@@ -248,7 +248,7 @@ const Navigation = () => {
                   />
                   <button
                     onClick={logoutHandler}
-                    className="flex items-center space-x-4 px-4 py-3 text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors w-full"
+                    className="flex items-center space-x-4 px-4 py-3 text-white background-color-red-600 hover:bg-red-700 rounded-lg transition-colors w-full"
                   >
                     <AiOutlineLogin size={24} />
                     <span className="font-medium">Logout</span>
@@ -283,11 +283,6 @@ const Navigation = () => {
           )}
         </div>
       )}
-
-      {/* Add padding to body content to account for fixed nav */}
-      <div className="h-16 lg:h-20"></div>
-      {/* Add padding at bottom for mobile nav */}
-      <div className="h-16 lg:hidden"></div>
     </>
   );
 };
