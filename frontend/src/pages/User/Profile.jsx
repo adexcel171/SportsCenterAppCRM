@@ -44,13 +44,14 @@ const Profile = () => {
     );
   }, [userSubscriptions]);
 
-  // Check for premium plans (Couple Monthly, Monthly Plan, or Personalized Plan)
+  // Check for premium plans (Couple Monthly, Monthly Plan, Personalized Plan, Pro Athlete)
   const hasPremiumPlan = userSubscriptions?.some(
     (sub) =>
       sub.user?.toString() === userInfo?._id?.toString() &&
       (sub.plan === "Couple Monthly" ||
         sub.plan === "Monthly Plan" ||
-        sub.plan === "Personalized Plan") &&
+        sub.plan === "Personalized Plan" ||
+        sub.plan === "Pro Athlete") &&
       sub.status === "active"
   );
 
@@ -114,7 +115,7 @@ const Profile = () => {
 
   return (
     <div
-      className={`min-h-screen ${SPORT_THEME.primary} ${SPORT_THEME.text} mt-7  py-8`}
+      className={`min-h-screen ${SPORT_THEME.primary} ${SPORT_THEME.text} py-6`}
     >
       <div className="max-w-4xl mx-auto mt-2 px-4">
         <h1 className="text-2xl font-bold mb-6 text-center">

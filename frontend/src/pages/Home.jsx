@@ -1,26 +1,112 @@
-import React, { useState, useMemo, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useMemo } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate, Link } from "react-router-dom";
+import { logout } from "../redux/features/auth/authSlice";
 import { useGetAllUserDataQuery } from "../redux/api/userdataApiSlice";
 import { useGetAllSubscriptionsQuery } from "../redux/api/subscriptionApiSlice";
-import { AiOutlineFilter } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { AiOutlineFilter, AiOutlineLock } from "react-icons/ai";
+import { BsPersonCircle } from "react-icons/bs";
+import { FaRocket } from "react-icons/fa";
 import UserTable from "./userTable";
 
 const Home = () => {
-  const navigate = useNavigate();
   const { userInfo } = useSelector((state) => state.auth);
   const isAdmin = userInfo?.isAdmin || false;
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState("all");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  // Redirect non-admins to Landing page
-  useEffect(() => {
-    if (!isAdmin) {
-      console.log("Home.jsx: Non-admin user detected, redirecting to /");
-      navigate("/");
-    }
-  }, [isAdmin, navigate]);
+  // Show enhanced fallback UI for non-admins with logout and programs buttons
+  if (!isAdmin) {
+    console.log(
+      "Home.jsx: Non-admin user detected, showing fallback UI",
+      JSON.stringify({ userInfo, timestamp: new Date().toISOString() })
+    );
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-800 via-gray-900 to-black flex items-center justify-center text-white px-4">
+        <div className="text-center space-y-6 max-w-md sm:max-w-lg">
+          <h2 className="text-xl sm:text-2xl font-bold flex items-center justify-center gap-2">
+            <AiOutlineLock className="text-2xl text-red-500" />
+            Access Restricted
+          </h2>
+          <p className="text-gray-300 text-sm sm:text-base">
+            This page is for admins only. Log out to explore our website, or:
+          </p>
+          <ul className="text-gray-300 text-sm sm:text-base space-y-2">
+            <li className="flex items-center justify-center gap-2">
+              <FaRocket className="text-blue-500" />
+              Visit{" "}
+              <Link to="/programs" className="underline hover:text-blue-400">
+                Programs
+              </Link>{" "}
+              to explore plans and make payments.
+            </li>
+            <li className="flex items-center justify-center gap-2">
+              <BsPersonCircle className="text-blue-500" />
+              Check your subscriptions in your{" "}
+              <Link to="/profile" className="underline hover:text-blue-400">
+                Profile
+              </Link>
+              .
+            </li>
+          </ul>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div>
+              <button
+                onClick={() => {
+                  console.log(
+                    "Home.jsx: Logout to Continue clicked at",
+                    new Date().toISOString()
+                  );
+                  try {
+                    dispatch(logout());
+                    console.log("Home.jsx: Logout dispatched");
+                    navigate("/", { replace: true });
+                    console.log("Home.jsx: Navigation to / attempted");
+                  } catch (error) {
+                    console.error(
+                      "Home.jsx: Logout or navigation error =",
+                      error
+                    );
+                  }
+                }}
+                className="bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 px-8 py-4 rounded-xl font-bold w-full sm:w-[200px] flex items-center justify-center gap-2 shadow-lg transition-all"
+              >
+                🚪 Logout to Continue to Website
+              </button>
+              <p className="text-gray-500 text-sm mt-2">
+                <Link
+                  to="/"
+                  className="underline hover:text-red-400"
+                  onClick={() =>
+                    console.log(
+                      "Home.jsx: Fallback Link to / clicked at",
+                      new Date().toISOString()
+                    )
+                  }
+                >
+                  Click here if logout doesn’t work
+                </Link>
+              </p>
+            </div>
+            <Link
+              to="/programs"
+              className="bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 px-8 py-4 rounded-xl font-bold w-full sm:w-[200px] flex items-center justify-center gap-2 shadow-lg transition-all"
+              onClick={() =>
+                console.log(
+                  "Home.jsx: Enter Programs clicked at",
+                  new Date().toISOString()
+                )
+              }
+            >
+              🚀 Enter Programs
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const {
     data: userData,
@@ -58,10 +144,6 @@ const Home = () => {
     return subscriptions.filter((sub) => sub.status === "active");
   }, [subscriptions]);
 
-  if (!isAdmin) {
-    return null; // Render nothing while redirecting
-  }
-
   if (userDataLoading || subscriptionsLoading) {
     return (
       <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-gray-800 via-gray-900 to-black text-gray-200">
@@ -77,6 +159,9 @@ const Home = () => {
         {userDataError?.data?.error ||
           subscriptionsError?.data?.error ||
           "Failed to load data"}
+        <pre className="text-gray-400 mt-2">
+          {JSON.stringify(userDataError || subscriptionsError, null, 2)}
+        </pre>
       </div>
     );
   }
